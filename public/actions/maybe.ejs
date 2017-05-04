@@ -14,17 +14,18 @@
             <h3 class="pull-left">Uncertain detections</h3>
         </div>
     </div>
-
-
-    <%if (results.length !=  0) { %> 
+ 
+    <%if (results.length !=  0 && folder.length != 0) { %> 
     
         <% for(var i=0; i<results.length; i++) {%>
-            <%= results[i] %> 
+             
+            <% for(var x=0; x<results[i].detection.length; x++) {%>
+                <p><img src="<%= folder %>/<%= results[i].detection[0].detect.preview %>" class="img-responsive"/></p>
+            <% } %>
         <% } %>
         
     <% } %>
-    
-    
+     
  <% include ../shared/footer.ejs %>
   JSON.stringify()
   

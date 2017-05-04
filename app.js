@@ -9,6 +9,7 @@ app.use(express.static(__dirname + '/public'));
 
 // Img & Videos
 app.use('/py_img',express.static('../../../var/www/html/out'));
+app.use('/maybe',express.static('../../../var/www/html/out/maybe'));
  
 bodyParser = require('body-parser')
 
@@ -108,9 +109,10 @@ app.get('/detection/maybe', function(req, res) {
     
     PythonShell.run('../fireball_camera/list_files.py', opts, function (err, results) {
       if (err) throw err;
-        
+         
        res.render('maybe', {
-            results: results
+            results: results,
+            folder: '/maybe'
         }) 
     });
     
