@@ -1,8 +1,8 @@
 {
-  "name": "AngularNodeApp",
+  "name": "AMSCam",
   "version": "1.0.0",
   "authors": [
-    "jay <jay3dec@gmail.com>"
+    "vincent <vperlerin@gmail.com>"
   ],
   "main": "app.js",
   "moduleType": [
