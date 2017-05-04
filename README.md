@@ -6,8 +6,10 @@ This app allows you to interact with your AMS Cam & Raspberry Pi from a device o
 
 
 ### Git Clone
-Clone this directory to /home/pi/AMSCam on your Raspberry Pi
-
+Clone this directory to /home/pi  on your Raspberry Pi
+```
+git clone https://github.com/vperlerin/AMSCam.git
+```
 
 ### Install Dependencies 
 ```
@@ -38,3 +40,31 @@ sudo n stable
 sudo ln -sf /usr/local/n/versions/node/<VERSION>/bin/node /usr/bin/node 
 ```
 ex: VERSION: 7.8.0
+
+
+### Changing the PI Resolution on the VNC Viewer
+```
+sudo raspi-config
+> Advanced options
+> Enable VNC Server
+> Finish
+```
+
+```
+sudo reboot
+```
+
+Once the PI has reboot:
+```
+sudo vi /boot/config.txt
+```
+
+And add the following lines:
+```
+hdmi_ignore_edid=0xa5000080
+hdmi_group=2
+hdmi_mode=85
+```
+
+Then, reboot the VNC Viewer. 
+
