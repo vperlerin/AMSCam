@@ -6,8 +6,10 @@ This app allows you to interact with your AMS Cam & Raspberry Pi from a device o
 
 
 ### Git Clone
-Clone this directory to /home/pi/AMSCam on your Raspberry Pi
-
+Clone this directory to /home/pi  on your Raspberry Pi
+```
+git clone https://github.com/vperlerin/AMSCam.git
+```
 
 ### Install Dependencies 
 ```
