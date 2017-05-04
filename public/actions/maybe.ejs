@@ -16,19 +16,58 @@
     </div>
  
     <%if (results.length !=  0 && folder.length != 0) { %> 
-    
-        <% for(var i=0; i<results.length; i++) {%>
-             
-            <% for(var x=0; x<results[i].detection.length; x++) {%>
-                <p><img src="<%= folder %>/<%= results[i].detection[0].detect.preview %>" class="img-responsive"/></p>
-            <% } %>
-        <% } %>
-        
+    <div class="table-responsive">
+        <table class="table table-condensed mt table-hover table-results">
+                    <thead>
+                        <tr>
+                            <th>Date</th>  
+                            <th>Screenshot/Objects</th> 
+                            <th>Video</th>
+                            <th>Summary</th> 
+                       </tr>
+                    </thead>
+                    <tbody> 
+                    <% for(var i=0; i<results.length; i++) {%>
+                         
+                        <% for(var x=0; x<results[i].detection.length; x++) {%>
+                            <tr>
+                                <td><%= results[i].detection[x].detect.date %></td>
+                                <td>
+                                    <a href="<%= folder %>/<%= results[i].detection[x].detect.preview %>" class="pull-left dmr" data-gallery>
+                                        <img src="<%= folder %>/<%= results[i].detection[x].detect.preview %>" class="img-responsive img1" />
+                                    </a>
+                                 
+                                    <a href="<%= folder %>/<%= results[i].detection[x].detect.objects %>" class="pull-left" data-gallery>
+                                        <img src="<%= folder %>/<%= results[i].detection[x].detect.objects %>" class="img-responsive img1" />
+                                    </a>
+                                </td>
+                                <td>
+                                     <% if (browser === 'Firefox') { %>
+                                     <embed name="plugin" autoplay="false" src="<%= folder %>/<%= results[i].detection[x].detect.video %>" type="video/x-msvideo" height="100%" width="100%">
+                                     <%  } %>
+                                     <a href="<%= folder %>/<%= results[i].detection[x].detect.video %>" class="btn btn-primary btn-xs><span class="fa fa-video-camera"></span> Download</a>
+                                </td>
+                                <td>    
+                                    <pre class="preview"><%= results[i].detection[x].detect.summaryTxt %></pre>
+                                </td>
+                            </tr>
+                        <% } %>
+                    <% } %>
+                    </tbody>
+        </table>
+    </div>     
     <% } %>
-     
- <% include ../shared/footer.ejs %>
-  JSON.stringify()
-  
+ 
+<link rel="stylesheet" href="//blueimp.github.io/Gallery/css/blueimp-gallery.min.css">   
+<div id="blueimp-gallery" class="blueimp-gallery" style="display: none;"> <div class="slides" style="width: 7680px;"></div><h3 class="title"></h3> <a class="prev"><span class="fa fa-caret-left"></span></a> <a class="next"><span class="fa fa-caret-right"></span></a> <a class="close">×</a> <a class="play-pause"></a> <ol class="indicator"></ol> <div class="modal fade"> <div class="modal-dialog"> <div class="modal-content"> <div class="modal-header"> <button type="button" class="close" aria-hidden="true">×</button> <h4 class="modal-title"></h4> </div> <div class="modal-body next"></div> <div class="modal-footer"> <button type="button" class="btn btn-default pull-left prev"> <i class="fa fa-caret-left"></i> </button> <button type="button" class="btn btn-primary next"> <i class="fa fa-caret-right"></i> </button> </div> </div> </div> </div></div>
+
+<% include ../shared/footer.ejs %> 
+<script src="../js/blueimp-gallery.min.js"></script>
+<style>
+.dmr { margin-right:.5em }
+.img1 { max-width:350px }
+.preview { max-height:100px; overflow:auto}
+</style>  
 </body>
 </html>
    

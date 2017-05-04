@@ -14,20 +14,22 @@
             <h3 class="pull-left">Screenshot</h3>
         </div>
     </div>
-           
-    <div class="row dmt">
-        <div class="col-md-6">
-            <img id="screenshot_img" class="img-response"/>
+    
+    <div class="container">       
+        <div class="row dmt">
+            <div class="col-md-6">
+                <img id="screenshot_img" class="img-response"/>
+            </div>
+            <div class="col-md-6">
+                <pre class="alert alert-success prettyprint hidden" id="success_msg"></pre>
+            </div>
         </div>
-        <div class="col-md-6">
-            <pre class="alert alert-success prettyprint hidden" id="success_msg"></pre>
-        </div>
+                
+        <form action="/screenshot" method="post" style="margin:3em auto; max-width:300px" >
+            <button id="btn_screenshot" class="btn btn-lg btn-primary btn-block load-on-click" type="submit">Take New Screenshot</button>
+            <span style="color:red;"><%= error %></span>
+        </form> 
     </div>
-            
-    <form action="/screenshot" method="post" style="margin:3em auto; max-width:300px" >
-        <button id="btn_screenshot" class="btn btn-lg btn-primary btn-block load-on-click" type="submit">Take New Screenshot</button>
-        <span style="color:red;"><%= error %></span>
-    </form> 
          
     <% include ../shared/footer.ejs %>
   

@@ -25,7 +25,16 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
- 
+
+
+/**********************************************
+* Chrome or Firefox - detect browser
+***********************************************/ 
+function get_browser(req) {
+    var ua = req.headers['user-agent'];
+    var parser = new UAParser();
+    return parser.setUA(ua).getBrowser().name; 
+}
  
 
 /**********************************************
@@ -34,9 +43,7 @@ app.use(bodyParser.urlencoded({
 app.get('/', function(req, res) {
     
     // Test Browser
-    var ua = req.headers['user-agent'];
-    var parser = new UAParser();
-    var browser = parser.setUA(ua).getBrowser().name; 
+    browser = get_browser(req)
     
     var pyshellUpload = new PythonShell('../fireball_camera/read_config.py', {
             mode: 'json' 
@@ -107,12 +114,17 @@ app.get('/detection/maybe', function(req, res) {
         args: ['/var/www/html/out/maybe/'] 
     };
     
-    PythonShell.run('../fireball_camera/list_files.py', opts, function (err, results) {
+    // Test Browser
+    browser = get_browser(req)
+    
+    
+    PythonShell.run('../fireball_camera/list_files.py', opts, function (err, ress) {
       if (err) throw err;
          
        res.render('maybe', {
-            results: results,
-            folder: '/maybe'
+            results: ress,
+            folder: '/maybe',
+            browser: browser
         }) 
     });
     
