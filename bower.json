@@ -1,0 +1,23 @@
+{
+  "name": "AngularNodeApp",
+  "version": "1.0.0",
+  "authors": [
+    "jay <jay3dec@gmail.com>"
+  ],
+  "main": "app.js",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-base64": "~2.0.3",
+    "angular-route": "~1.3.14"
+  }
+}

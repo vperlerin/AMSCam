@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AMS Cam</title>
+    <% include ../shared/head.ejs %>
+</head>
+ 
+<body>
+
+<% include ../shared/header.ejs %>
+
+    <div class="box box-header-like clearfix">
+        <div class="clearfix">
+            <h3 class="pull-left">Uncertain detections</h3>
+        </div>
+    </div>
+
+
+    <%if (results.length !=  0) { %> 
+    
+        <% for(var i=0; i<results.length; i++) {%>
+            <%= results[i] %> 
+        <% } %>
+        
+    <% } %>
+    
+    
+ <% include ../shared/footer.ejs %>
+  JSON.stringify()
+  
+</body>
+</html>
+   

@@ -1,0 +1,31 @@
+ <div class="container">
+      <div class="header">
+        <nav>
+          <ul class="nav nav-pills pull-right">
+            <li role="presentation" ><a href="#/">Home</a></li>
+            <li role="presentation" class="active"><a href="#">Sign In</a></li>
+            <li role="presentation" ><a href="/signUp">Sign Up</a></li>
+          </ul>
+        </nav>
+        <h3 class="text-muted">Angular Node App</h3>
+      </div>
+
+      <div class="jumbotron" ng-controller="SignInCtrl">
+        <h1>Angular Node App</h1>
+        <form class="form-signin">
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="text" name="inputUsername" id="inputUsername" ng-model="username" class="form-control" placeholder="Email address"  autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" name="inputPassword" id="inputPassword" ng-model="password" class="form-control" placeholder="Password" >
+        
+        <button id="btnSignIn" class="btn btn-lg btn-primary btn-block" ng-click="signIn()">Sign in</button>
+      </form>
+      </div>
+
+      
+
+      <footer class="footer">
+        <p>&copy; Company 2015</p>
+      </footer>
+
+    </div>

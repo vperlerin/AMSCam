@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AMS Cam</title>
+    <% include ../shared/head.ejs %>
+</head>
+ 
+<body>
+
+<% include ../shared/header.ejs %>
+
+    <div class="box box-header-like clearfix">
+        <div class="clearfix">
+            <h3 class="pull-left">Screenshot</h3>
+        </div>
+    </div>
+           
+    <div class="row dmt">
+        <div class="col-md-6">
+            <img id="screenshot_img" class="img-response"/>
+        </div>
+        <div class="col-md-6">
+            <pre class="alert alert-success prettyprint hidden" id="success_msg"></pre>
+        </div>
+    </div>
+            
+    <form action="/screenshot" method="post" style="margin:3em auto; max-width:300px" >
+        <button id="btn_screenshot" class="btn btn-lg btn-primary btn-block load-on-click" type="submit">Take New Screenshot</button>
+        <span style="color:red;"><%= error %></span>
+    </form> 
+         
+    <% include ../shared/footer.ejs %>
+  
+   
+    <script>
+        $(function() {
+        
+            // Reload Image
+            $('#screenshot_img').attr("src","/py_img/latest.jpg?" + new Date().getTime());
+            <%if (message_success.length !=  0) { %> 
+                var msg  = "<%= message_success %>";
+                msg = msg.replace(/&#34;/g, '\"'); 
+                displaySuccess(msg);  
+            <% } %>
+         })
+    </script>
+
+</body>
+</html>

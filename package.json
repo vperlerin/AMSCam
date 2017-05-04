@@ -1,0 +1,20 @@
+{
+  "name": "AngularNodeApp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.12.0",
+    "ejs": "^2.3.1",
+    "express": "^4.12.2",
+    "python-shell": "^0.4.0",
+    "request": "^2.53.0",
+    "ua-parser-js": "^0.7.12"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vincent Perlerin for Mike Hankey, LLC",
+  "license": "MIT"
+}
