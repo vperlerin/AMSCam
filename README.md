@@ -1,10 +1,15 @@
-# AngularJS & Node.js App Powered By Python Eve API Part 1
+# AMS Cam
 
-### Clone the Repository and Navigate to the project directory
-```
-git clone https://github.com/jay3dec/AngularEveApp_Part1.git
-cd AngularEveApp_Part1
-```
+## Update Nodejs on PI
+sudo npm cache clean -f
+sudo npm install -g n
+sudo n stable
+sudo ln -sf /usr/local/n/versions/node/<VERSION>/bin/node /usr/bin/node 
+#ex: VERSION: 7.8.0
+
+## Copy all files on the PI
+# (mkdir AMScam)
+/home/pi/AMSCam
 
 ### Install Dependencies 
 ```
@@ -15,4 +20,4 @@ bower install
 ```
 node app.js
 ```
-### Point your browser to `http://localhost:3000` and you should have the app running
+### Point your browser to `http://[PI_IP]:3000` and you should have the app running - ex: http://192.168.0.11:3000/
