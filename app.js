@@ -120,16 +120,43 @@ app.get('/detection/maybe', function(req, res) {
     
     PythonShell.run('../fireball_camera/list_files.py', opts, function (err, ress) {
       if (err) throw err;
-         
-       res.render('maybe', {
+      
+      // Render options
+      opts_render = {
             results: ress,
             folder: '/maybe',
             browser: browser
-        }) 
+      };
+      
+      if(typeof req.query.success != "undefined") {
+           opts_render.success = req.query.success
+      }
+         
+         
+       res.render('maybe', opts_render) 
     });
+     
+});
+
+
+/**********************************************
+* Detection maybe deletion
+***********************************************/
+app.get('/detection/maybe/delete', function(req, res) {
     
+    // Get all maybe detections
+    var opts = { 
+        mode: 'text',
+        args: ['/var/www/html/out/maybe/',req.query.ev]
+    }; 
     
-    
+    PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
+        //console.log('results: %j', ress);
+        if (err) throw err;
+        res.redirect('/detection/maybe?success='+ress);
+    });
+  
+     
 });
 
 

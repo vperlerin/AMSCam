@@ -10,20 +10,32 @@
 <% include ../shared/header.ejs %>
 
     <div class="box box-header-like clearfix">
-        <div class="clearfix">
-            <h3 class="pull-left">Uncertain detections</h3>
-        </div>
+        <h3>
+            <%if (results.length !=  0) { %> 
+                <%= results[0].detection.length %> 
+            <% } %> 
+            Uncertain detections
+        </h3>
     </div>
+ 
+    <%if (typeof success != "undefined") { %> 
+        <div class="alert alert-success dmt">
+            <span class="fa fa-check"></span> 
+            Event #<%= success %> successfully deleted.
+        </div>
+    <% } %>
  
     <%if (results.length !=  0 && folder.length != 0) { %> 
     <div class="table-responsive">
+         
         <table class="table table-condensed mt table-hover table-results">
                     <thead>
                         <tr>
                             <th>Date</th>  
                             <th>Screenshot/Objects</th> 
                             <th>Video</th>
-                            <th>Summary</th> 
+                            <th>Summary</th>
+                            <th>&nbsp;</th> 
                        </tr>
                     </thead>
                     <tbody> 
@@ -47,14 +59,14 @@
                                      <%  } %>
                                      <a href="<%= folder %>/<%= results[i].detection[x].detect.video %>" class="btn btn-primary btn-xs><span class="fa fa-video-camera"></span> Download</a>
                                 </td>
-                                <td>    
-                                    <pre class="preview"><%= results[i].detection[x].detect.summaryTxt %></pre>
-                                </td>
+                                <td><pre class="preview"><%= results[i].detection[x].detect.summaryTxt %></pre></td>
+                                <td><a title="Delete" class="btn btn-danger btn-xs" href="/detection/maybe/delete?ev=<%= results[i].detection[x].detect.name %>"><span class="fa fa-trash-o"></span></button></td>
                             </tr>
                         <% } %>
                     <% } %>
                     </tbody>
         </table>
+         
     </div>     
     <% } %>
  
@@ -64,8 +76,9 @@
 <% include ../shared/footer.ejs %> 
 <script src="../js/blueimp-gallery.min.js"></script>
 <style>
+.table { width: auto;  margin: 2em auto; }
 .dmr { margin-right:.5em }
-.img1 { max-width:350px }
+.img1 { max-width:200px }
 .preview { max-height:100px; overflow:auto}
 </style>  
 </body>
