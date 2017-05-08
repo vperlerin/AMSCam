@@ -3,13 +3,20 @@
 <head>
     <title>AMS Cam</title>
     <% include ../shared/head.ejs %>
+    <style>
+    .table { width: auto;  margin: 1em auto 2em; }
+    .dmr { margin-right:.5em }
+    .img1 { max-width:200px }
+    .preview { max-height:100px; overflow:auto}
+    .container{width:1470px}}@media (min-width:1600px){
+    </style>  
 </head>
  
 <body>
 
 <% include ../shared/header.ejs %>
 
-    <div class="box box-header-like clearfix">
+    <div class="box box-header-like box-header-admin clearfix">
         <h3>
             <%if (results.length !=  0) { %> 
                 <%= results[0].detection.length %> 
@@ -23,18 +30,35 @@
             <span class="fa fa-check"></span> 
             Event #<%= success %> successfully deleted.
         </div>
-    <% } %>
- 
+    <% } %> 
+    
     <%if (results.length !=  0 && folder.length != 0) { %> 
+    
+    <div class="admin-actions clearfix" style="margin-bottom:10px">
+			<div class="pull-left">
+				<button class="btn btn-default btn-sm" data-action="select_all" data-table="maybe-table" title="Select all">
+                    	<i class="fa fa-check"></i> 
+				</button>
+			</div>	
+			<div id="action-group-buttons" class="pull-left  ml">
+				<button disabled="disabled" class="btn btn-danger btn-sm" data-action="delete-all" title="Delete" > 
+                    	<span class="fa fa-trash-o"></span>
+				</button>
+			</div>
+			
+    </div>
+    
+    
     <div class="table-responsive">
          
-        <table class="table table-condensed mt table-hover table-results">
+        <table id="maybe-table" class="table table-condensed table-hover table-results" style="width:100%">
                     <thead>
                         <tr>
                             <th>Date</th>  
                             <th>Screenshot/Objects</th> 
                             <th>Video</th>
                             <th>Summary</th>
+                            <th>&nbsp;</th> 
                             <th>&nbsp;</th> 
                        </tr>
                     </thead>
@@ -43,6 +67,9 @@
                          
                         <% for(var x=0; x<results[i].detection.length; x++) {%>
                             <tr>
+                                <td>
+								    <input type="checkbox" class="select_row" name="ev_<%= results[i].detection[x].detect.name %>">
+                                </td>
                                 <td><%= results[i].detection[x].detect.date %></td>
                                 <td>
                                     <a href="<%= folder %>/<%= results[i].detection[x].detect.preview %>" class="pull-left dmr" data-gallery>
@@ -53,11 +80,11 @@
                                         <img src="<%= folder %>/<%= results[i].detection[x].detect.objects %>" class="img-responsive img1" />
                                     </a>
                                 </td>
-                                <td>
+                                <td> 
                                      <% if (browser === 'Firefox') { %>
                                      <embed name="plugin" autoplay="false" src="<%= folder %>/<%= results[i].detection[x].detect.video %>" type="video/x-msvideo" height="100%" width="100%">
                                      <%  } %>
-                                     <a href="<%= folder %>/<%= results[i].detection[x].detect.video %>" class="btn btn-primary btn-xs><span class="fa fa-video-camera"></span> Download</a>
+                                     <a href="<%= folder %>/<%= results[i].detection[x].detect.video %>" class="btn btn-primary btn-xs"><span class="fa fa-video-camera"></span> Download</a>
                                 </td>
                                 <td><pre class="preview"><%= results[i].detection[x].detect.summaryTxt %></pre></td>
                                 <td><a title="Delete" class="btn btn-danger btn-xs" href="/detection/maybe/delete?ev=<%= results[i].detection[x].detect.name %>"><span class="fa fa-trash-o"></span></button></td>
@@ -75,12 +102,7 @@
 
 <% include ../shared/footer.ejs %> 
 <script src="../js/blueimp-gallery.min.js"></script>
-<style>
-.table { width: auto;  margin: 2em auto; }
-.dmr { margin-right:.5em }
-.img1 { max-width:200px }
-.preview { max-height:100px; overflow:auto}
-</style>  
+
 </body>
 </html>
    
