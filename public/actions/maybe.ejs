@@ -28,7 +28,14 @@
     <%if (typeof success != "undefined") { %> 
         <div class="alert alert-success dmt">
             <span class="fa fa-check"></span> 
-            Event #<%= success %> successfully deleted.
+            Event(s) successfully deleted:
+            <ul> 
+                <% for(var i=0; i<success.length; i++) {%>
+                    <%if (success[i] != "")  { %> 
+                        <li>#<%= success[i] %></li>
+                    <% } %>    
+                <% } %>
+            </ul>
         </div>
     <% } %> 
     
