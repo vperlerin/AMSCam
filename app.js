@@ -24,26 +24,21 @@ app.use('/bower_components', express.static(__dirname + '/bower_components'));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+ 
+ 
+// Functions
+var utils = require('./utils/browser');  
 
 
-
-/**********************************************
-* Chrome or Firefox - detect browser
-***********************************************/ 
-function get_browser(req) {
-    var ua = req.headers['user-agent'];
-    var parser = new UAParser();
-    return parser.setUA(ua).getBrowser().name; 
-}
  
 
-/**********************************************
+/******************************************************************************************************************************************
 * Home Page
 ***********************************************/
 app.get('/', function(req, res) {
     
     // Test Browser
-    browser = get_browser(req)
+    browser = utils.get_browser(req)
     
     var pyshellUpload = new PythonShell('../fireball_camera/read_config.py', {
             mode: 'json' 
@@ -60,7 +55,8 @@ app.get('/', function(req, res) {
 });
    
 
-/**********************************************
+
+/******************************************************************************************************************************************
 * Screenshot Page
 ***********************************************/
 app.get('/screenshot', function(req, res) {
@@ -82,18 +78,13 @@ app.post('/screenshot', function(req, resp) {
         
         // JSON.stringify(message_success, null, '\t')
         pyshellUpload.on('message',  function (message_success) { 
-            
             if (message_success) {
-                
-                console.log(message_success);
-                
                 return resp.render('screenshot', {
                     message_success: message_success,
                     error: ''
                 }) 
             }        
         });
-        
         
         pyshellUpload.end(function (err) {
             console.log('screenshot FINISHED');
@@ -102,7 +93,8 @@ app.post('/screenshot', function(req, resp) {
 });
 
 
-/**********************************************
+
+/******************************************************************************************************************************************
 * Detection maybe
 ***********************************************/
 app.get('/detection/maybe', function(req, res) {
@@ -114,9 +106,8 @@ app.get('/detection/maybe', function(req, res) {
     };
     
     // Test Browser
-    browser = get_browser(req)
- 
-     
+    browser = utils.get_browser(req)
+      
     PythonShell.run('../fireball_camera/list_files.py', opts, function (err, ress) {
       if (err) throw err;
       
@@ -170,69 +161,149 @@ app.post('/detection/maybe/delete_multiple', function(req, res) {
         if (err) throw err;
         res.redirect('/detection/maybe?success='+ress[0]);
     });
-      
      
 });
 
 
 
-
-/*
-app.get('/signIn', function(req, res) {
-    res.sendFile('signin.html', {
-        'root': __dirname + '/public/signin'
+/******************************************************************************************************************************************
+* Detection false
+***********************************************/
+app.get('/detection/false', function(req, res) {
+    
+    // Get all maybe detections
+    var opts = {
+        mode: 'json',
+        args: ['/var/www/html/out/false/'] 
+    };
+    
+    // Test Browser
+    browser = utils.get_browser(req)
+      
+    PythonShell.run('../fireball_camera/list_files.py', opts, function (err, ress) {
+      if (err) throw err;
+      
+      // Render options
+      opts_render = {
+            results: ress,
+            folder: '/false',
+            browser: false
+      };
+        
+      if(typeof req.query.success !== "undefined") {
+        opts_render.success = req.query.success.split("$");
+      }
+           
+       res.render('false', opts_render) 
     });
+     
 });
- 
- 
- 
- 
 
-app.post('/register', function(req, resp) {
-    var _firstName = req.body.inputFirstName;
-    var _lastName = req.body.inputLastName;
-    var _username = req.body.inputUsername;
-    var _password = req.body.inputPassword;
-    var _phone = req.body.inputPhone;
 
-    var options = {
-        url: 'http://192.168.0.27:3000/user/',
-        method: 'POST',
-        auth: {
-            user: 'admin',
-            password: 'admin'
-        },
-        formData: {
-            firstname: _firstName,
-            lastname: _lastName,
-            username: _username,
-            password: _password,
-            phone: _phone
-        }
-    }
-
-    request(options, function(err, res, body) {
-        if (err) {
-            return resp.render('screenshot', {
-                error: err
-            })
-        }
-        var result = JSON.parse(body)
-        if (result._status == 'ERR') {
-            if (result._error.code == '400') {
-                return resp.render('screenshot', {
-                    error: 'Username Already Exists!'
-                })
-            }
-            return resp.render('screenshot', {
-                error: result._issues.username
-            })
-        } else {
-            console.log('All good');
-            resp.redirect('http://localhost:3000/#/signin');
-        }
-    })
+/**********************************************
+* Detection false deletion (single)
+***********************************************/
+app.get('/detection/false/delete', function(req, res) {
+    
+    // Get select detection 
+    var opts = { 
+        mode: 'text',
+        args: ['/var/www/html/out/false/',req.query.ev]
+    }; 
+    
+    PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
+        if (err) throw err;
+        res.redirect('/detection/false?success='+ress[0]);
+    });
+      
 });
-*/
 
-app.listen(3000)
+
+/**********************************************
+* Detection false deletion (multiple)
+***********************************************/
+app.post('/detection/false/delete_multiple', function(req, res) {
+   
+    var opts = { 
+        mode: 'text',
+        args: ['/var/www/html/out/false/',req.body.events]
+    }; 
+     
+    PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
+        if (err) throw err;
+        res.redirect('/detection/false?success='+ress[0]);
+    });
+     
+});
+
+  
+/******************************************************************************************************************************************
+* Detection fireball
+***********************************************/
+app.get('/detection/fireballs', function(req, res) {
+    
+    // Get all maybe detections
+    var opts = {
+        mode: 'json',
+        args: ['/var/www/html/out/fireballs/'] 
+    };
+    
+    // Test Browser
+    browser = utils.get_browser(req)
+      
+    PythonShell.run('../fireball_camera/list_files.py', opts, function (err, ress) {
+      if (err) throw err;
+      
+      // Render options
+      opts_render = {
+            results: ress,
+            folder: '/fireballs',
+            browser: false
+      };
+        
+      if(typeof req.query.success !== "undefined") {
+        opts_render.success = req.query.success.split("$");
+      }
+           
+       res.render('false', opts_render) 
+    });
+     
+});
+
+
+/**********************************************
+* Detection false deletion (single)
+***********************************************/
+app.get('/detection/fireballs/delete', function(req, res) {
+    
+    // Get select detection 
+    var opts = { 
+        mode: 'text',
+        args: ['/var/www/html/out/fireballs/',req.query.ev]
+    }; 
+    
+    PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
+        if (err) throw err;
+        res.redirect('/detection/fireballs?success='+ress[0]);
+    });
+      
+});
+
+
+/**********************************************
+* Detection false deletion (multiple)
+***********************************************/
+app.post('/detection/fireballs/delete_multiple', function(req, res) {
+   
+    var opts = { 
+        mode: 'text',
+        args: ['/var/www/html/out/fireballs/',req.body.events]
+    }; 
+     
+    PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
+        if (err) throw err;
+        res.redirect('/detection/fireballs?success='+ress[0]);
+    });
+     
+});
+app.listen(3000);

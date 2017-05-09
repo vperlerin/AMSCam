@@ -18,8 +18,5 @@ function delete_all() {
 }
 
 $(function() {
-    
-        
     delete_all();         
-    
 })
