@@ -1,3 +1,6 @@
+# RETURN ALL FILES FROM A FOLDER
+# as a JSON Object
+
 import glob
 import os
 import json
