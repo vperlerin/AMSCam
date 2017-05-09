@@ -10,11 +10,18 @@ app.use(express.static(__dirname + '/public'));
 // Img & Videos
 app.use('/py_img',express.static('../../../var/www/html/out'));
 app.use('/maybe',express.static('../../../var/www/html/out/maybe'));
+app.use('/false',express.static('../../../var/www/html/out/false'));
+app.use('/fireballs',express.static('../../../var/www/html/out/fireballs'));
  
 bodyParser = require('body-parser')
 
 // Views
-app.set('views', [path.join(__dirname + '/public/actions'),path.join(__dirname + '/public/home'),path.join(__dirname + '/public'),'/var/www/html/out']); 
+app.set('views', [
+    path.join(__dirname + '/public/actions'),
+    path.join(__dirname + '/public/home'),
+    path.join(__dirname + '/public'),
+    '/var/www/html/out']
+); 
 app.set('view engine', 'ejs');
 
 
