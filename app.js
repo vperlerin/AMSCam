@@ -272,7 +272,7 @@ app.get('/detection/fireballs', function(req, res) {
         opts_render.success = req.query.success.split("$");
       }
            
-       res.render('false', opts_render) 
+       res.render('fireballs', opts_render) 
     });
      
 });
