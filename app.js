@@ -115,8 +115,8 @@ app.get('/detection/maybe', function(req, res) {
     
     // Test Browser
     browser = get_browser(req)
-    
-    
+ 
+     
     PythonShell.run('../fireball_camera/list_files.py', opts, function (err, ress) {
       if (err) throw err;
       
@@ -127,11 +127,18 @@ app.get('/detection/maybe', function(req, res) {
             browser: browser
       };
       
+       
       if(typeof req.query.success != "undefined") {
-           opts_render.success = req.query.success
+           var success_strings = req.query.success.split(" ");
+           opts_render.success = "";
+           for(var i=0; i < success_strings.length; i++) {
+              if(success_strings[i] !== "") {
+                opts_render.success +=  " #" + success_strings[i]  
+              }
+           }
+               
       }
-         
-         
+           
        res.render('maybe', opts_render) 
     });
      
@@ -150,9 +157,11 @@ app.get('/detection/maybe/delete', function(req, res) {
     }; 
     
     PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
-        //console.log('results: %j', ress);
+        console.log('results: %j', ress);
+        console.log('results 0: %j', ress[0]);
+
         if (err) throw err;
-        res.redirect('/detection/maybe?success='+ress);
+        res.redirect('/detection/maybe?success='+ress[0]);
     });
       
 });
@@ -170,8 +179,9 @@ app.post('/detection/maybe/delete_multiple', function(req, res) {
      
         PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
         console.log('results: %j', ress);
+         console.log('results 0: %j', ress[0]);
         if (err) throw err;
-        res.redirect('/detection/maybe?success='+ress);
+        res.redirect('/detection/maybe?success='+ress[0]);
     });
       
      
