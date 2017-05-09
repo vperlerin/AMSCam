@@ -57,7 +57,6 @@ app.get('/', function(req, res) {
         }) 
     });
     
-   
 });
    
 
@@ -140,11 +139,11 @@ app.get('/detection/maybe', function(req, res) {
 
 
 /**********************************************
-* Detection maybe deletion
+* Detection maybe deletion (single)
 ***********************************************/
 app.get('/detection/maybe/delete', function(req, res) {
     
-    // Get all maybe detections
+    // Get select detection 
     var opts = { 
         mode: 'text',
         args: ['/var/www/html/out/maybe/',req.query.ev]
@@ -155,9 +154,30 @@ app.get('/detection/maybe/delete', function(req, res) {
         if (err) throw err;
         res.redirect('/detection/maybe?success='+ress);
     });
-  
+      
+});
+
+
+/**********************************************
+* Detection maybe deletion (multiple)
+***********************************************/
+app.post('/detection/maybe/delete_multiple', function(req, res) {
+   
+     var opts = { 
+        mode: 'text',
+        args: ['/var/www/html/out/maybe/',req.body.events]
+    }; 
+     
+        PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
+        console.log('results: %j', ress);
+        if (err) throw err;
+        res.redirect('/detection/maybe?success='+ress);
+    });
+      
      
 });
+
+
 
 
 /*

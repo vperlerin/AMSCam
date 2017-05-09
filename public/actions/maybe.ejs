@@ -35,23 +35,22 @@
     <%if (results.length !=  0 && folder.length != 0) { %> 
     
     <div class="admin-actions clearfix" style="margin-bottom:10px">
-			<div class="pull-left">
+        <div class="pull-left">
 				<button class="btn btn-default btn-sm" data-action="select_all" data-table="maybe-table" title="Select all">
                     	<i class="fa fa-check"></i> 
 				</button>
-			</div>	
-			<div id="action-group-buttons" class="pull-left  ml">
+        </div>	
+        <div id="action-group-buttons" class="pull-left  ml">
 				<button disabled="disabled" class="btn btn-danger btn-sm" data-action="delete-all" title="Delete" > 
                     	<span class="fa fa-trash-o"></span>
 				</button>
-			</div>
-			
+        </div>
     </div>
     
     
     <div class="table-responsive">
-         
-        <table id="maybe-table" class="table table-condensed table-hover table-results" style="width:100%">
+        
+        <table id="maybe-table" class="table table-condensed table-hover table-results select-events-table" style="width:100%">
                     <thead>
                         <tr>
                             <th>Date</th>  
@@ -68,7 +67,7 @@
                         <% for(var x=0; x<results[i].detection.length; x++) {%>
                             <tr>
                                 <td>
-								    <input type="checkbox" class="select_row" name="ev_<%= results[i].detection[x].detect.name %>">
+								    <input type="checkbox" class="select_row" name="<%= results[i].detection[x].detect.name %>">
                                 </td>
                                 <td><%= results[i].detection[x].detect.date %></td>
                                 <td>
