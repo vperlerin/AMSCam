@@ -39,7 +39,7 @@
         </div>
     <% } %> 
     
-    <%if (results.length !=  0 && folder.length != 0) { %> 
+    <%if (results.length != 0 && folder.length != 0 && results[0].detection.length != 0) { %> 
     
     <div class="admin-actions clearfix" style="margin-bottom:10px">
         <div class="pull-left">
@@ -101,6 +101,8 @@
         </table>
          
     </div>     
+    <%}else {%>
+         <div class="alert alert-danger">No False Detection found.</div>
     <% } %>
  
 <link rel="stylesheet" href="//blueimp.github.io/Gallery/css/blueimp-gallery.min.css">   
