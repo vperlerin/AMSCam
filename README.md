@@ -69,6 +69,7 @@ hdmi_mode=85
 Then, reboot the VNC Viewer. 
 
 
-### Temporary
-Please, add the .py files under python_tmp to the fireball_camera folder
+### Note
+The py files under python_tmp arent required. Please, see 
+https://github.com/mikehankey/fireball_camera
 
