@@ -101,6 +101,41 @@ app.post('/screenshot', function(req, resp) {
 
 
 
+
+/******************************************************************************************************************************************
+* PI RESTART 
+***********************************************/
+app.get('/pi/restart', function(req, res) {
+     
+    var opts = {};
+  
+    browser = utils.get_browser(req)
+      
+    PythonShell.run('../fireball_camera/restart_pi.py', opts, function (err, ress) {
+      if (err) throw err;
+       res.redirect('/');
+    });
+     
+});
+
+/******************************************************************************************************************************************
+* PI SHUTDOWN
+***********************************************/
+app.get('/pi/shutdown', function(req, res) {
+     
+    var opts = {};
+  
+    browser = utils.get_browser(req)
+      
+    PythonShell.run('../fireball_camera/shutdown_pi.py', opts, function (err, ress) {
+      if (err) throw err;
+       res.redirect('/');
+    });
+     
+});
+
+
+
 /******************************************************************************************************************************************
 * Detection maybe
 ***********************************************/
