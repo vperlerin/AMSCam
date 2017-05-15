@@ -54,6 +54,7 @@
              
        </div>
        <div class="col-md-4 text-center">
+       
             <div id="config" class="dmt">
             
                 <%if (config_info) { %> 
@@ -95,12 +96,28 @@
                         
                      </table>    
                      
+                     <table class="table table-condensed table-striped text-left">
+                        <tr>
+                            <td rowspan="2"><strong>Cam</strong></td>
+                            <td><a href="http://<%= config_info.cam_ip %>" target="_blank">Configuration</a></td>
+                        </tr>
+                      </table>                          
+                      
+                      
+                      
                       
                 <% } %>   
             
             </div>
       </div>
-    </div>
+    </div>  
+      
+    <%if (config_info) { %> 
+        <div class="embed-responsive embed-responsive-cam-param">
+            <iframe class="embed-responsive-item" src="http://<%= config_info.cam_ip %>/videolens.asp"></iframe>
+        </div>
+    <% } %>   
+    
  
     
 

@@ -7,6 +7,7 @@ function test_one_selected($table) {
 }
 
 function confirm_before($this) {
+    var url = $this.attr('href');
     bootbox.confirm({
         message: $this.attr('data-confirm'),
         buttons: {
@@ -21,7 +22,8 @@ function confirm_before($this) {
         },
         callback: function (result) {
             if(result){
-                window.location =  window.location.replace($(this).attr('href'));   
+                console.log(url);
+                window.location =  window.location.replace(url);   
             }
         }
     });   

@@ -59,6 +59,8 @@ app.get('/', function(req, res) {
      
     // Read config
     pyshellUpload.on('message',  function (config) { 
+        console.log(config);
+        
          res.render('home', {
             browser:  browser,
             config_info: config

@@ -9,3 +9,12 @@
 .img1 { max-width:200px }
 .preview { max-height:100px; overflow:auto}
 @media (min-width:1600px){.container{width:1470px}}
+
+
+/* Cam Parameter on Homepage */
+.embed-responsive-cam-param {
+    padding-bottom: 28.5%;
+    margin: 0 0 3em;
+    border: 1px solid #ccc;
+    overflow: hidden;
+}
