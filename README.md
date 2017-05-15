@@ -13,10 +13,10 @@ git clone https://github.com/vperlerin/AMSCam.git
 
 ### Install Dependencies 
 ```
-npm install 
-bower install
+sudo npm install 
+sudo bower install
 ```
-
+   
 ### Start the server
 Under /home/pi/AMSCam, type
 ```
@@ -30,15 +30,37 @@ http://[PI_IP]:3000
 ```
 (replace [PI_IP] by the local IP of your Raspberry PI - ex: http://192.168.0.11:3000/)
 
+### Auto start App.js on reboot
+Open /etc/rc.local
+```
+sudo vi /etc/rc.local
+```
+Then, add the following line at the beginning of the file:
+```
+sudo /usr/local/bin/node /home/pi/AMSCam/app.js &
+```
+
+### Add you as sudoer on the PI
+```
+sudo vi /etc/hosts
+```
+Then add the following line under root
+```
+127.0.1.1    ams[ID]
+```
+where [ID] is the ID of your Device (ex: ams22)
+
 
 ### Autostart the App on the PI
 ```
-sudo vim ~/.config/lxsession/LXDE-pi/autostart
+sudo vi /etc/rc.local
 
 ```
-Then add the following line to the file:
+Then add the following lines to the file:
 ```
-@node /home/pi/AMSCam/app.js
+cd /home/pi/AMSCam/
+forever start app.js &
+exit 0
 
 ```
 Reboot the PI if necessary.
