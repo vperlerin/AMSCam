@@ -31,6 +31,19 @@ http://[PI_IP]:3000
 (replace [PI_IP] by the local IP of your Raspberry PI - ex: http://192.168.0.11:3000/)
 
 
+### Autostart the App on the PI
+```
+sudo vim ~/.config/lxsession/LXDE-pi/autostart
+
+```
+Then add the following line to the file:
+```
+@node /home/pi/AMSCam/app.js
+
+```
+Reboot the PI if necessary.
+
+
 ### Help
 You may want to update Nodejs on your Raspberry PI:
 ```
@@ -67,9 +80,4 @@ hdmi_mode=85
 ```
 
 Then, reboot the VNC Viewer. 
-
-
-### Note
-The py files under python_tmp arent required. Please, see 
-https://github.com/mikehankey/fireball_camera
 

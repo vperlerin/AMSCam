@@ -3,15 +3,16 @@ var express = require('express'),
     path = require('path'),
     request = require('request'),
     PythonShell = require('python-shell'),
-    UAParser = require('ua-parser-js');
+    UAParser = require('ua-parser-js'),
+    constants = require("./constants");
 
 app.use(express.static(__dirname + '/public'));
 
 // Img & Videos
-app.use('/py_img',express.static('../../../var/www/html/out'));
-app.use('/maybe',express.static('../../../var/www/html/out/maybe'));
-app.use('/false',express.static('../../../var/www/html/out/false'));
-app.use('/fireballs',express.static('../../../var/www/html/out/fireballs'));
+app.use('/py_img',express.static(path.join(__dirname + '/../../../var/www/html/out')));
+app.use('/maybe',express.static(path.join(__dirname + '/../../../var/www/html/out/maybe')));
+app.use('/false',express.static(path.join(__dirname + '/../../../var/www/html/out/false')));
+app.use('/fireballs',express.static(path.join(__dirname + '/../../../var/www/html/out/fireballs')));
  
 bodyParser = require('body-parser')
 
@@ -47,8 +48,11 @@ app.get('/', function(req, res) {
     // Test Browser
     browser = utils.get_browser(req)
     
-    var pyshellUpload = new PythonShell('../fireball_camera/read_config.py', {
-            mode: 'json' 
+    console.log(__dirname);
+    
+    var pyshellUpload = new PythonShell('read_config.py', {
+            mode: 'json',
+            scriptPath: constants.python_path 
     });
      
     // Read config
@@ -79,8 +83,9 @@ app.get('/screenshot', function(req, res) {
 ***********************************************/
 app.post('/screenshot', function(req, resp) {
  
-        var pyshellUpload = new PythonShell('../fireball_camera/latest.py', {
-            mode: 'text' 
+        var pyshellUpload = new PythonShell('latest.py', {
+            mode: 'text' ,
+            scriptPath: constants.python_path 
          });
         
         // JSON.stringify(message_success, null, '\t')
@@ -107,11 +112,11 @@ app.post('/screenshot', function(req, resp) {
 ***********************************************/
 app.get('/pi/restart', function(req, res) {
      
-    var opts = {};
+    var opts = {  scriptPath: constants.python_path  };
   
     browser = utils.get_browser(req)
       
-    PythonShell.run('../fireball_camera/restart_pi.py', opts, function (err, ress) {
+    PythonShell.run('restart_pi.py', opts, function (err, ress) {
       if (err) throw err;
        res.redirect('/');
     });
@@ -123,11 +128,11 @@ app.get('/pi/restart', function(req, res) {
 ***********************************************/
 app.get('/pi/shutdown', function(req, res) {
      
-    var opts = {};
+    var opts = {  scriptPath: constants.python_path  };
   
     browser = utils.get_browser(req)
       
-    PythonShell.run('../fireball_camera/shutdown_pi.py', opts, function (err, ress) {
+    PythonShell.run('shutdown_pi.py', opts, function (err, ress) {
       if (err) throw err;
        res.redirect('/');
     });
@@ -144,13 +149,14 @@ app.get('/detection/maybe', function(req, res) {
     // Get all maybe detections
     var opts = {
         mode: 'json',
-        args: ['/var/www/html/out/maybe/'] 
+        args: ['/var/www/html/out/maybe/'],
+        scriptPath: constants.python_path
     };
     
     // Test Browser
     browser = utils.get_browser(req)
       
-    PythonShell.run('../fireball_camera/list_files.py', opts, function (err, ress) {
+    PythonShell.run('list_files.py', opts, function (err, ress) {
       if (err) throw err;
       
       // Render options
@@ -178,10 +184,11 @@ app.get('/detection/maybe/delete', function(req, res) {
     // Get select detection 
     var opts = { 
         mode: 'text',
-        args: ['/var/www/html/out/maybe/',req.query.ev]
+        args: ['/var/www/html/out/maybe/',req.query.ev],
+        scriptPath: constants.python_path
     }; 
     
-    PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
+    PythonShell.run('delete_file.py', opts, function (err, ress) {
         if (err) throw err;
         res.redirect('/detection/maybe?success='+ress[0]);
     });
@@ -196,10 +203,11 @@ app.post('/detection/maybe/delete_multiple', function(req, res) {
    
     var opts = { 
         mode: 'text',
-        args: ['/var/www/html/out/maybe/',req.body.events]
+        args: ['/var/www/html/out/maybe/',req.body.events],
+        scriptPath: constants.python_path
     }; 
      
-    PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
+    PythonShell.run('delete_file.py', opts, function (err, ress) {
         if (err) throw err;
         res.redirect('/detection/maybe?success='+ress[0]);
     });
@@ -216,13 +224,14 @@ app.get('/detection/false', function(req, res) {
     // Get all maybe detections
     var opts = {
         mode: 'json',
-        args: ['/var/www/html/out/false/'] 
+        args: ['/var/www/html/out/false/'],
+        scriptPath: constants.python_path
     };
     
     // Test Browser
     browser = utils.get_browser(req)
       
-    PythonShell.run('../fireball_camera/list_files.py', opts, function (err, ress) {
+    PythonShell.run('list_files.py', opts, function (err, ress) {
       if (err) throw err;
       
       // Render options
@@ -250,10 +259,11 @@ app.get('/detection/false/delete', function(req, res) {
     // Get select detection 
     var opts = { 
         mode: 'text',
-        args: ['/var/www/html/out/false/',req.query.ev]
-    }; 
+        args: ['/var/www/html/out/false/',req.query.ev],
+        scriptPath: constants.python_path
+    };
     
-    PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
+    PythonShell.run('delete_file.py', opts, function (err, ress) {
         if (err) throw err;
         res.redirect('/detection/false?success='+ress[0]);
     });
@@ -268,10 +278,11 @@ app.post('/detection/false/delete_multiple', function(req, res) {
    
     var opts = { 
         mode: 'text',
-        args: ['/var/www/html/out/false/',req.body.events]
+        args: ['/var/www/html/out/false/',req.body.events],
+        scriptPath: constants.python_path
     }; 
      
-    PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
+    PythonShell.run('delete_file.py', opts, function (err, ress) {
         if (err) throw err;
         res.redirect('/detection/false?success='+ress[0]);
     });
@@ -287,13 +298,15 @@ app.get('/detection/fireballs', function(req, res) {
     // Get all maybe detections
     var opts = {
         mode: 'json',
-        args: ['/var/www/html/out/fireballs/'] 
+        args: ['/var/www/html/out/fireballs/'] ,
+        scriptPath: constants.python_path 
+
     };
     
     // Test Browser
     browser = utils.get_browser(req)
       
-    PythonShell.run('../fireball_camera/list_files.py', opts, function (err, ress) {
+    PythonShell.run('list_files.py', opts, function (err, ress) {
       if (err) throw err;
       
       // Render options
@@ -321,10 +334,11 @@ app.get('/detection/fireballs/delete', function(req, res) {
     // Get select detection 
     var opts = { 
         mode: 'text',
-        args: ['/var/www/html/out/fireballs/',req.query.ev]
+        args: ['/var/www/html/out/fireballs/',req.query.ev],
+        scriptPath: constants.python_path 
     }; 
     
-    PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
+    PythonShell.run('delete_file.py', opts, function (err, ress) {
         if (err) throw err;
         res.redirect('/detection/fireballs?success='+ress[0]);
     });
@@ -339,10 +353,11 @@ app.post('/detection/fireballs/delete_multiple', function(req, res) {
    
     var opts = { 
         mode: 'text',
-        args: ['/var/www/html/out/fireballs/',req.body.events]
+        args: ['/var/www/html/out/fireballs/',req.body.events],
+        scriptPath: constants.python_path 
     }; 
      
-    PythonShell.run('../fireball_camera/delete_file.py', opts, function (err, ress) {
+    PythonShell.run('delete_file.py', opts, function (err, ress) {
         if (err) throw err;
         res.redirect('/detection/fireballs?success='+ress[0]);
     });
