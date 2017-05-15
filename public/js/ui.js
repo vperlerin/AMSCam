@@ -6,9 +6,37 @@ function test_one_selected($table) {
    } 
 }
 
+function confirm_before($this) {
+    bootbox.confirm({
+        message: $this.attr('data-confirm'),
+        buttons: {
+            confirm: {
+                label: 'Yes',
+                className: 'btn-danger'
+            },
+            cancel: {
+                label: 'No',
+                className: 'btn-default'
+            }
+        },
+        callback: function (result) {
+            if(result){
+                window.location =  window.location.replace($(this).attr('href'));   
+            }
+        }
+    });   
+}
+
+
 $(function() {
     
-    
+   // Action to confirm (link with href)
+   $('[data-confirm]').click(function(e) {
+        e.stopPropagation();
+        confirm_before($(this));
+        return false; 
+   });
+     
    // Load for screenshot 
    $('.load-on-click').click(function(e) {
        $(this).html('<span class="fa fa-spinner fa-spin"></span>');
@@ -19,7 +47,6 @@ $(function() {
    $('button[data-action=select_all]').click(function(e) {
    	    var $table = $('#'+$(this).attr('data-table')), $checkbox;
         
-       
    	    if($($table.find('input[type=checkbox]').get(0)).is(':checked')) {
 				$table.find('input[type=checkbox]').each(function() {
 					var $t = $(this);

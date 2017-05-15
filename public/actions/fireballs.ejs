@@ -3,13 +3,7 @@
 <head>
     <title>AMS Cam</title>
     <% include ../shared/head.ejs %>
-    <style>
-    .table { width: auto;  margin: 1em auto 2em; }
-    .dmr { margin-right:.5em }
-    .img1 { max-width:200px }
-    .preview { max-height:100px; overflow:auto}
-    .container{width:1470px}}@media (min-width:1600px){
-    </style>  
+
 </head>
  
 <body>
@@ -41,7 +35,7 @@
     
     <%if (results.length != 0 && folder.length != 0 && results[0].detection.length != 0) { %> 
     
-        <div class="admin-actions clearfix" style="margin-bottom:10px">
+        <div class="admin-actions clearfix"">
             <div class="pull-left">
                     <button class="btn btn-default btn-sm" data-action="select_all" data-table="maybe-table" title="Select all">
                             <i class="fa fa-check"></i> 
@@ -94,7 +88,7 @@
                                          <a href="<%= folder %>/<%= results[i].detection[x].detect.video %>" class="btn btn-primary btn-xs"><span class="fa fa-video-camera"></span> Download</a>
                                     </td>
                                     <td><pre class="preview"><%= results[i].detection[x].detect.summaryTxt %></pre></td>
-                                    <td><a title="Delete" class="btn btn-danger btn-xs" href="/detection/maybe/delete?ev=<%= results[i].detection[x].detect.name %>"><span class="fa fa-trash-o"></span></button></td>
+                                    <td><a title="Delete"  data-confirm="You are about to permanently remove this event. Please, confirm." class="btn btn-danger btn-xs" href="/detection/maybe/delete?ev=<%= results[i].detection[x].detect.name %>"><span class="fa fa-trash-o"></span></button></td>
                                 </tr>
                             <% } %>
                         <% } %>

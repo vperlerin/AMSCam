@@ -4,7 +4,8 @@ var express = require('express'),
     request = require('request'),
     PythonShell = require('python-shell'),
     UAParser = require('ua-parser-js'),
-    constants = require("./constants");
+    constants = require('./utils/constants'),
+    utils = require('./utils/browser');
 
 app.use(express.static(__dirname + '/public'));
 
@@ -34,11 +35,12 @@ app.use(bodyParser.urlencoded({
 }));
  
  
-// Functions
-var utils = require('./utils/browser');  
-
-
  
+ console.log('PYTHON PATH');
+ console.log(constants.python_path );
+
+  console.log('PYTHON PATH PI');
+ console.log(constants.python_pi_path );
 
 /******************************************************************************************************************************************
 * Home Page
