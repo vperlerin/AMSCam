@@ -112,7 +112,7 @@ app.post('/screenshot', function(req, resp) {
 ***********************************************/
 app.get('/pi/restart', function(req, res) {
      
-    var opts = {  scriptPath: constants.python_path  };
+    var opts = {  scriptPath: constants.python_pi_path  };
   
     browser = utils.get_browser(req)
       
@@ -128,7 +128,7 @@ app.get('/pi/restart', function(req, res) {
 ***********************************************/
 app.get('/pi/shutdown', function(req, res) {
      
-    var opts = {  scriptPath: constants.python_path  };
+    var opts = {  scriptPath: constants.python_pi_path  };
   
     browser = utils.get_browser(req)
       
