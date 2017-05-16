@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AMS Cam</title>
+    <% include ../shared/head.ejs %>
+</head>
+<body>
+
+<% include ../shared/header.ejs %>
+
+<%if (config_info && !config_info.cam_pwd) { %> 
+    <div class="alert alert-danger dmt">
+        <i class="fa fa-warning"></i> 
+        You need to update the default password of your camera for device # <%=config_info.device_id%>
+    </div>
+<% }  %>
+
+<div class="step welcome-step np">
+    <div class="container">
+        <form method="POST">
+            <h3 class="mt bordered mb">Update Camera Password</h3>
+            <div class="in">
+                <div class="form-group">    
+                    <label for="oldPwd">Old Password</label>
+                    <input type="password" name="oldPwd" id="oldPwd" ng-model="oldPwd" class="form-control" placeholder="Old Password" autofocus>
+                </div>
+                <hr/>
+                <div class="form-group">    
+                    <label for="newPwd">New Password</label>
+                    <input type="password" name="newPwd" id="newPwd" ng-model="newPwd" class="form-control" placeholder="New Password">
+                </div>
+                <div class="form-group">    
+                    <label for="newPwd2">Repeat New Password</label>
+                    <input type="password" name="newPwd2" id="newPwd2" ng-model="newPwd2" class="form-control" placeholder="Repeat New Password">
+                </div>
+                <button id="btnSignIn" class="btn btn-lg btn-primary btn-block" ng-click="signIn()">Update password</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<% include ../shared/footer.ejs %>

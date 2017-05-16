@@ -1,26 +1,27 @@
-var express = require('express'),
-    app = express(),
-    path = require('path'),
-    request = require('request'),
+var express     = require('express'),
+    app         = express(),
+    path        = require('path'),
+    request     = require('request'),
     PythonShell = require('python-shell'),
-    UAParser = require('ua-parser-js'),
-    constants = require('./utils/constants'),
-    utils = require('./utils/browser');
+    UAParser    = require('ua-parser-js'),
+    constants   = require('./utils/constants'),
+    utils       = require('./utils/browser'),
+    bodyParser = require('body-parser');
 
+// Set default folder
 app.use(express.static(__dirname + '/public'));
 
-// Img & Videos
+// Img & Videos folders
 app.use('/py_img',express.static(path.join(__dirname + '/../../../var/www/html/out')));
 app.use('/maybe',express.static(path.join(__dirname + '/../../../var/www/html/out/maybe')));
 app.use('/false',express.static(path.join(__dirname + '/../../../var/www/html/out/false')));
 app.use('/fireballs',express.static(path.join(__dirname + '/../../../var/www/html/out/fireballs')));
  
-bodyParser = require('body-parser')
-
 // Views
 app.set('views', [
     path.join(__dirname + '/public/actions'),
     path.join(__dirname + '/public/home'),
+    path.join(__dirname + '/public/cam'),
     path.join(__dirname + '/public'),
     '/var/www/html/out']
 ); 
@@ -30,17 +31,12 @@ app.set('view engine', 'ejs');
 // Bower
 app.use('/bower_components', express.static(__dirname + '/bower_components'));
 
+// URLs 
 app.use(bodyParser.urlencoded({
     extended: true
 }));
  
- 
- 
- console.log('PYTHON PATH');
- console.log(constants.python_path );
 
-  console.log('PYTHON PATH PI');
- console.log(constants.python_pi_path );
 
 /******************************************************************************************************************************************
 * Home Page
@@ -50,7 +46,7 @@ app.get('/', function(req, res) {
     // Test Browser
     browser = utils.get_browser(req)
     
-    console.log(__dirname);
+    //console.log(__dirname);
     
     var pyshellUpload = new PythonShell('read_config.py', {
             mode: 'json',
@@ -59,9 +55,7 @@ app.get('/', function(req, res) {
      
     // Read config
     pyshellUpload.on('message',  function (config) { 
-        console.log(config);
-        
-         res.render('home', {
+        res.render('home', {
             browser:  browser,
             config_info: config
         }) 
@@ -141,6 +135,30 @@ app.get('/pi/shutdown', function(req, res) {
        res.redirect('/');
     });
      
+});
+
+
+/******************************************************************************************************************************************
+* UPDATE CAM PWD
+***********************************************/
+app.get('/cam/update_cam_pwd', function(req, res) {
+    
+    var pyshellUpload = new PythonShell('read_config.py', {
+            mode: 'json',
+            scriptPath: constants.python_path 
+    });
+     
+    // Read config
+    pyshellUpload.on('message',  function (config) { 
+          res.render('update_cam_pwd', {
+             config_info: config
+        }) 
+    });
+});
+
+
+app.post('/cam/update_cam_pwd', function(req, resp) {
+    console.log(req.body);
 });
 
 

@@ -22,8 +22,7 @@ function confirm_before($this) {
         },
         callback: function (result) {
             if(result){
-                console.log(url);
-                window.location =  window.location.replace(url);   
+                window.location =  url;   
             }
         }
     });   

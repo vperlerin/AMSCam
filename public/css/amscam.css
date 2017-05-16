@@ -18,3 +18,15 @@
     border: 1px solid #ccc;
     overflow: hidden;
 }
+
+.step.welcome-step.np {
+    padding:1em 0;   
+}
+
+.step .in {
+    padding: 1em 2em;
+}
+
+.step .container {
+    max-width: 80em;
+}
