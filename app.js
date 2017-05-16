@@ -51,7 +51,7 @@ app.get('/', function(req, res) {
     
     var pyshellUpload = new PythonShell('read_config.py', {
             mode: 'json',
-            scriptPath: constants.python_path 
+            scriptPath: constants.python_path +'/config'
     });
      
     // Read config
@@ -139,6 +139,40 @@ app.get('/pi/shutdown', function(req, res) {
 });
 
 
+
+
+
+/******************************************************************************************************************************************
+* FORGET CAM PWD
+***********************************************/
+app.get('/cam/forget_cam_pwd', function(req, res) {
+    
+    var pyshellReadConfig = new PythonShell('read_config.py', {
+            mode: 'json',
+            scriptPath: constants.python_path +'/config'
+    });
+     
+    // Read config
+    pyshellReadConfig.on('message',  function (config) { 
+        if(typeof config.cam_pwd == 'undefined') {
+             config.cam_pwd = 'admin'; // Default (in the case the user ask to send the password before he modified it)
+        }  
+        
+        var pyshellSendEmail = new PythonShell('send_email.py', {
+            mode: 'text',
+            scriptPath: constants.python_path +'/mail',
+            args: [config.email,"Password Recovery","Dear " + config.first_name + " "  + config.last_name + ",<br/><br/>Your current Camera password is:<br/><pre>" + config.cam_pwd + "</pre><br/><a href='http://"+config.lan_ip+":3000//cam/update_cam_pwd'>Update your Camera password</a> now!<br/><br/>Thank you,<br/>The AMS Team"]
+        });
+            
+        pyshellSendEmail.on('message',  function (config) { 
+            console.log(config);
+        });
+        
+    });
+    
+});
+
+
 /******************************************************************************************************************************************
 * UPDATE CAM PWD
 ***********************************************/
@@ -146,7 +180,7 @@ app.get('/cam/update_cam_pwd', function(req, res) {
     
     var pyshellUpload = new PythonShell('read_config.py', {
             mode: 'json',
-            scriptPath: constants.python_path 
+            scriptPath: constants.python_path +'/config'
     });
      
     // Read config
@@ -171,15 +205,12 @@ app.post('/cam/update_cam_pwd', function(req, res) {
     
     var pyshellReadConfig = new PythonShell('read_config.py', {
         mode: 'json',
-        scriptPath: constants.python_path 
+        scriptPath: constants.python_path +'/config'
     });
     
     // Read config
     pyshellReadConfig.on('message',  function (config) { 
-    
-        console.log('ALL CONFIG');
-        console.log(config);
-    
+     
         // Test the old pwd 
         if(typeof config.cam_pwd !== 'undefined') {
             if(config.cam_pwd !== old_pwd) {
@@ -215,7 +246,7 @@ app.post('/cam/update_cam_pwd', function(req, res) {
                 console.log('WE DONT HAVE ERRORS');
             
                 // Add PWD to the config file
-                config.cam_pwd = new_pwd;
+                config.new_cam_pwd = new_pwd;
                 
                 console.log(config);
                 
