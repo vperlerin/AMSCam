@@ -18,7 +18,23 @@
 <div class="step welcome-step np">
     <div class="container">
         <form method="POST">
+        
             <h3 class="mt bordered mb">Update Camera Password</h3>
+            
+            <%if (typeof errors != 'undefined') { %> 
+                <div class="alert alert-danger dmt alert-dismissable">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <i class="fa fa-warning"></i> <strong>Error</strong>
+                    <ul> 
+                        <% for(var i=0; i<errors.length; i++) {%>
+                            <%if (errors[i] != "")  { %> 
+                                <li><%= errors[i] %></li>
+                            <% } %>    
+                        <% } %>
+                    </ul>
+                </div>
+            <% }  %>
+            
             <div class="in">
                 <div class="form-group">    
                     <label for="oldPwd">Old Password</label>

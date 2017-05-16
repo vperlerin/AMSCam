@@ -6,7 +6,8 @@ var express     = require('express'),
     UAParser    = require('ua-parser-js'),
     constants   = require('./utils/constants'),
     utils       = require('./utils/browser'),
-    bodyParser = require('body-parser');
+    bodyParser  = require('body-parser'),
+    fs          = require('fs');
 
 // Set default folder
 app.use(express.static(__dirname + '/public'));
@@ -152,13 +153,96 @@ app.get('/cam/update_cam_pwd', function(req, res) {
     pyshellUpload.on('message',  function (config) { 
           res.render('update_cam_pwd', {
              config_info: config
-        }) 
+        })
     });
+    
 });
 
 
-app.post('/cam/update_cam_pwd', function(req, resp) {
-    console.log(req.body);
+/**********************************************
+* Update cam password
+***********************************************/
+app.post('/cam/update_cam_pwd', function(req, res) {
+    
+    var old_pwd     = req.body.oldPwd;
+    var new_pwd     = req.body.newPwd;
+    var new_pwd2    = req.body.newPwd2;
+    var _error      = [];
+    
+    var pyshellReadConfig = new PythonShell('read_config.py', {
+        mode: 'json',
+        scriptPath: constants.python_path 
+    });
+    
+    // Read config
+    pyshellReadConfig.on('message',  function (config) { 
+    
+        console.log('ALL CONFIG');
+        console.log(config);
+    
+        // Test the old pwd 
+        if(typeof config.cam_pwd !== 'undefined') {
+            if(config.cam_pwd !== old_pwd) {
+                _error.push('The old password is wrong. Please, try again.');
+            }
+        } else {
+            if(old_pwd !== 'admin') {
+                _error.push('The old password has never been updated. Please, try "admin".');
+            }
+        }
+        
+        // Test if new passwords match
+        if(new_pwd !== new_pwd2) {
+            _error.push('The 2 new passwords don\'t match. Please, try again.');
+        }
+        
+        console.log('ERROR?');
+        console.log(_error);
+      
+        // Error
+        if(_error.length !== 0 ) {
+           
+            console.log('WE HAVE ERRORS');
+                    
+             // Read config
+            res.render('update_cam_pwd', {
+                config_info : config,
+                errors      : _error
+            });
+           
+         } else {
+             
+                console.log('WE DONT HAVE ERRORS');
+            
+                // Add PWD to the config file
+                config.cam_pwd = new_pwd;
+                
+                console.log(config);
+                
+                var updateConfig = new PythonShell('updateConfig.py', {
+                    mode: 'text',
+                    scriptPath: constants.python_path+'/config',
+                    args:[JSON.stringify(config)]
+                });
+                
+                console.log('WE UPDATE THE CONFIG FILE (and the cam data via the cgi)');
+                
+                updateConfig.on('message',  function (config_write_res) { 
+                        console.log(config_write_res);
+                
+                        res.render('update_cam_pwd', {
+                            config_info : config,
+                            success : config_write_res
+                        });
+                
+                });
+                 
+         
+         }
+
+    });
+    
+    
 });
 
 

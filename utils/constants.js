@@ -9,3 +9,4 @@ function define(name, value) {
 
 define("python_path", path.join('/'+__dirname + '/../../fireball_camera/'));
 define("python_pi_path", path.join('/'+__dirname + '/../../fireball_camera/pi/'));
+define("config_file", path.join('/'+__dirname + '/../../fireball_camera/config.txt'));
