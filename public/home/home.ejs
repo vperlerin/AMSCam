@@ -16,9 +16,9 @@
       <div class="col-md-6 text-center"> 
       
         <% if (browser === 'Chrome') { %>
-             <%if (config_info) { %> 
+             <%if (config) { %> 
                 <div class="embed-responsive embed-responsive-4by3">
-                    <div id="vxg_media_player1" class="vxgplayer dmt" url="rtsp://<%= config_info.cam_ip %>/av0_1" latency="3000000" autostart  avsync></div>
+                    <div id="vxg_media_player1" class="vxgplayer dmt" url="rtsp://<%= config.cam_ip %>/av0_1" latency="3000000" autostart  avsync></div>
                 </div>
                 <div id="runtimePlayers"></div>
                  <script src="/js/vxgplayer.js"></script> 
@@ -27,17 +27,17 @@
              <% } %> 
         <% } else if (browser === 'Firefox') { %>
              
-             <%if (config_info) { %> 
+             <%if (config) { %> 
                 <div class="dmt">
                     <div class="embed-responsive embed-responsive-4by3">
                         <object classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921"
                                          codebase="http://downloads.videolan.org/pub/videolan/vlc/last/win32/axvlc.cab"
                                          width="640" height="500" id="vlc" events="True">
-                            <param name="src" value="rtsp://<%= config_info.cam_ip %>/av0_1" />
+                            <param name="src" value="rtsp://<%= config.cam_ip %>/av0_1" />
                             <param name="ShowDisplay" value="True" />
                             <param name="AutoLoop" value="False" />
                             <param name="AutoPlay" value="True" />
-                            <embed id="vlcEmb"  type="application/x-google-vlc-plugin" version="VideoLAN.VLCPlugin.2" autoplay="yes" loop="no" width="640" height="480" target="rtsp://<%= config_info.cam_ip %>/av0_1" ></embed>
+                            <embed id="vlcEmb"  type="application/x-google-vlc-plugin" version="VideoLAN.VLCPlugin.2" autoplay="yes" loop="no" width="640" height="480" target="rtsp://<%= config.cam_ip %>/av0_1" ></embed>
                         </object> 
                     </div>
                 </div>
@@ -57,41 +57,41 @@
        
             <div id="config" class="dmt">
             
-                <%if (config_info) { %> 
+                <%if (config) { %> 
                     <table class="table table-condensed table-striped text-left">
                         <tr>
                             <td><strong>Cam Owner</strong></td>
-                            <td><a href="http://www.amsmeteors.org/members/user/view_profile?user_id=<%= config_info.user_id %>" target="_blank"><%= config_info.first_name %> <%= config_info.last_name %></a></td>
+                            <td><a href="http://www.amsmeteors.org/members/user/view_profile?user_id=<%= config.user_id %>" target="_blank"><%= config.first_name %> <%= config.last_name %></a></td>
                         </tr>
                      </table>    
                      
                      <table class="table table-condensed table-striped text-left">
                         <tr>
                             <td><strong>LAN IP</strong></td>
-                            <td><%= config_info.lan_ip %></td>
+                            <td><%= config.lan_ip %></td>
                         </tr>
                         <tr>
                             <td><strong>CAM IP</strong></td>
-                            <td><%= config_info.cam_ip %></td>
+                            <td><%= config.cam_ip %></td>
                         </tr>
                         <tr>
                             <td><strong>WLAN MAC</strong></td>
-                            <td><%= config_info.wlan_mac %></td>
+                            <td><%= config.wlan_mac %></td>
                         </tr>
                         <tr>
                             <td><strong>LAN MAC</strong></td>
-                            <td><%= config_info.lan_mac %></td>
+                            <td><%= config.lan_mac %></td>
                         </tr>
                      </table>    
                      
                      <table class="table table-condensed table-striped text-left">
                         <tr>
                             <td><strong>Device Location</strong></td>
-                            <td><a href="https://www.google.fr/maps/place/<%= config_info.device_lat %>&deg;,<%= config_info.device_lng %>&deg;" target="_blank"><%= config_info.device_lat %>&deg;,<%= config_info.device_lng %>&deg;</a></td>
+                            <td><a href="https://www.google.fr/maps/place/<%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;" target="_blank"><%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;</a></td>
                         </tr>
                         <tr>
                             <td><strong>Altitude</strong></td>
-                            <td><%= config_info.device_alt %>m</td>
+                            <td><%= config.device_alt %>m</td>
                         </tr>
                         
                      </table>    
@@ -99,7 +99,7 @@
                      <table class="table table-condensed table-striped text-left">
                         <tr>
                             <td><strong>Cam</strong></td>
-                            <td><a href="http://<%= config_info.cam_ip %>" target="_blank">Configuration</a></td>
+                            <td><a href="http://<%= config.cam_ip %>" target="_blank">Configuration</a></td>
                         </tr>
                       </table>                          
                       
@@ -112,10 +112,10 @@
       </div>
     </div>  
       
-    <%if (config_info) { %> 
+    <%if (config) { %> 
         <div class="dmt dmb">
             <div class="embed-responsive embed-responsive-cam-param">
-                <iframe class="embed-responsive-item" src="http://<%= config_info.cam_ip %>/videolens.asp"></iframe>
+                <iframe class="embed-responsive-item" src="http://<%= config.cam_ip %>/videolens.asp"></iframe>
             </div>
         </div>
     <% } %>   

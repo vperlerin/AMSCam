@@ -60,6 +60,8 @@ app.use(bodyParser.urlencoded({
                         res.redirect('/cam/update_cam_pwd');    
                         return true;
                     } else {
+                        // Add the config to the template
+                        template_args.config = config;
                         res.render(template,template_args);
                         return false;   
                     }
@@ -91,24 +93,9 @@ app.get('/', function(req, res) {
     // Test Browser
     browser = utils.get_browser(req)
     
-    //console.log(__dirname);
-    
-    var pyshellUpload = new PythonShell('read_config.py', {
-            mode: 'json',
-            scriptPath: constants.python_path +'/config'
-    });
+    // Render
+    test_cam_pwd(res,'home',{ browser:  browser});
      
-    // Read config
-    pyshellUpload.on('message',  function (config) { 
-    
-        // If the cam password has already been updated:
-        test_cam_pwd_from_config(config,res,'home', {
-                browser:  browser,
-                config_info: config
-        });
-  
-    });
-    
 });
    
 
@@ -140,16 +127,13 @@ app.post('/screenshot', function(req, resp) {
         // JSON.stringify(message_success, null, '\t')
         pyshellUpload.on('message', function (message_success) { 
             if (message_success) {
-                return resp.render('screenshot', {
-                    message_success: message_success,
-                    error: ''
-                }) 
-            }        
+                
+                // Render
+                return test_cam_pwd(resp,'screenshot',{  message_success: message_success,  error: ''});
+             }        
         });
         
-        pyshellUpload.end(function (err) {
-            console.log('screenshot FINISHED');
-        });
+      
           
 });
 
@@ -218,7 +202,7 @@ app.get('/cam/forget_cam_pwd', function(req, res) {
              // Redirect to /cam/update_cam_pwd with success message
              test_cam_pwd(res,'update_cam_pwd',{
                 success: 'Email sent',
-                config_info:config
+                config: config
              });
         });
         
@@ -236,13 +220,11 @@ app.get('/cam/update_cam_pwd', function(req, res) {
             mode: 'json',
             scriptPath: constants.python_path +'/config'
     });
-    
-    console.log('RENDER GET');
-     
+       
     // Read config
     pyshellUpload.on('message',  function (config) { 
           res.render('update_cam_pwd', {
-             config_info: config
+             config: config
         })
     });
     
@@ -288,7 +270,7 @@ app.post('/cam/update_cam_pwd', function(req, res) {
                      
             // We have an error: we redirect with the error message
             res.render('update_cam_pwd', {
-                config_info : config,
+                config : config,
                 errors      : _error
             });
            
@@ -304,12 +286,10 @@ app.post('/cam/update_cam_pwd', function(req, res) {
                 });
                   
                 updateConfig.on('message',  function (config_write_res) { 
-                        
                          res.render('update_cam_pwd', {
-                            config_info : config_write_res,
+                            config : config_write_res,
                             success : "Password updated"
                         });
-                
                 });
                  
          
@@ -350,8 +330,9 @@ app.get('/detection/maybe', function(req, res) {
       if(typeof req.query.success !== "undefined") {
         opts_render.success = req.query.success.split("$");
       }
-           
-       res.render('maybe', opts_render) 
+      
+      test_cam_pwd(res,'maybe',opts_render);
+    
     });
      
 });
@@ -426,7 +407,8 @@ app.get('/detection/false', function(req, res) {
         opts_render.success = req.query.success.split("$");
       }
            
-       res.render('false', opts_render) 
+      test_cam_pwd(res,'false',opts_render);    
+       
     });
      
 });
@@ -500,8 +482,9 @@ app.get('/detection/fireballs', function(req, res) {
       if(typeof req.query.success !== "undefined") {
         opts_render.success = req.query.success.split("$");
       }
-           
-       res.render('fireballs', opts_render) 
+       
+      test_cam_pwd(res,'fireballs',opts_render);   
+            
     });
      
 });

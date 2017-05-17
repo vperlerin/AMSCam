@@ -2,7 +2,12 @@
 
 #mobile-logo { display: block }
 #mobile-logo img { padding: 1em; max-width: 5em; }
-
+#mobile-logo span  {  
+  display: inline-block;
+  font-weight: bolder;
+  line-height: 50px;
+  font-size: 2em;
+ }
 
 .table-results{ width: auto;  margin: 1em auto 2em; }
 .dmr { margin-right:.5em }
