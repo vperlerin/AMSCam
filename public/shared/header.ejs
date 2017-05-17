@@ -41,7 +41,7 @@
 			  	    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Camera<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="/cam/update_cam_pwd">Update Password</a></li>
-                        <%if (typeof config_info != 'undefined') { %> 
+                        <%if (typeof config_info != 'undefined' && config_info.cam_ip != 'undefined') { %> 
                             <li><a href="http://<%= config_info.cam_ip %>" target="_blank">Configuration</a></li>
                         <% } %>   
                      </ul>

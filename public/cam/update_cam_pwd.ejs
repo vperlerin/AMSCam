@@ -8,13 +8,18 @@
 
 <% include ../shared/header.ejs %>
 
-
-
 <div class="step welcome-step np">
     <div class="container">
         <form method="POST">
         
             <h3 class="mt bordered mb">Update Camera Password</h3>
+            
+            <%if (typeof success != 'undefined') { %> 
+                <div class="alert alert-success dmt alert-dismissable">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <i class="fa fa-check"></i> <strong><%=success%></strong> 
+                </div>
+            <% }  %>
             
             <%if (typeof errors != 'undefined') { %> 
                 <div class="alert alert-danger dmt alert-dismissable">
@@ -30,8 +35,9 @@
                 </div>
             <% }  %>
             
+            
             <div class="in">
-                <%if (config_info && !config_info.cam_pwd) { %> 
+                <%if (typeof config_info.cam_pwd == 'undefined' && typeof success == 'undefined') { %> 
                 
                     <div class="alert alert-danger dmt">
                         <i class="fa fa-warning"></i> 
@@ -40,10 +46,11 @@
                     <input type="hidden" name="oldPwd" id="oldPwd"  class="form-control" value="admin">
                 
                 <%} else {%>
-                
+                 
                     <div class="form-group">    
                         <label for="oldPwd">Old Password</label>
                         <input type="password" name="oldPwd" id="oldPwd" ng-model="oldPwd" class="form-control" placeholder="Old Password" autofocus>
+                        <a href="/cam/forget_cam_pwd">Forget password?</a>
                     </div>
                     <hr/>
                 
