@@ -7,6 +7,11 @@ The AMSCam app allows you to interact with your AMS Cam & Raspberry Pi from a de
   - Setup / Config
   - Shutdown / Restart PI
   - ...
+  
+```diff
+- WARNING: YOU NEED TO LAUNCH THIS APP BEFORE STARTING USING YOUR CAMERA AS IT IS REQUIRE TO UPDATE THE CAMERA PASSWORD FIRST.
+```  
+  
 
 ## Installation
 
@@ -49,6 +54,14 @@ sudo /usr/local/bin/node /home/pi/AMSCam/app.js &
 
 
 #  Troubleshooting
+
+## Install Python Packages
+
+If you receive an error message about pycrypto / AES, please
+
+```sh
+$ sudo pip install pycrypto
+```
 
 ## Stop the app from the PI
 ```sh
