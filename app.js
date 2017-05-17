@@ -7,7 +7,8 @@ var express     = require('express'),
     constants   = require('./utils/constants'),
     utils       = require('./utils/browser'),
     bodyParser  = require('body-parser'),
-    fs          = require('fs');
+    fs          = require('fs'),
+    async       = require('async'); 
 
 // Set default folder
 app.use(express.static(__dirname + '/public'));
@@ -36,7 +37,51 @@ app.use('/bower_components', express.static(__dirname + '/bower_components'));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
- 
+
+
+
+/******************************************************************************************************************************************
+* FUNCTIONS
+***********************************************/
+
+    // Test if the cam password has been setup (read the config_file)
+    // if not, redirect to /cam/update_cam_pwd
+    function test_cam_pwd(res,template,template_args) {
+        var pyshellUpload = new PythonShell('read_config.py', {
+            mode: 'json',
+            scriptPath: constants.python_path +'/config'
+        });
+         
+       return async.parallel([
+           function() {
+                pyshellUpload.on('message',  function (config) { 
+                    if(typeof config.cam_pwd  == "undefined") {
+                        res.redirect('/cam/update_cam_pwd');    
+                        return true;
+                    } else {
+                        res.render(template,template_args);
+                        return false;   
+                    }
+                })
+           }
+        ]);
+           
+        
+    }
+    
+    // Test if the cam password has been setup (config passwed in arg)
+    // if not, redirect to /cam/update_cam_pwd
+    function test_cam_pwd_from_config(config,res) {
+        console.log('READ CONFIG from test_cam_pwd_from_config');
+        console.log(config);
+        
+        if(typeof config.cam_pwd  == "undefined") {
+            res.redirect('/cam/update_cam_pwd');    
+            return false;
+        } else {
+            return true;   
+        }
+     }
 
 
 /******************************************************************************************************************************************
@@ -56,10 +101,17 @@ app.get('/', function(req, res) {
      
     // Read config
     pyshellUpload.on('message',  function (config) { 
-        res.render('home', {
-            browser:  browser,
-            config_info: config
-        }) 
+    
+        // If the cam password has already been updated:
+        if(test_cam_pwd_from_config(config,res)) {
+            
+            // Render home
+            res.render('home', {
+                browser:  browser,
+                config_info: config
+            });
+            
+        }
     });
     
 });
@@ -70,10 +122,13 @@ app.get('/', function(req, res) {
 * Screenshot Page
 ***********************************************/
 app.get('/screenshot', function(req, res) {
-    res.render('screenshot', {
-        error: '',
-        message_success: ''
-    })
+    
+    // If the cam password has already been updated:
+    test_cam_pwd(res,'screenshot',{
+            error: '',
+            message_success: ''
+    });
+    
 });
 
 
@@ -88,7 +143,7 @@ app.post('/screenshot', function(req, resp) {
          });
         
         // JSON.stringify(message_success, null, '\t')
-        pyshellUpload.on('message',  function (message_success) { 
+        pyshellUpload.on('message', function (message_success) { 
             if (message_success) {
                 return resp.render('screenshot', {
                     message_success: message_success,
@@ -164,7 +219,7 @@ app.get('/cam/forget_cam_pwd', function(req, res) {
             args: [config.email,"Password Recovery","Dear " + config.first_name + " "  + config.last_name + ",<br/><br/>Your current Camera password is:<br/><pre>" + config.cam_pwd + "</pre><br/><a href='http://"+config.lan_ip+":3000//cam/update_cam_pwd'>Update your Camera password</a> now!<br/><br/>Thank you,<br/>The AMS Team"]
         });
             
-        pyshellSendEmail.on('message',  function (config) { 
+        pyshellSendEmail.on('message', function (config) { 
             console.log(config);
         });
         
@@ -227,30 +282,23 @@ app.post('/cam/update_cam_pwd', function(req, res) {
             _error.push('The 2 new passwords don\'t match. Please, try again.');
         }
         
-        console.log('ERROR?');
-        console.log(_error);
-      
+        
         // Error
         if(_error.length !== 0 ) {
-           
-            console.log('WE HAVE ERRORS');
-                    
-             // Read config
+                     
+            // We have an error: we redirect with the error message
             res.render('update_cam_pwd', {
                 config_info : config,
                 errors      : _error
             });
            
          } else {
-             
-                console.log('WE DONT HAVE ERRORS');
-            
+              
                 // Add PWD to the config file
                 config.new_cam_pwd = new_pwd;
+                 
                 
-                console.log(config);
-                
-                var updateConfig = new PythonShell('updateConfig.py', {
+                var updateConfig = new PythonShell('update_config.py', {
                     mode: 'text',
                     scriptPath: constants.python_path+'/config',
                     args:[JSON.stringify(config)]
@@ -259,6 +307,7 @@ app.post('/cam/update_cam_pwd', function(req, res) {
                 console.log('WE UPDATE THE CONFIG FILE (and the cam data via the cgi)');
                 
                 updateConfig.on('message',  function (config_write_res) { 
+                        
                         console.log(config_write_res);
                 
                         res.render('update_cam_pwd', {
@@ -500,4 +549,6 @@ app.post('/detection/fireballs/delete_multiple', function(req, res) {
     });
      
 });
+
+
 app.listen(3000);

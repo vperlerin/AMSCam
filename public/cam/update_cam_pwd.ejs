@@ -8,12 +8,7 @@
 
 <% include ../shared/header.ejs %>
 
-<%if (config_info && !config_info.cam_pwd) { %> 
-    <div class="alert alert-danger dmt">
-        <i class="fa fa-warning"></i> 
-        You need to update the default password of your camera for device # <%=config_info.device_id%>
-    </div>
-<% }  %>
+
 
 <div class="step welcome-step np">
     <div class="container">
@@ -36,11 +31,23 @@
             <% }  %>
             
             <div class="in">
-                <div class="form-group">    
-                    <label for="oldPwd">Old Password</label>
-                    <input type="password" name="oldPwd" id="oldPwd" ng-model="oldPwd" class="form-control" placeholder="Old Password" autofocus>
-                </div>
-                <hr/>
+                <%if (config_info && !config_info.cam_pwd) { %> 
+                
+                    <div class="alert alert-danger dmt">
+                        <i class="fa fa-warning"></i> 
+                        <strong>You have to update the default password of your camera for device # <%=config_info.device_id%></strong>
+                    </div>
+                    <input type="hidden" name="oldPwd" id="oldPwd"  class="form-control" value="admin">
+                
+                <%} else {%>
+                
+                    <div class="form-group">    
+                        <label for="oldPwd">Old Password</label>
+                        <input type="password" name="oldPwd" id="oldPwd" ng-model="oldPwd" class="form-control" placeholder="Old Password" autofocus>
+                    </div>
+                    <hr/>
+                
+                <%}  %>
                 <div class="form-group">    
                     <label for="newPwd">New Password</label>
                     <input type="password" name="newPwd" id="newPwd" ng-model="newPwd" class="form-control" placeholder="New Password">
