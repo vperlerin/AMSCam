@@ -27,9 +27,21 @@ $ git clone https://github.com/vperlerin/AMSCam.git
 ### Install Dependencies 
 On your PI, go to /home/pi/AMSCam and:
 ```sh
-$ sudo npm install 
-$ sudo bower install
+$ sudo vi /etc/sudoers
+
 ```
+Then, add the following lines to the file:
+```
+www-data ALL=/sbin/shutdown
+www-data ALL=NOPASSWD: /sbin/shutdown
+```
+
+### Add app as sudoer
+On your PI 
+```sh
+$ sudo npm install 
+```
+
 ## Run the App
 Under /home/pi/AMSCam, type
 ```sh
