@@ -8,17 +8,19 @@
                     <span class="fa fa-navicon"></span>
                 </button>
            
-                <div id="mobile-logo"><a href="/"><img src="http://www.amsmeteors.org/imo/img/org/logos/ams.png" alt="American Meteor Society"></a>
+                <div id="mobile-logo"><a href="/"><img src="http://www.amsmeteors.org/imo/img/org/logos/ams.png" alt="American Meteor Society">
                     <%if (typeof config != 'undefined' && config.device_id != 'undefined') { %> 
                         <span>AMSCam #<%= config.device_id %></span>
-                    <% } %> 
+                    <% } %> </a>
                 </div>
             </div>
         
               <div class="collapse navbar-collapse top-nav-bar" id="navbar-collapse-1">
               <ul class="nav navbar-nav navbar-right">
+                <!--
                 <li class="divider-v"></li>
                 <li class="nav-btn-holder "><a href="/" class="bld">Home</a></li>
+                -->
                 <li class="divider-v"></li>
                 <li class="dropdown">
 			  	    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Detections <b class="caret"></b></a>
@@ -29,27 +31,28 @@
                         <li><a href="/detection/false">False detections</a></li>
                     </ul>
                 </li>    
-                <li class="divider-v"></li>
-                <li role="presentation" class="active"><a href="/screenshot">Screenshot</a></li> 
-                <li class="divider-v"></li>
-                <li class="dropdown">
-			  	    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Rasp. PI <b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="/pi/restart" data-confirm="You are about to reboot your Raspberry PI. Please, confirm."><span class="fa fa-refresh btn btn-success btn-xs"></span> Restart</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li><a href="/pi/shutdown" data-confirm="You are about to shutdown your Raspberry PI. Please, confirm."><span class="fa fa-close btn btn-danger btn-xs"></span> Shutdown</a></li>
-                     </ul>
-                </li>   
                 <li class="divider-v"></li> 
                 <li class="dropdown">
 			  	    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Camera<b class="caret"></b></a>
                     <ul class="dropdown-menu">
+                        <li><a href="/cam/log">Log</a></li> 
+                        <li><a href="/cam/screenshot">Screenshot</a></li> 
+                        <li role="presentation" class="divider"></li>
                         <li><a href="/cam/update_cam_pwd">Update Password</a></li>
                         <%if (typeof config != 'undefined' && config.cam_ip != 'undefined') { %> 
                             <li><a href="http://<%= config.cam_ip %>" target="_blank">Configuration</a></li>
                         <% } %>   
                      </ul>
-                </li>    
+                </li>
+                <li class="divider-v"></li>
+                <li class="dropdown">
+			  	    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Rasp. PI <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/pi/restart" data-confirm="You are about to reboot your Raspberry PI. Please, confirm."><span class="fa fa-refresh btn btn-success btn-xs"></span> Restart</a></li>
+                        
+                        <li><a href="/pi/shutdown" data-confirm="You are about to shutdown your Raspberry PI. Please, confirm."><span class="fa fa-close btn btn-danger btn-xs"></span> Shutdown</a></li>
+                     </ul>
+                </li>       
                 <li class="divider-v"></li>
               </ul>
             </div> 

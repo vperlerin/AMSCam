@@ -35,3 +35,10 @@
 .step .container {
     max-width: 80em;
 }
+
+/* Menu */
+@media (max-width: 768px) {
+    .navbar.navbar-main .dropdown-menu>li>a {
+        color: #fff;
+    }
+}

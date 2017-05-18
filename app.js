@@ -21,7 +21,7 @@ app.use('/fireballs',express.static(path.join(__dirname + '/../../../var/www/htm
  
 // Views
 app.set('views', [
-    path.join(__dirname + '/public/actions'),
+    path.join(__dirname + '/public/detections'),
     path.join(__dirname + '/public/home'),
     path.join(__dirname + '/public/cam'),
     path.join(__dirname + '/public'),
@@ -99,11 +99,20 @@ app.get('/', function(req, res) {
 });
    
 
+/******************************************************************************************************************************************
+* Log
+***********************************************/
+app.get('/cam/log', function(req, res) {
+    
+    test_cam_pwd(res,'log',{});
+    
+});
+
 
 /******************************************************************************************************************************************
 * Screenshot Page
 ***********************************************/
-app.get('/screenshot', function(req, res) {
+app.get('/cam/screenshot', function(req, res) {
     
     // If the cam password has already been updated:
     test_cam_pwd(res,'screenshot',{
@@ -117,7 +126,7 @@ app.get('/screenshot', function(req, res) {
 /**********************************************
 * Take screenshot
 ***********************************************/
-app.post('/screenshot', function(req, resp) {
+app.post('/cam/screenshot', function(req, resp) {
  
         var pyshellUpload = new PythonShell('latest.py', {
             mode: 'text' ,
