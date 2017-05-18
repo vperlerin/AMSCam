@@ -27,6 +27,13 @@ $ git clone https://github.com/vperlerin/AMSCam.git
 ### Install Dependencies 
 On your PI, go to /home/pi/AMSCam and:
 ```sh
+$ sudo npm install 
+$ sudo bower install
+```
+
+### Add app as sudoer
+On your PI, 
+```sh
 $ sudo vi /etc/sudoers
 
 ```
@@ -36,14 +43,8 @@ www-data ALL=/sbin/shutdown
 www-data ALL=NOPASSWD: /sbin/shutdown
 ```
 
-### Add app as sudoer
-On your PI 
-```sh
-$ sudo npm install 
-```
-
 ## Run the App
-Under /home/pi/AMSCam, type
+Under /home/pi/AMSCam 
 ```sh
 $ node app.js
 ```
@@ -63,8 +64,7 @@ Then, add the following line at the beginning of the file:
 ```
 sudo /usr/local/bin/node /home/pi/AMSCam/app.js &
 ```
-
-
+ 
 
 #  Troubleshooting
 
@@ -125,8 +125,7 @@ hdmi_group=2
 hdmi_mode=85
 ```
 Then, reboot the VNC Viewer. 
-
-
+ 
 
 
 ## License
