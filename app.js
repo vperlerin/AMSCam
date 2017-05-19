@@ -103,11 +103,7 @@ app.get('/', function(req, res) {
 * Read Log
 ***********************************************/
 app.get('/cam/log', function(req, res) {
-    
-    console.log(req.query);
-    console.log(typeof req.query);
-    console.log(req.query.length);
-   
+  
     if(typeof req.query.ot != "undefined") {
         
         // Pass something in argument (API Style)
@@ -147,7 +143,7 @@ app.get('/cam/log', function(req, res) {
 
 
 /*********************************************** 
-* Add Log entry
+* Add Log entry (from form)
 ***********************************************/
 app.post('/cam/log', function(req, res) {
        
@@ -167,6 +163,24 @@ app.post('/cam/log', function(req, res) {
               res.redirect('/cam/log');
         }); 
  });
+ 
+ 
+/*********************************************** 
+* Clean cam log
+***********************************************/
+app.get('/cam/log/clean', function(req, res) {
+       
+        var delLog = new PythonShell('del_log.py', {
+            mode: 'text' ,
+            scriptPath: constants.python_path + "/log",
+            args:[constants.cam_log_file]
+        });
+        
+        delLog.on('message', function () {  
+              res.redirect('/cam/log');
+        }); 
+ });
+
 
 
 /******************************************************************************************************************************************
@@ -416,7 +430,7 @@ app.get('/detection/maybe/delete', function(req, res) {
     var opts = { 
         mode: 'text',
         args: ['/var/www/html/out/maybe/',req.query.ev],
-        scriptPath: constants.python_path
+        scriptPath: constants.python_path+'/file_management'
     }; 
     
     PythonShell.run('delete_file.py', opts, function (err, ress) {
@@ -435,7 +449,7 @@ app.post('/detection/maybe/delete_multiple', function(req, res) {
     var opts = { 
         mode: 'text',
         args: ['/var/www/html/out/maybe/',req.body.events],
-        scriptPath: constants.python_path
+        scriptPath: constants.python_path+'/file_management'
     }; 
      
     PythonShell.run('delete_file.py', opts, function (err, ress) {
@@ -492,7 +506,7 @@ app.get('/detection/false/delete', function(req, res) {
     var opts = { 
         mode: 'text',
         args: ['/var/www/html/out/false/',req.query.ev],
-        scriptPath: constants.python_path
+        scriptPath: constants.python_path+'/file_management'
     };
     
     PythonShell.run('delete_file.py', opts, function (err, ress) {
@@ -511,7 +525,7 @@ app.post('/detection/false/delete_multiple', function(req, res) {
     var opts = { 
         mode: 'text',
         args: ['/var/www/html/out/false/',req.body.events],
-        scriptPath: constants.python_path
+        scriptPath: constants.python_path+'/file_management'
     }; 
      
     PythonShell.run('delete_file.py', opts, function (err, ress) {
@@ -568,7 +582,7 @@ app.get('/detection/fireballs/delete', function(req, res) {
     var opts = { 
         mode: 'text',
         args: ['/var/www/html/out/fireballs/',req.query.ev],
-        scriptPath: constants.python_path 
+        scriptPath: constants.python_path +'/file_management'
     }; 
     
     PythonShell.run('delete_file.py', opts, function (err, ress) {
@@ -587,7 +601,7 @@ app.post('/detection/fireballs/delete_multiple', function(req, res) {
     var opts = { 
         mode: 'text',
         args: ['/var/www/html/out/fireballs/',req.body.events],
-        scriptPath: constants.python_path 
+        scriptPath: constants.python_path +'/file_management'
     }; 
      
     PythonShell.run('delete_file.py', opts, function (err, ress) {

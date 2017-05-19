@@ -48,19 +48,24 @@
                 </div>
             </div>
             
+           
+            
             <div class="alert alert-info">
                 <strong><span class="fa fa-info-circle"></span> You can use this page as an API</strong><br/>
-                <code>http://&hellip;:3000/cam/log?<strong>ot</strong>=[OUT. TEMP.]&<strong>it</strong>=[INS. TEMP.]&<strong>ot</strong>=[OUT. HUMIDITY]</code>                <br/>
+                <code>http://<%= config.lan_ip %>:3000/cam/log?<strong>ot</strong>=[OUT. TEMP.]&<strong>it</strong>=[INS. TEMP.]&<strong>ot</strong>=[OUT. HUMIDITY]</code>                <br/>
                 <em>(In this case the time = current GMT time)</em><br/>
                 or<br/>
-                <code>http://&hellip;:3000/cam/log?<strong>time</strong>=[GMT TIME]ot=[OUT. TEMP.]&<strong>it</strong>=[INS. TEMP.]&<strong>ot</strong>=[OUT. HUMIDITY]</code> 
+                <code>http://<%= config.lan_ip %>:3000/cam/log?<strong>time</strong>=[GMT TIME]ot=[OUT. TEMP.]&<strong>it</strong>=[INS. TEMP.]&<strong>ot</strong>=[OUT. HUMIDITY]</code> 
             </div>
             
         </div>
         <div class="col-md-6">
             <div class="step welcome-step np">
                 <div class="form-cont">
-                    <h3 class="mt bordered mb">Cam log</h3>
+                    <div class="clearfix">
+                        <h3 class="mt mb pull-left">Cam log</h3>
+                        <a href="/cam/log/clean"  data-confirm="You are about to delete all the log entries. Please, confirm." class="btn btn-sm btn-danger pull-right"><span class="fa fa-trash"></span> Clean Log</a>
+                    </div>    
                      <%if (typeof log_content != "undefined") { %> 
                       
                          <table  class="table table-condensed table-striped table-hover table-results" style="width:100%">
@@ -104,5 +109,4 @@
      </script>
 </body>
 </html>  
-
-<%- JSON.stringify(log_content) %>
+ 
