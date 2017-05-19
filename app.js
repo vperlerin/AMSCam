@@ -100,13 +100,73 @@ app.get('/', function(req, res) {
    
 
 /******************************************************************************************************************************************
-* Log
+* Read Log
 ***********************************************/
 app.get('/cam/log', function(req, res) {
     
-    test_cam_pwd(res,'log',{});
-    
+    console.log(req.query);
+    console.log(typeof req.query);
+    console.log(req.query.length);
+   
+    if(typeof req.query.ot != "undefined") {
+        
+        // Pass something in argument (API Style)
+        var dt = new Date();
+        var tt   = (typeof req.query.time == "undefined")?dt.toUTCString():req.query.time;
+        var val1 = req.query.ot;
+        var val2 = req.query.it;
+        var val3 = req.query.ih; 
+        var to_update = {'log':tt+'$'+val1+'$'+val2+'$'+val3}; 
+     
+        var writeLog = new PythonShell('write_log.py', {
+                mode: 'text' ,
+                scriptPath: constants.python_path + "/log",
+                args:[constants.cam_log_file,JSON.stringify(to_update)]
+        });
+        
+        writeLog.on('message', function () {  
+              res.redirect('/cam/log');
+        }); 
+        
+    }  else {
+        
+         // Pass nothing
+
+        var readConfig = new PythonShell('read_log.py', {
+                mode: 'text' ,
+                scriptPath: constants.python_path + "/log",
+                args:[constants.cam_log_file]
+        });
+        
+        readConfig.on('message', function (log_cont) {  
+            test_cam_pwd(res,'log',{log_content:JSON.parse(log_cont)});
+        });
+    }
+         
 });
+
+
+/*********************************************** 
+* Add Log entry
+***********************************************/
+app.post('/cam/log', function(req, res) {
+       
+        var tt   = req.body.timeV;
+        var val1 = req.body.val1;
+        var val2 = req.body.val2;
+        var val3 = req.body.val3; 
+        var to_update = {'log':tt+'$'+val1+'$'+val2+'$'+val3}; 
+     
+        var writeLog = new PythonShell('write_log.py', {
+                mode: 'text' ,
+                scriptPath: constants.python_path + "/log",
+                args:[constants.cam_log_file,JSON.stringify(to_update)]
+        });
+        
+        writeLog.on('message', function () {  
+              res.redirect('/cam/log');
+        }); 
+ });
 
 
 /******************************************************************************************************************************************

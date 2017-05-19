@@ -36,6 +36,13 @@
     max-width: 80em;
 }
 
+.form-cont {
+    background: #fff;
+    padding: 1em 2em 3em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
 /* Menu */
 @media (max-width: 768px) {
     .navbar.navbar-main .dropdown-menu>li>a {
