@@ -230,10 +230,7 @@ app.post('/cam/focus_helper', function(req, res) {
 app.get('/cam/screenshot', function(req, res) {
     
     // If the cam password has already been updated:
-    test_cam_pwd(res,'screenshot',{
-            error: '',
-            message_success: ''
-    });
+    test_cam_pwd(res,'screenshot',{});
     
 });
 
@@ -244,7 +241,7 @@ app.get('/cam/screenshot', function(req, res) {
 app.post('/cam/screenshot', function(req, resp) {
  
         var pyshellUpload = new PythonShell('upload_latest.py', {
-            mode: 'text' ,
+            mode: 'json' ,
             scriptPath: constants.python_path+'/cam'
          });
         
@@ -252,7 +249,7 @@ app.post('/cam/screenshot', function(req, resp) {
         pyshellUpload.on('message', function (message_success) { 
             if (message_success) {
                 // Render
-                return test_cam_pwd(resp,'screenshot',{  message_success: message_success,  error: ''});
+                return test_cam_pwd(resp,'screenshot',{  message_success: message_success});
              }        
         });
        

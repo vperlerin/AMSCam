@@ -15,20 +15,43 @@
         </div>
     </div>
     
-    <div class="container">       
-        <div class="row dmt">
-            <div class="col-md-6">
-                <img id="screenshot_img" class="img-response"/>
+     <div class="step np">
+        <div class="container nl">       
+         
+            <div class="row dmt">
+                <div class="col-md-6 text-center">
+                    <%if (typeof error != 'undefined') { %> 
+                        <div class="alert alert-danger alert-dismissable text-left">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <i class="fa fa-check"></i> <strong><%=error%></strong> 
+                        </div>
+                    <% }  %>
+                    <img id="screenshot_img" class="img-response"/>
+                   
+                </div>
+                <div class="col-md-6">
+                    <p>On the left is the latest image automatically taken by your camera and uploaded on the AMS server.</p>
+                    <hr/>
+                    <form action="/cam/screenshot" method="post" class="mt" >
+                        <button id="btn_screenshot" class="btn btn-lg btn-primary btn-block load-on-click" type="submit">Take New Screenshot</button>
+                    </form> 
+                    <hr/>
+                    <%if (typeof message_success != 'undefined') { %> 
+                        <div class="alert alert-success dmt alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <i class="fa fa-check"></i> <strong>The new image has been automatically sent to the AMS server and is available to this address: </strong> 
+                            <a href="http://www.amsmeteors.org/members/upload_cam_api/<%= config.device_id; %>/latest.jpg?<%= Math.floor(Math.random()*100000) %>" target="_blank">
+                                http://www.amsmeteors.org/members/upload_cam_api/<%= config.device_id; %>/latest.jpg
+                            </a>
+                        </div>
+                    <% }  %>
+                       
+                  </div>
             </div>
-            <div class="col-md-6">
-                <pre class="alert alert-success prettyprint hidden" id="success_msg"></pre>
-            </div>
-        </div>
                 
-        <form action="/cam/screenshot" method="post" style="margin:3em auto; max-width:300px" >
-            <button id="btn_screenshot" class="btn btn-lg btn-primary btn-block load-on-click" type="submit">Take New Screenshot</button>
-            <span style="color:red;"><%= error %></span>
-        </form> 
+           
+        
+            </div>
     </div>
          
     <% include ../shared/footer.ejs %>
@@ -39,11 +62,7 @@
         
             // Reload Image
             $('#screenshot_img').attr("src","/py_img/latest.jpg?" + new Date().getTime());
-            <%if (message_success.length !=  0) { %> 
-                var msg  = "<%= message_success %>";
-                msg = msg.replace(/&#34;/g, '\"'); 
-                displaySuccess(msg);  
-            <% } %>
+           
          })
     </script>
 
