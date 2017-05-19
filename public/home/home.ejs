@@ -10,113 +10,118 @@
 
 <% include ../shared/header.ejs %>
 
-
- 
-    <div class="row">
-      <div class="col-md-6 text-center"> 
-      
-        <% if (browser === 'Chrome') { %>
-             <%if (config) { %> 
-                <div class="embed-responsive embed-responsive-4by3">
-                    <div id="vxg_media_player1" class="vxgplayer dmt" url="rtsp://<%= config.cam_ip %>/av0_1" latency="3000000" autostart  avsync></div>
-                </div>
-                <div id="runtimePlayers"></div>
-                 <script src="/js/vxgplayer.js"></script> 
-             <% } else { %>
-                <div class="alert alert-danger dmt">Config.txt missing - please makedevice and try again.</div>
-             <% } %> 
-        <% } else if (browser === 'Firefox') { %>
-             
-             <%if (config) { %> 
-                <div class="dmt">
-                    <div class="embed-responsive embed-responsive-4by3">
-                        <object classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921"
-                                         codebase="http://downloads.videolan.org/pub/videolan/vlc/last/win32/axvlc.cab"
-                                         width="640" height="500" id="vlc" events="True">
-                            <param name="src" value="rtsp://<%= config.cam_ip %>/av0_1" />
-                            <param name="ShowDisplay" value="True" />
-                            <param name="AutoLoop" value="False" />
-                            <param name="AutoPlay" value="True" />
-                            <embed id="vlcEmb"  type="application/x-google-vlc-plugin" version="VideoLAN.VLCPlugin.2" autoplay="yes" loop="no" width="640" height="480" target="rtsp://<%= config.cam_ip %>/av0_1" ></embed>
-                        </object> 
-                    </div>
-                </div>
-             <% } else { %>
-                <div class="alert alert-danger dmt">Config.txt missing - please makedevice and try again.</div>
-             <% } %>    
-        
-        <% } else { %>
-        <div class="alert alert-danger dmt">Unsupported browser. Please, update to <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a href="https://www.mozilla.org/en-US/firefox/products/">Firefox</a>. </div>
-        
-    <% } %>
-        
-        
-             
-       </div>
-       <div class="col-md-4 text-center">
-       
-            <div id="config" class="dmt">
-            
-                <%if (config) { %> 
-                    <table class="table table-condensed table-striped text-left">
-                        <tr>
-                            <td><strong>Cam Owner</strong></td>
-                            <td><a href="http://www.amsmeteors.org/members/user/view_profile?user_id=<%= config.user_id %>" target="_blank"><%= config.first_name %> <%= config.last_name %></a></td>
-                        </tr>
-                     </table>    
-                     
-                     <table class="table table-condensed table-striped text-left">
-                        <tr>
-                            <td><strong>LAN IP</strong></td>
-                            <td><%= config.lan_ip %></td>
-                        </tr>
-                        <tr>
-                            <td><strong>CAM IP</strong></td>
-                            <td><%= config.cam_ip %></td>
-                        </tr>
-                        <tr>
-                            <td><strong>WLAN MAC</strong></td>
-                            <td><%= config.wlan_mac %></td>
-                        </tr>
-                        <tr>
-                            <td><strong>LAN MAC</strong></td>
-                            <td><%= config.lan_mac %></td>
-                        </tr>
-                     </table>    
-                     <table class="table table-condensed table-striped text-left">
-                        <tr>
-                            <td><strong>Device Location</strong></td>
-                            <td><a href="https://www.google.fr/maps/place/<%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;" target="_blank"><%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;</a></td>
-                        </tr>
-                        <tr>
-                            <td><strong>Altitude</strong></td>
-                            <td><%= config.device_alt %>m</td>
-                        </tr>
-                        
-                     </table>    
-                     
-                     <table class="table table-condensed table-striped text-left">
-                        <tr>
-                            <td><strong>Cam</strong></td>
-                            <td><a href="http://<%= config.cam_ip %>" target="_blank">Configuration</a></td>
-                        </tr>
-                     </table>                          
-                       
-                      
-                <% } %>   
-            
-            </div>
-      </div>
-    </div>  
-      
-    <%if (config) { %> 
-        <div class="dmt dmb">
-            <div class="embed-responsive embed-responsive-cam-param">
-                <iframe class="embed-responsive-item" src="http://<%= config.cam_ip %>/videolens.asp"></iframe>
-            </div>
+     <div class="box box-header-like clearfix">
+        <div class="clearfix">
+            <h3 class="pull-left">AMSCam Dashboard</h3>
         </div>
-    <% } %>   
-    
+    </div>
+ 
+    <div class="step np">
+        <div class="container nl">   
+            <div class="row">
+                  <div class="col-md-6 text-center"> 
+                        <% if (browser === 'Chrome') { %>
+                                 <%if (config) { %> 
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <div id="vxg_media_player1" class="vxgplayer dmt" url="rtsp://<%= config.cam_ip %>/av0_1" latency="3000000" autostart  avsync></div>
+                                    </div>
+                                    <div id="runtimePlayers"></div>
+                                     <script src="/js/vxgplayer.js"></script> 
+                                 <% } else { %>
+                                    <div class="alert alert-danger dmt">Config.txt missing - please makedevice and try again.</div>
+                                 <% } %> 
+                        <% } else if (browser === 'Firefox') { %>
+                                 
+                                 <%if (config) { %> 
+                                    <div class="dmt">
+                                        <div class="embed-responsive embed-responsive-4by3">
+                                            <object classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921"
+                                                             codebase="http://downloads.videolan.org/pub/videolan/vlc/last/win32/axvlc.cab"
+                                                             width="640" height="500" id="vlc" events="True">
+                                                <param name="src" value="rtsp://<%= config.cam_ip %>/av0_1" />
+                                                <param name="ShowDisplay" value="True" />
+                                                <param name="AutoLoop" value="False" />
+                                                <param name="AutoPlay" value="True" />
+                                                <embed id="vlcEmb"  type="application/x-google-vlc-plugin" version="VideoLAN.VLCPlugin.2" autoplay="yes" loop="no" width="640" height="480" target="rtsp://<%= config.cam_ip %>/av0_1" ></embed>
+                                            </object> 
+                                        </div>
+                                    </div>
+                                 <% } else { %>
+                                    <div class="alert alert-danger dmt">Config.txt missing - please makedevice and try again.</div>
+                                 <% } %>    
+                            
+                            <% } else { %>
+                        <div class="alert alert-danger dmt">Unsupported browser. Please, update to <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a href="https://www.mozilla.org/en-US/firefox/products/">Firefox</a>. </div>
+                            
+                        <% } %>
+                  </div>
+                  <div class="col-md-4 text-center">
+                   
+                        <div id="config" class="dmt">
+                        
+                            <%if (config) { %> 
+                                <table class="table table-condensed table-striped text-left">
+                                    <tr>
+                                        <td><strong>Cam Owner</strong></td>
+                                        <td><a href="http://www.amsmeteors.org/members/user/view_profile?user_id=<%= config.user_id %>" target="_blank"><%= config.first_name %> <%= config.last_name %></a></td>
+                                    </tr>
+                                 </table>    
+                                 
+                                 <table class="table table-condensed table-striped text-left">
+                                    <tr>
+                                        <td><strong>LAN IP</strong></td>
+                                        <td><%= config.lan_ip %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>CAM IP</strong></td>
+                                        <td><%= config.cam_ip %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>WLAN MAC</strong></td>
+                                        <td><%= config.wlan_mac %></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>LAN MAC</strong></td>
+                                        <td><%= config.lan_mac %></td>
+                                    </tr>
+                                 </table>    
+                                 <table class="table table-condensed table-striped text-left">
+                                    <tr>
+                                        <td><strong>Device Location</strong></td>
+                                        <td><a href="https://www.google.fr/maps/place/<%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;" target="_blank"><%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Altitude</strong></td>
+                                        <td><%= config.device_alt %>m</td>
+                                    </tr>
+                                    
+                                 </table>    
+                                 
+                                 <table class="table table-condensed table-striped text-left">
+                                    <tr>
+                                        <td><strong>Cam</strong></td>
+                                        <td><a href="http://<%= config.cam_ip %>" target="_blank">Configuration</a></td>
+                                    </tr>
+                                 </table>                          
+                                   
+                                  
+                            <% } %>   
+                        
+                        </div>
+                  </div>
+            </div>  
+       </div>
+ 
+        <%if (config) { %> 
+            <div class="dmt dmb">
+                <div class="embed-responsive embed-responsive-cam-param">
+                    <iframe class="embed-responsive-item" src="http://<%= config.cam_ip %>/videolens.asp"></iframe>
+                </div>
+            </div>
+        <% } %>   
+    </div>
+</div>
+
 
 
 <% include ../shared/footer.ejs %>
