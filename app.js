@@ -8,7 +8,8 @@ var express     = require('express'),
     utils       = require('./utils/browser'),
     bodyParser  = require('body-parser'),
     fs          = require('fs'),
-    async       = require('async'); 
+    async       = require('async'),
+    repeat      = require('repeat'); 
 
 // Set default folder
 app.use(express.static(__dirname + '/public'));
@@ -184,6 +185,46 @@ app.get('/cam/log/clean', function(req, res) {
 
 
 /******************************************************************************************************************************************
+* FOCUS HELPER
+***********************************************/
+app.get('/cam/focus_helper', function(req, res) {
+    
+     test_cam_pwd(res,'focus_helper',{});
+    
+});
+
+
+/*********************************************** 
+* START FOCUS HELPER
+***********************************************/
+app.post('/cam/focus_helper', function(req, res) {
+  
+    // Setup the repeat
+    var _interval  = req.body._interval;
+    var _period    = req.body._period;
+    var _delay     = req.body._delay; 
+  
+   
+    repeat(function(done) {
+        
+       PythonShell.run('upload_latest.py', {
+            mode: 'text' ,
+            scriptPath: constants.python_path+'/cam'
+       }, function (err, results) {
+            done();
+       });
+          
+    }).every(_interval, 'sec').for(_period, 'sec').start.in(_delay, 'sec').then(function() {
+        var dt = new Date(); 
+        test_cam_pwd(res,'focus_helper',{'success':'Focus helper stopped on ' +   dt.toUTCString()});
+    });
+   
+    
+});
+
+
+
+/******************************************************************************************************************************************
 * Screenshot Page
 ***********************************************/
 app.get('/cam/screenshot', function(req, res) {
@@ -202,21 +243,19 @@ app.get('/cam/screenshot', function(req, res) {
 ***********************************************/
 app.post('/cam/screenshot', function(req, resp) {
  
-        var pyshellUpload = new PythonShell('latest.py', {
+        var pyshellUpload = new PythonShell('upload_latest.py', {
             mode: 'text' ,
-            scriptPath: constants.python_path 
+            scriptPath: constants.python_path+'/cam'
          });
         
         // JSON.stringify(message_success, null, '\t')
         pyshellUpload.on('message', function (message_success) { 
             if (message_success) {
-                
                 // Render
                 return test_cam_pwd(resp,'screenshot',{  message_success: message_success,  error: ''});
              }        
         });
-        
-      
+       
           
 });
 

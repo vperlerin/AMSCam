@@ -9,7 +9,8 @@
     "request": "^2.53.0",
     "ejs": "^2.3.1",
     "python-shell": "^0.4.0",
-    "ua-parser-js": "^0.7.12"
+    "ua-parser-js": "^0.7.12",
+    "repeat":"^0.0.6"
   },
   "devDependencies": {},
   "scripts": {

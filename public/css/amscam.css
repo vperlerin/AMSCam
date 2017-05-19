@@ -36,6 +36,11 @@
     max-width: 80em;
 }
 
+.step .container.nl {
+    max-width: 100%;
+    width:100%;
+}
+
 .form-cont {
     background: #fff;
     padding: 1em 2em 3em;
