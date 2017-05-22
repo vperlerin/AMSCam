@@ -10,6 +10,7 @@ var express     = require('express'),
     fs          = require('fs'),
     async       = require('async'),
     repeat      = require('repeat'); 
+    minifyHTML  = require('express-minify-html');
 
 // Set default folder
 app.use(express.static(__dirname + '/public'));
@@ -20,6 +21,20 @@ app.use('/maybe',express.static(path.join(__dirname + '/../../../var/www/html/ou
 app.use('/false',express.static(path.join(__dirname + '/../../../var/www/html/out/false')));
 app.use('/fireballs',express.static(path.join(__dirname + '/../../../var/www/html/out/fireballs')));
  
+// Compress HTML
+app.use(minifyHTML({
+    override:      true,
+    exception_url: false,
+    htmlMinifier: {
+        removeComments:            true,
+        collapseWhitespace:        true,
+        collapseBooleanAttributes: true,
+        removeAttributeQuotes:     true,
+        removeEmptyAttributes:     true,
+        minifyJS:                  true
+    }
+}));
+
 // Views
 app.set('views', [
     path.join(__dirname + '/public/detections'),
