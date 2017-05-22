@@ -48,7 +48,7 @@
                          <div class="form-group">    
                             <label for="_interval">Images will be uploaded every</label>
                             <select name="_interval" id="_interval" class="form-control">
-                                 <% for(var i=5; i<=60; i=i+5) {%>
+                                 <% for(var i=15; i<=60; i=i+5) {%>
                                     <option value="<%=i%>"><%=i%> sec.</option>
                                   <% } %>
                             </select>
@@ -90,6 +90,8 @@
    
     <script>
     
+         var imageT ;
+    
         function update_latest() {
             // Reload Image
             $('#screenshot_img').attr("src","/py_img/latest.jpg?" + new Date().getTime());
@@ -98,28 +100,42 @@
         function start_in($start_in,sec) {
             var startT = setInterval(function(){
               sec--;
+          
               $start_in.text( sec + " sec");
-              if(sec<= 0)
-                var dt = new Date();
-                $('#start_in_h').html('<strong>Process Started on ' + dt.toUTCString() + ' </strong>');
+              if(sec <= 0) {
+                $('#start_in_h').html('Process Started.');
                 $('#upload_in_h').removeClass('hidden');
                 // Image Uploaded
                 image_upload($('#upload_in'),$('#_interval').val(),$('#_period').val());
                 clearInterval(startT);
+              }
             },1000);
          }
          
          function image_upload($interval,sec_interval,sec_period) {
-          
-                var imageT = setInterval(function(){
-                  sec_interval--;
-                  $interval.text( sec_interval + " sec");
-                  if(sec_interval<= 0)
-                    $('#upload_in_h').html('<strong>Next image will be uploaded in  ' + sec_interval + ' </strong>');
-                    update_latest();
-                    clearInterval(imageT);
-                },1000);
-           
+            
+                  imageT  = setInterval(function(){
+                        
+                          sec_interval--;
+                          sec_period--;
+                          $interval.text( sec_interval + " sec");
+                          
+                          $('#upload_in_h').html('<strong>Next image will be uploaded in </strong> ' + sec_interval + ' sec ');
+                          update_latest();
+                          
+                          if(sec_interval<= 0) {
+                             clearInterval(imageT);
+                          }
+                          if(sec_period>0 && sec_interval<= 0) {
+                            clearInterval(imageT);
+                            image_upload($interval,$('#_interval').val(),sec_period);
+                          }  
+                          
+                          if(sec_period<=0) {
+                            $('#upload_in_h').html('<strong>Process stopped. Page reloading. <span class="fa fa-spin fa-refresh"></span> <strong>');
+                          }
+                  },1000);
+                
          }
         
             
@@ -130,6 +146,7 @@
                 var _start_in = $('#_delay').val();
                 $('#focus_help_form').addClass('hidden');
                 $('#focus_help_go').removeClass('hidden');
+                $('#start_in').text($('#_delay').val() + " sec");
                 
                 // Delay
                 if(_start_in!=0) {
