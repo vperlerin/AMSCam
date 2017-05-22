@@ -11,65 +11,93 @@
 
     <div class="box box-header-like clearfix">
         <div class="clearfix">
-            <h3 class="pull-left">Calibration</h3>
+            <h3 class="pull-left">Star Calibration</h3>
         </div>
     </div>
     
-     <div class="step np">
-        <div class="container nl">       
-         
-            <div class="row dmt">
-                <div class="col-md-6 text-center">
-                    <%if (typeof error != 'undefined') { %> 
-                        <div class="alert alert-danger alert-dismissable text-left">
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            <i class="fa fa-check"></i> <strong><%=error%></strong> 
-                        </div>
-                    <% }  %>
-                    <img id="screenshot_img" class="img-response"/>
-                   
-                </div>
-                <div class="col-md-6">
-                    <div class="alert alert-info">
-                        <span class="fa fa-warning"></span>
-                        It must be dark outside to calibrate your camera.
-                    </div>
-                
-                    <p>On the left is the latest image automatically taken by your camera and uploaded on the AMS server.</p>
-                    <hr/>
-                    <form action="/cam/screenshot" method="post" class="mt" >
-                        <button id="btn_screenshot" class="btn btn-lg btn-primary btn-block load-on-click" type="submit">Take New Screenshot</button>
-                    </form> 
-                    <hr/>
-                    <%if (typeof message_success != 'undefined') { %> 
-                        <div class="alert alert-success dmt alert-dismissable">
-                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                            <i class="fa fa-check"></i> <strong>The new image has been automatically sent to the AMS server and is available to this address: </strong> 
-                            <a href="http://www.amsmeteors.org/members/upload_cam_api/<%= config.device_id; %>/latest.jpg?<%= Math.floor(Math.random()*100000) %>" target="_blank">
-                                http://www.amsmeteors.org/members/upload_cam_api/<%= config.device_id; %>/latest.jpg
-                            </a>
-                        </div>
-                    <% }  %>
-                       
+    <div class="step np">
+        <div class="container nl">   
+            <div class="row">
+                  <div class="col-md-6 text-center"> 
+                         <% if (browser === 'Chrome') { %>
+                                <%if (config) { %> 
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <div id="vxg_media_player1" class="vxgplayer dmt" url="rtsp://<%= config.cam_ip %>/av0_1" latency="3000000" autostart  avsync></div>
+                                    </div>
+                                    <div id="runtimePlayers"></div>
+                                     <script src="/js/vxgplayer.js"></script> 
+                                 <% } else { %>
+                                    <div class="alert alert-danger dmt">Config.txt missing - please makedevice and try again.</div>
+                                 <% } %> 
+                        <% } else if (browser === 'Firefox') { %>
+                                 
+                                 <%if (config) { %> 
+                                    <div class="dmt">
+                                        <div class="embed-responsive embed-responsive-4by3">
+                                            <object classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921"
+                                                             codebase="http://downloads.videolan.org/pub/videolan/vlc/last/win32/axvlc.cab"
+                                                             width="640" height="500" id="vlc" events="True">
+                                                <param name="src" value="rtsp://<%= config.cam_ip %>/av0_1" />
+                                                <param name="ShowDisplay" value="True" />
+                                                <param name="AutoLoop" value="False" />
+                                                <param name="AutoPlay" value="True" />
+                                                <embed id="vlcEmb"  type="application/x-google-vlc-plugin" version="VideoLAN.VLCPlugin.2" autoplay="yes" loop="no" width="640" height="480" target="rtsp://<%= config.cam_ip %>/av0_1" ></embed>
+                                            </object> 
+                                        </div>
+                                    </div>
+                                 <% } else { %>
+                                    <div class="alert alert-danger dmt">Config.txt missing - please makedevice and try again.</div>
+                                 <% } %>    
+                            
+                            <% } else { %>
+                        <div class="alert alert-danger dmt">Unsupported browser. Please, update to <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a href="https://www.mozilla.org/en-US/firefox/products/">Firefox</a>. </div>
+                            
+                        <% } %>
                   </div>
-            </div>
-                
-           
-        
-            </div>
-    </div>
+                  <div class="col-md-6">
+                        <div class="alert alert-info">
+                            <span class="fa fa-warning"></span>
+                            It must be dark outside to calibrate your camera.
+                        </div>
+                        
+                        <strong>Brightness</strong>    
+                        <div id="sl_brightness" class="dmt"><div id="sl_brightness-handle" class="ui-slider-handle"></div></div>
+                    
+                      
+                        <%if (typeof message_success != 'undefined') { %> 
+                            <div class="alert alert-success dmt alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <i class="fa fa-check"></i> <strong>The new image has been automatically sent to the AMS server and is available to this address: </strong> 
+                                <a href="http://www.amsmeteors.org/members/upload_cam_api/<%= config.device_id; %>/latest.jpg?<%= Math.floor(Math.random()*100000) %>" target="_blank">
+                                    http://www.amsmeteors.org/members/upload_cam_api/<%= config.device_id; %>/latest.jpg
+                                </a>
+                            </div>
+                        <% }  %>
+                        
+                  </div>
+            </div>  
+       </div>
          
+     </div>    
+ 
     <% include ../shared/footer.ejs %>
-  
-   
+    <link href="../bower_components/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet">
+    <link href="../bower_components/jquery-ui/themes/base/theme.css" rel="stylesheet">
+    <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script>
         $(function() {
-        
-            // Reload Image
-            $('#screenshot_img').attr("src","/py_img/latest.jpg?" + new Date().getTime());
-           
-         })
-    </script>
-
+            var handle = $( "#sl_brightness-handle" );
+            $("#sl_brightness").slider({
+                 create: function() {
+                    handle.text( $( this ).slider( "value" ) );
+                  },
+                  slide: function( event, ui ) {
+                    handle.text( ui.value );
+                  }
+            
+            });
+        });
+    </script>     
+    
 </body>
 </html>

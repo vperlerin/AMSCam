@@ -1,0 +1,14 @@
+.ui-slider .ui-slider-handle {
+    width:2em !important;
+    text-align: center !important;
+    line-height: 1em !important;
+}
+
+.ui-slider.ui-slider-horizontal {
+    max-width:90% !important;   
+}
+
+
+.ui-widget.ui-widget-content {
+    font-size:16px !important;   
+}

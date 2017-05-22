@@ -20,6 +20,7 @@ app.use('/py_img',express.static(path.join(__dirname + '/../../../var/www/html/o
 app.use('/maybe',express.static(path.join(__dirname + '/../../../var/www/html/out/maybe')));
 app.use('/false',express.static(path.join(__dirname + '/../../../var/www/html/out/false')));
 app.use('/fireballs',express.static(path.join(__dirname + '/../../../var/www/html/out/fireballs')));
+
  
 // Compress HTML
 app.use(minifyHTML({
@@ -41,6 +42,7 @@ app.set('views', [
     path.join(__dirname + '/public/home'),
     path.join(__dirname + '/public/cam'),
     path.join(__dirname + '/public'),
+    path.join(__dirname + '/js'),
     '/var/www/html/out']
 ); 
 app.set('view engine', 'ejs');
@@ -48,6 +50,9 @@ app.set('view engine', 'ejs');
 
 // Bower
 app.use('/bower_components', express.static(__dirname + '/bower_components'));
+
+// Nodes
+app.use('/node_modules', express.static(__dirname + '/node_modules'));
 
 // URLs 
 app.use(bodyParser.urlencoded({
@@ -243,8 +248,11 @@ app.post('/cam/focus_helper', function(req, res) {
 ***********************************************/
 app.get('/cam/calibration', function(req, res) {
     
-    // If the cam password has already been updated:
-    test_cam_pwd(res,'calibration',{});
+    // Test Browser
+    browser = utils.get_browser(req)
+    
+    // Render
+    test_cam_pwd(res,'calibration',{ browser:  browser});
     
 });
 
