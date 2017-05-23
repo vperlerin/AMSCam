@@ -60,9 +60,17 @@
                             It must be dark outside to calibrate your camera.
                         </div>
                         
-                        <strong>Brightness</strong>    
-                        <div id="sl_brightness" class="dmt"><div id="sl_brightness-handle" class="ui-slider-handle"></div></div>
-                    
+                        
+                        <% sliders = ['brightness','contrast','chroma','saturation']; %>
+                        <%for (var slider in sliders){%>
+                            <div class="clearfix">
+                                <strong class="pull-left ui-slider-handle-label"><%= sliders[slider].charAt(0).toUpperCase() + sliders[slider].slice(1)  %></strong>    
+                                <div class="pull-left ui-slider-handle-container">
+                                    <div id="sl_<%= sliders[slider] %>" class="dmt"><div id="sl_<%= sliders[slider] %>-handle" class="ui-slider-handle"></div></div>
+                                </div>
+                            </div>
+                        <%}%>
+ 
                       
                         <%if (typeof message_success != 'undefined') { %> 
                             <div class="alert alert-success dmt alert-dismissable">
@@ -86,16 +94,30 @@
     <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
     <script>
         $(function() {
-            var handle = $( "#sl_brightness-handle" );
-            $("#sl_brightness").slider({
-                 create: function() {
-                    handle.text( $( this ).slider( "value" ) );
-                  },
-                  slide: function( event, ui ) {
-                    handle.text( ui.value );
-                  }
             
-            });
+            
+            <%for (var slider in sliders){%>
+                var <%= sliders[slider] %>_handle = $( "#sl_<%= sliders[slider] %>-handle" );
+                $("#sl_<%= sliders[slider] %>").slider({
+                     animate: true,
+                     range: "min",
+                     min: 0,
+                     max: 255,
+                     create: function() {
+                        <%= sliders[slider] %>_handle.text( $( this ).slider( "value" ) );
+                     },
+                     slide: function( event, ui ) {
+                        <%= sliders[slider] %>_handle.text( ui.value );
+                     },
+                     stop: function( event, ui ) {
+                        console.log(ui.value);
+                     }
+                 }); 
+            <%}%>
+             
+           
+             
+             
         });
     </script>     
     

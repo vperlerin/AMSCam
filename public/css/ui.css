@@ -1,14 +1,33 @@
 .ui-slider .ui-slider-handle {
-    width:2em !important;
-    text-align: center !important;
     line-height: 1em !important;
+    padding: 0.2em 0.3em 0px;
+    height: 1.5em !important;
+    font-size: 14px;
+    width: 3em !important;
+    text-align: center;
 }
 
 .ui-slider.ui-slider-horizontal {
     max-width:90% !important;   
+    margin: 1em;
 }
 
 
 .ui-widget.ui-widget-content {
     font-size:16px !important;   
+}
+
+
+.ui-slider-handle-container {
+    min-width:30em   
+}
+
+.ui-slider-handle-container .ui-widget.ui-widget-content {
+    margin-top:.2em   
+}
+
+.ui-slider-handle-label  {
+    min-width: 6em;
+    margin-right: 1em;
+    display: block;  
 }
