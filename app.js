@@ -20,7 +20,8 @@ app.use('/py_img',express.static(path.join(__dirname + '/../../../var/www/html/o
 app.use('/maybe',express.static(path.join(__dirname + '/../../../var/www/html/out/maybe')));
 app.use('/false',express.static(path.join(__dirname + '/../../../var/www/html/out/false')));
 app.use('/fireballs',express.static(path.join(__dirname + '/../../../var/www/html/out/fireballs')));
-
+app.use('/js',express.static(path.join(__dirname + '/public/js')));
+  
  
 // Compress HTML
 app.use(minifyHTML({
@@ -250,17 +251,23 @@ app.get('/cam/calibration', function(req, res) {
     // Test Browser
     browser = utils.get_browser(req)
     
-    var opts = {  scriptPath: constants.python_path + "/cam" };
-    var render_opts = {browser:  browser };
+    var opts         = {scriptPath: constants.python_path + "/cam" };
+    var render_opts  = {browser:  browser };
     
+   
+    if(typeof req.query.file == "undefined") {
+        opts['args']  = ['Calibration'];
+    } else {
+        opts['args']  = [req.query.file];
+    }
+       
     // Get Current Cam Parameters
-    PythonShell.run('get_parameters.py', opts, function (err, ress) {
+    PythonShell.run('get_parameter_from_file.py', opts, function (err, ress) {
        if (err) throw err;
        // Render
-       test_cam_pwd(res,'calibration',{ browser:  browser, calib: JSON.parse(ress)});
+       test_cam_pwd(res,'calibration',{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']});
      });
-    
- 
+  
     
 });
 
@@ -274,8 +281,8 @@ app.post('/cam/calibration', function(req, res) {
                     scriptPath: constants.python_path + "/cam" 
     };
     
- 
-    PythonShell.run('set_parameters.py', opts, function (err, ress) {
+     
+    PythonShell.run('set_parameters_to_file.py', opts, function (err, ress) {
         if (err) throw err;
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify({ "RES": ress }, null, 3));

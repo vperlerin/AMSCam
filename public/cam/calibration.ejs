@@ -32,6 +32,7 @@
                         <% } else if (browser === 'Firefox') { %>
                                  
                                  <%if (config) { %> 
+                                    
                                     <div class="dmt">
                                         <div class="embed-responsive embed-responsive-4by3">
                                             <object classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921"
@@ -59,14 +60,14 @@
                         <h3 class="bordered">Camera Calibrations</h3> 
                          
                         <% 
-                            config_files = ['Calibration','Night','Day']; 
-                            active = 'Calibration';
+                            config_files = [active_file]; 
+                            possible_files = ['Calibration','Night','Day'];
                         %>  
-                        
+                   
                         <ul class="nav nav-tabs dmt mb" id="tabs">
-                            <%for (var file in config_files){%>
-                                <li <% if( config_files[file]== active){ %>class="active"<% } %>>
-                                    <a href="#<%= config_files[file]  %>" id="<%= config_files[file]  %>-tab" role="tab" data-toggle="tab" ><%= config_files[file]  %></a>
+                            <%for (var file in possible_files){%>
+                                <li <% if( possible_files[file]== active_file){ %>class="active"<% } %>>
+                                    <a href="/cam/calibration?file=<%= possible_files[file]  %>" ><%= possible_files[file]  %></a>
                                 </li>    
                             <% } %>
                         </ul>
@@ -74,11 +75,11 @@
                         <div class="tab-content"> 
                         
                             <%for (var file in config_files){%>
-                                <div class="tab-pane fade in dmt  <% if( config_files[file]== active){ %>active<% } %>" role="tabpanel" id="<%= config_files[file] %>"> 
+                                <div class="tab-pane fade in dmt  <% if( config_files[file]== active_file){ %>active<% } %>" role="tabpanel" id="<%= config_files[file] %>"> 
                                     <% /* Coul add Chroma... */ %> 
                                     <% sliders = ['Brightness','Contrast','Saturation']; %> 
                                          <%for (var slider in sliders){%>
-                                            <div class="clearfix">
+                                            <div class="clearfix dmt">
                                                 <strong class="pull-left ui-slider-handle-label"><%= sliders[slider]  %></strong>    
                                                 <div class="pull-left ui-slider-handle-container">
                                                     <div id="sl_<%= config_files[file]  %><%= sliders[slider] %>" class="dmt"><div id="sl_<%= config_files[file]  %><%= sliders[slider] %>-handle" class="ui-slider-handle"></div></div>
@@ -107,16 +108,10 @@
      </div>    
  
     <% include ../shared/footer.ejs %>
-    <link href="../bower_components/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet">
-    <link href="../bower_components/jquery-ui/themes/base/theme.css" rel="stylesheet">
-    <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
-     
-    <%for (var slider in sliders){%>
-        <% v  = sliders[slider]; %>
-        
-      
-        <%= sliders[slider]; %> <%= calib[sliders[slider]]; %><br/>
-    <%}%>
+    <link href="../../bower_components/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet">
+    <link href="../../bower_components/jquery-ui/themes/base/theme.css" rel="stylesheet">
+    <script src="../../bower_components/jquery-ui/jquery-ui.min.js"></script>
+ 
     
     <script>
         $(function() {
