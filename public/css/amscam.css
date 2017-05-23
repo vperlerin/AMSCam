@@ -54,3 +54,6 @@
         color: #fff;
     }
 }
+
+/* Table in Dashboard */
+td.dash { width: 10em; }

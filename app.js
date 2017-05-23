@@ -41,8 +41,7 @@ app.set('views', [
     path.join(__dirname + '/public/detections'),
     path.join(__dirname + '/public/home'),
     path.join(__dirname + '/public/cam'),
-    path.join(__dirname + '/public'),
-    path.join(__dirname + '/js'),
+    path.join(__dirname + '/public'), 
     '/var/www/html/out']
 ); 
 app.set('view engine', 'ejs');
@@ -251,8 +250,37 @@ app.get('/cam/calibration', function(req, res) {
     // Test Browser
     browser = utils.get_browser(req)
     
-    // Render
-    test_cam_pwd(res,'calibration',{ browser:  browser});
+    var opts = {  scriptPath: constants.python_path + "/cam" };
+    var render_opts = {browser:  browser };
+    
+    // Get Current Cam Parameters
+    PythonShell.run('get_parameters.py', opts, function (err, ress) {
+       if (err) throw err;
+       // Render
+       test_cam_pwd(res,'calibration',{ browser:  browser, calib: JSON.parse(ress)});
+     });
+    
+ 
+    
+});
+
+
+/******************************************************************************************************************************************
+* Update Cam calibration (JSON CALL)
+***********************************************/
+app.post('/cam/calibration', function(req, res) {
+     
+    var opts = {    args: [JSON.stringify(req.body)],
+                    scriptPath: constants.python_path + "/cam" 
+    };
+    
+ 
+    PythonShell.run('set_parameters.py', opts, function (err, ress) {
+        if (err) throw err;
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({ "RES": ress }, null, 3));
+    });
+    
     
 });
 

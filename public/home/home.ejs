@@ -60,36 +60,36 @@
                             <%if (config) { %> 
                                 <table class="table table-condensed table-striped text-left">
                                     <tr>
-                                        <td><strong>Cam Owner</strong></td>
+                                        <td class="dash"><strong>Cam Owner</strong></td>
                                         <td><a href="http://www.amsmeteors.org/members/user/view_profile?user_id=<%= config.user_id %>" target="_blank"><%= config.first_name %> <%= config.last_name %></a></td>
                                     </tr>
                                  </table>    
                                  
                                  <table class="table table-condensed table-striped text-left">
                                     <tr>
-                                        <td><strong>LAN IP</strong></td>
+                                        <td class="dash"><strong>LAN IP</strong></td>
                                         <td><%= config.lan_ip %></td>
                                     </tr>
                                     <tr>
-                                        <td><strong>CAM IP</strong></td>
+                                        <td class="dash"><strong>CAM IP</strong></td>
                                         <td><%= config.cam_ip %></td>
                                     </tr>
                                     <tr>
-                                        <td><strong>WLAN MAC</strong></td>
+                                        <td class="dash"><strong>WLAN MAC</strong></td>
                                         <td><%= config.wlan_mac %></td>
                                     </tr>
                                     <tr>
-                                        <td><strong>LAN MAC</strong></td>
+                                        <td class="dash"><strong>LAN MAC</strong></td>
                                         <td><%= config.lan_mac %></td>
                                     </tr>
                                  </table>    
                                  <table class="table table-condensed table-striped text-left">
                                     <tr>
-                                        <td><strong>Device Location</strong></td>
+                                        <td class="dash"><strong>Device Location</strong></td>
                                         <td><a href="https://www.google.fr/maps/place/<%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;" target="_blank"><%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;</a></td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Altitude</strong></td>
+                                        <td class="dash"><strong>Altitude</strong></td>
                                         <td><%= config.device_alt %>m</td>
                                     </tr>
                                     
@@ -97,8 +97,12 @@
                                  
                                  <table class="table table-condensed table-striped text-left">
                                     <tr>
-                                        <td><strong>Cam</strong></td>
-                                        <td><a href="http://<%= config.cam_ip %>" target="_blank">Configuration</a></td>
+                                        <td class="dash"><strong>Cam</strong></td>
+                                        <td><a href="/cam/calibration">Calibration</a></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="dash">&nbsp;</td>
+                                        <td><a href="http://<%= config.cam_ip %>" target="_blank">Admin Config. <span class="fa fa-external-link"></span></a></td>
                                     </tr>
                                  </table>                          
                                    
@@ -109,14 +113,16 @@
                   </div>
             </div>  
        </div>
- 
+        
+        <!--
         <%if (config) { %> 
             <div class="dmt dmb">
                 <div class="embed-responsive embed-responsive-cam-param">
                     <iframe class="embed-responsive-item" src="http://<%= config.cam_ip %>/videolens.asp"></iframe>
                 </div>
             </div>
-        <% } %>   
+        <% } %>  
+        -->
     </div>
 </div>
 

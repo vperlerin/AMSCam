@@ -11,7 +11,7 @@
 
     <div class="box box-header-like clearfix">
         <div class="clearfix">
-            <h3 class="pull-left">Star Calibration</h3>
+            <h3 class="pull-left">Calibration</h3>
         </div>
     </div>
     
@@ -55,23 +55,41 @@
                         <% } %>
                   </div>
                   <div class="col-md-6">
-                        <div class="alert alert-info">
-                            <span class="fa fa-warning"></span>
-                            It must be dark outside to calibrate your camera.
+                        
+                        <h3 class="bordered">Camera Calibrations</h3> 
+                         
+                        <% 
+                            config_files = ['Calibration','Night','Day']; 
+                            active = 'Calibration';
+                        %>  
+                        
+                        <ul class="nav nav-tabs dmt mb" id="tabs">
+                            <%for (var file in config_files){%>
+                                <li <% if( config_files[file]== active){ %>class="active"<% } %>>
+                                    <a href="#<%= config_files[file]  %>" id="<%= config_files[file]  %>-tab" role="tab" data-toggle="tab" ><%= config_files[file]  %></a>
+                                </li>    
+                            <% } %>
+                        </ul>
+                        
+                        <div class="tab-content"> 
+                        
+                            <%for (var file in config_files){%>
+                                <div class="tab-pane fade in dmt  <% if( config_files[file]== active){ %>active<% } %>" role="tabpanel" id="<%= config_files[file] %>"> 
+                                    <% /* Coul add Chroma... */ %> 
+                                    <% sliders = ['Brightness','Contrast','Saturation']; %> 
+                                         <%for (var slider in sliders){%>
+                                            <div class="clearfix">
+                                                <strong class="pull-left ui-slider-handle-label"><%= sliders[slider]  %></strong>    
+                                                <div class="pull-left ui-slider-handle-container">
+                                                    <div id="sl_<%= config_files[file]  %><%= sliders[slider] %>" class="dmt"><div id="sl_<%= config_files[file]  %><%= sliders[slider] %>-handle" class="ui-slider-handle"></div></div>
+                                                </div>
+                                            </div>
+                                        <%}%>
+                                  </div>   
+                             <% } %>
+                             
                         </div>
-                        
-                        
-                        <% sliders = ['brightness','contrast','chroma','saturation']; %>
-                        <%for (var slider in sliders){%>
-                            <div class="clearfix">
-                                <strong class="pull-left ui-slider-handle-label"><%= sliders[slider].charAt(0).toUpperCase() + sliders[slider].slice(1)  %></strong>    
-                                <div class="pull-left ui-slider-handle-container">
-                                    <div id="sl_<%= sliders[slider] %>" class="dmt"><div id="sl_<%= sliders[slider] %>-handle" class="ui-slider-handle"></div></div>
-                                </div>
-                            </div>
-                        <%}%>
- 
-                      
+
                         <%if (typeof message_success != 'undefined') { %> 
                             <div class="alert alert-success dmt alert-dismissable">
                                 <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -92,27 +110,50 @@
     <link href="../bower_components/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet">
     <link href="../bower_components/jquery-ui/themes/base/theme.css" rel="stylesheet">
     <script src="../bower_components/jquery-ui/jquery-ui.min.js"></script>
+     
+    <%for (var slider in sliders){%>
+        <% v  = sliders[slider]; %>
+        
+      
+        <%= sliders[slider]; %> <%= calib[sliders[slider]]; %><br/>
+    <%}%>
+    
     <script>
         $(function() {
             
-            
-            <%for (var slider in sliders){%>
-                var <%= sliders[slider] %>_handle = $( "#sl_<%= sliders[slider] %>-handle" );
-                $("#sl_<%= sliders[slider] %>").slider({
-                     animate: true,
-                     range: "min",
-                     min: 0,
-                     max: 255,
-                     create: function() {
-                        <%= sliders[slider] %>_handle.text( $( this ).slider( "value" ) );
-                     },
-                     slide: function( event, ui ) {
-                        <%= sliders[slider] %>_handle.text( ui.value );
-                     },
-                     stop: function( event, ui ) {
-                        console.log(ui.value);
-                     }
-                 }); 
+            <%for (var file in config_files){%>
+                <%for (var slider in sliders){%>
+                    var <%= config_files[file]  %><%= sliders[slider] %>_handle = $( "#sl_<%= config_files[file]  %><%= sliders[slider] %>-handle" );
+                    $("#sl_<%= config_files[file]  %><%= sliders[slider] %>").slider({
+                         animate: true,
+                         range: "min",
+                         min: 0,
+                         max: 255,
+                         value: <%= calib[sliders[slider]]; %>,
+                         create: function() {
+                            <%= config_files[file]  %><%= sliders[slider] %>_handle.text( $( this ).slider( "value" ) );
+                         },
+                         slide: function( event, ui ) {
+                            <%= config_files[file]  %><%= sliders[slider] %>_handle.text( ui.value );
+                         },
+                         stop: function( event, ui ) {
+                            
+                            <%= config_files[file]  %><%= sliders[slider] %>_handle.html('<span class="fa fa-spin fa-refresh"></span>');
+                            
+                            $.ajax({
+                                    type: 'POST',
+                                    url:  window.location.pathname,
+                                    data: {<%= sliders[slider]  %>:ui.value, file:'<%= config_files[file]  %>'},  
+                                    dataType: "json",
+                                    success: function(response){
+                                        <%= config_files[file]  %><%= sliders[slider] %>_handle.text(ui.value);
+                                    }
+                            });
+                             
+                             
+                         }
+                     }); 
+                <%}%>
             <%}%>
              
            

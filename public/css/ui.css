@@ -19,7 +19,7 @@
 
 
 .ui-slider-handle-container {
-    min-width:30em   
+       min-width: 80%;
 }
 
 .ui-slider-handle-container .ui-widget.ui-widget-content {
