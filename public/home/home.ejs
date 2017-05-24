@@ -56,6 +56,16 @@
                   <div class="col-md-4 text-center">
                    
                         <div id="config" class="dmt">
+                         
+                            <%if (capture) { %> 
+                                <div class="text-left alert alert-<%if (capture==1) { %>success<% } else { %>danger<%}%>">
+                                 <%if (capture==1) { %>
+                                    <span class="fa fa-check"></span> Capture Program running
+                                <% } else { %>
+                                    <span class="fa fa-warning"></span> Capture Program Stopped!
+                                 <% } %>
+                                </div>
+                            <% } %>   
                         
                             <%if (config) { %> 
                                 <table class="table table-condensed table-striped text-left">
@@ -86,7 +96,10 @@
                                  <table class="table table-condensed table-striped text-left">
                                     <tr>
                                         <td class="dash"><strong>Device Location</strong></td>
-                                        <td><a href="https://www.google.fr/maps/place/<%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;" target="_blank"><%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;</a></td>
+                                        <td>
+                                            <a href="https://www.google.fr/maps/place/<%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;" target="_blank"><%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;</a>
+                                            <a href="http://www.amsmeteors.org/members/cam/edit_geoloc?device_id=<%= config.device_id %>" class="btn btn-primary btn-xs pull-right"><span class="fa fa-edit"></span></a>
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td class="dash"><strong>Altitude</strong></td>
@@ -108,6 +121,9 @@
                                    
                                   
                             <% } %>   
+                            
+                            
+                           
                         
                         </div>
                   </div>

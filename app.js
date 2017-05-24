@@ -8,9 +8,10 @@ var express     = require('express'),
     utils       = require('./utils/browser'),
     bodyParser  = require('body-parser'),
     fs          = require('fs'),
-    async       = require('async'),
-    repeat      = require('repeat'); 
-    minifyHTML  = require('express-minify-html');
+    async           = require('async'),
+    repeat          = require('repeat'),
+    minifyHTML      = require('express-minify-html'),
+    child_process = require('child_process'); 
 
 // Set default folder
 app.use(express.static(__dirname + '/public'));
@@ -103,7 +104,19 @@ app.use(bodyParser.urlencoded({
             res.render(template,template_args);
             return true;   
         }
-     }
+    }
+     
+     
+    // Test if the capture is running
+    function test_capture_running(res,template,opts) {
+        child_process.exec(constants.python_path +  'simple-capture-status.sh', function(error, stdout, stderr){
+            
+            opts.capture = stdout;   
+            test_cam_pwd(res,template,opts);
+            
+            // console.log('stdout: ' + stdout); // 1 or 0
+        });
+    }
 
 
 /******************************************************************************************************************************************
@@ -111,11 +124,13 @@ app.use(bodyParser.urlencoded({
 ***********************************************/
 app.get('/', function(req, res) {
     
+     
+    
     // Test Browser
     browser = utils.get_browser(req)
     
     // Render
-    test_cam_pwd(res,'home',{ browser:  browser});
+    test_capture_running(res,'home',{ browser:  browser});
      
 });
    
