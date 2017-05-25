@@ -45,7 +45,9 @@
                         <li><a href="/cam/update_cam_pwd">Update Password</a></li>
                         <%if (typeof config != 'undefined' && config.cam_ip != 'undefined') { %> 
                             <li><a href="http://<%= config.cam_ip %>" target="_blank">Configuration <span class="fa fa-external-link"></span></a></li>
-                        <% } %>   
+                        <% } %> 
+                        <li role="presentation" class="divider"></li>  
+                        <li><a href="/cam/restart" data-confirm="You are about to reboot your Camera. It may take up to 3 minutes. Please, confirm."><span class="fa fa-refresh btn btn-success btn-xs"></span> Restart</a></li>
                      </ul>
                 </li>
                 <li class="divider-v"></li>

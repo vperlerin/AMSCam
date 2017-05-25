@@ -123,14 +123,19 @@ app.use(bodyParser.urlencoded({
 * Home Page
 ***********************************************/
 app.get('/', function(req, res) {
-    
      
     
     // Test Browser
-    browser = utils.get_browser(req)
+    var opts = {};
+    opts.browser = utils.get_browser(req)
+    
+    if(typeof req.query.msg != 'undefined') {
+        opts.msg =   req.query.msg 
+    }
+    
     
     // Render
-    test_capture_running(res,'home',{ browser:  browser});
+    test_capture_running(res,'home',opts);
      
 });
    
@@ -254,6 +259,28 @@ app.post('/cam/focus_helper', function(req, res) {
         test_cam_pwd(res,'focus_helper',{'success':'Focus helper stopped on ' +   dt.toUTCString()});
     });
    
+    
+});
+
+
+/******************************************************************************************************************************************
+* Restart Cam
+***********************************************/
+app.get('/cam/restart', function(req, res) {
+    
+    // Test Browser
+    browser = utils.get_browser(req)
+    
+    var opts         = {scriptPath: constants.python_path + "/cam" };
+    var render_opts  = {browser:  browser };
+    
+        
+    // Get Current Cam Parameters
+    PythonShell.run('restart_cam_server.py', opts, function (err, ress) {
+       if (err) throw err;
+            res.redirect('../?msg='+'Camera restarting');
+      });
+  
     
 });
 
