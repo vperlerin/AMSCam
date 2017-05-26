@@ -114,44 +114,51 @@
                                         <td class="dash"><strong>Altitude</strong></td>
                                         <td><%= config.device_alt %>m</td>
                                     </tr>
+                                     <tr>
+                                        <td class="dash"><strong>FOV</strong></td>
+                                        <td id="fov"><%= config.fov; %></td>
+                                    </tr>
                                     
                                  </table>    
                                  
                                  <table class="table table-condensed table-striped text-left">
                                     <tr>
-                                        <td class="dash"><strong>Cam</strong></td>
-                                        <td><a href="/cam/calibration">Calibration</a></td>
+                                        <td class="dash" rowspan="3"><strong>Cam</strong></td>
+                                        <td>
+                                
+                                        
+                                            <% if(config.calibration=='1') { %>
+                                                <span class="text-success"><span class="fa fa-check"></span> Camera Calibrated</span>
+                                            <% } else { %>
+                                                <span class="text-danger"><span class="fa fa-times"></span> Camera Not Calibrated</span>
+                                             <% } %>
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td class="dash">&nbsp;</td>
+                                        <td><a href="/cam/parameters">Parameters</a></td>
+                                    </tr>
+                                     <tr>
                                         <td><a href="http://<%= config.cam_ip %>" target="_blank">Admin Config. <span class="fa fa-external-link"></span></a></td>
                                     </tr>
-                                 </table>                          
-                                   
-                                  
+                                 </table>     
+                                                      
                             <% } %>   
-                            
-                            
-                           
-                        
+                             
                         </div>
                   </div>
             </div>  
        </div>
-        
-        <!--
-        <%if (config) { %> 
-            <div class="dmt dmb">
-                <div class="embed-responsive embed-responsive-cam-param">
-                    <iframe class="embed-responsive-item" src="http://<%= config.cam_ip %>/videolens.asp"></iframe>
-                </div>
-            </div>
-        <% } %>  
-        -->
+  
     </div>
 </div>
-
-
+ 
 
 <% include ../shared/footer.ejs %>
- 
+<script>
+    $(function() {
+        var str = $('#fov').text();
+        var pos = str.lastIndexOf('|');
+        str = str.substring(0,pos) + "" + str.substring(pos+1)
+        $('#fov').text(str.replaceAll("|", " | "));
+    });
+</script>

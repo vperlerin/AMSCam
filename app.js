@@ -78,6 +78,8 @@ app.use(bodyParser.urlencoded({
        return async.parallel([
            function() {
                 pyshellUpload.on('message',  function (config) { 
+                    console.log(config);
+                
                     if(typeof config.cam_pwd  == "undefined") {
                         res.redirect('/cam/update_cam_pwd');    
                         return true;
@@ -90,22 +92,8 @@ app.use(bodyParser.urlencoded({
                 })
            }
         ]);
-           
-        
     }
-    
-    // Test if the cam password has been setup (config passwed in arg)
-    // if not, redirect to /cam/update_cam_pwd
-    function test_cam_pwd_from_config(config,res,template,template_args) {
-        if(typeof config.cam_pwd  == "undefined") {
-            res.redirect('/cam/update_cam_pwd');    
-            return false;
-        } else {
-            res.render(template,template_args);
-            return true;   
-        }
-    }
-     
+      
      
     // Test if the capture is running
     function test_capture_running(res,template,opts) {
@@ -132,8 +120,7 @@ app.get('/', function(req, res) {
     if(typeof req.query.msg != 'undefined') {
         opts.msg =   req.query.msg 
     }
-    
-    
+     
     // Render
     test_capture_running(res,'home',opts);
      
@@ -288,7 +275,7 @@ app.get('/cam/restart', function(req, res) {
 /******************************************************************************************************************************************
 * Cam calibration
 ***********************************************/
-app.get('/cam/calibration', function(req, res) {
+app.get('/cam/parameters', function(req, res) {
     
     // Test Browser
     browser = utils.get_browser(req)
@@ -307,7 +294,7 @@ app.get('/cam/calibration', function(req, res) {
     PythonShell.run('get_parameter_from_file.py', opts, function (err, ress) {
        if (err) throw err;
        // Render
-       test_cam_pwd(res,'calibration',{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']});
+       test_cam_pwd(res,'parameters',{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']});
      });
   
     
@@ -317,7 +304,7 @@ app.get('/cam/calibration', function(req, res) {
 /******************************************************************************************************************************************
 * Update Cam calibration (JSON CALL)
 ***********************************************/
-app.post('/cam/calibration', function(req, res) {
+app.post('/cam/parameters', function(req, res) {
      
     var opts = {    args: [JSON.stringify(req.body)],
                     scriptPath: constants.python_path + "/cam" 

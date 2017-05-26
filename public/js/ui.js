@@ -1,3 +1,5 @@
+
+
 function test_one_selected($table) {
    if($table.find('input[type=checkbox]:checked').length==0) {
         $('button[data-action=delete-all]').prop('disabled',true);
