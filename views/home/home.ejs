@@ -74,8 +74,7 @@
                                      Click <a href="/">here</a> after the preview goes black.
                                  </div>
                             <% } %>   
-                            
-                        
+                         
                             <%if (config) { %> 
                                 <table class="table table-condensed table-striped text-left">
                                     <tr>
@@ -125,8 +124,7 @@
                                     <tr>
                                         <td class="dash" rowspan="3"><strong>Cam</strong></td>
                                         <td>
-                                
-                                        
+                                         
                                             <% if(config.calibration=='1') { %>
                                                 <span class="text-success"><span class="fa fa-check"></span> Camera Calibrated</span>
                                             <% } else { %>
@@ -159,6 +157,6 @@
         var str = $('#fov').text();
         var pos = str.lastIndexOf('|');
         str = str.substring(0,pos) + "" + str.substring(pos+1)
-        $('#fov').text(str.replaceAll("|", " | "));
+        $('#fov').text(str.replace(/\|/g, " | "));
     });
 </script>

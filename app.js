@@ -1,28 +1,38 @@
-var express     = require('express'),
-    app         = express(),
-    path        = require('path'),
-    request     = require('request'),
-    PythonShell = require('python-shell'),
-    UAParser    = require('ua-parser-js'),
-    constants   = require('./utils/constants'),
-    utils       = require('./utils/browser'),
-    bodyParser  = require('body-parser'),
-    fs          = require('fs'),
-    async           = require('async'),
-    repeat          = require('repeat'),
-    minifyHTML      = require('express-minify-html'),
-    child_process = require('child_process'); 
+// Modules
+var express         = require('express');
+var app             = express();
+var path            = require('path');
+var request         = require('request');
+var PythonShell     = require('python-shell');
+var bodyParser      = require('body-parser');
+var fs              = require('fs');
+var repeat          = require('repeat');
+var minifyHTML      = require('express-minify-html');
+var favicon         = require('serve-favicon');
+var logger          = require('morgan'); 
+
+// Custom Scripts
+var read_config     = require('./utils/read_config');
+var utils           = require('./utils/browser');
+var constants       = require('./utils/constants');
+var cam_capture     = require('./utils/capture_test');
+
+
+console.log(read_config);
 
 // Set default folder
 app.use(express.static(__dirname + '/public'));
 
-// Img & Videos folders
+// Routes
 app.use('/py_img',express.static(path.join(__dirname + '/../../../var/www/html/out')));
 app.use('/maybe',express.static(path.join(__dirname + '/../../../var/www/html/out/maybe')));
 app.use('/false',express.static(path.join(__dirname + '/../../../var/www/html/out/false')));
 app.use('/fireballs',express.static(path.join(__dirname + '/../../../var/www/html/out/fireballs')));
 app.use('/js',express.static(path.join(__dirname + '/public/js')));
-  
+app.use('/pnacl',express.static(path.join(__dirname + '/views/pnacl')));
+
+// Logger
+app.use(logger('dev'));  
  
 // Compress HTML
 app.use(minifyHTML({
@@ -40,14 +50,17 @@ app.use(minifyHTML({
 
 // Views
 app.set('views', [
-    path.join(__dirname + '/public/detections'),
-    path.join(__dirname + '/public/home'),
-    path.join(__dirname + '/public/cam'),
-    path.join(__dirname + '/public'), 
+    path.join(__dirname + '/views/detections'),
+    path.join(__dirname + '/views/home'),
+    path.join(__dirname + '/views/cam'),
+    path.join(__dirname + '/views'),  
     '/var/www/html/out']
 ); 
 app.set('view engine', 'ejs');
 
+
+// Favicon
+app.use(favicon(__dirname + '/public/img/favicon.png'));
 
 // Bower
 app.use('/bower_components', express.static(__dirname + '/bower_components'));
@@ -57,54 +70,34 @@ app.use('/node_modules', express.static(__dirname + '/node_modules'));
 
 // URLs 
 app.use(bodyParser.urlencoded({
-    extended: true
+    extended: false
 }));
 
-
-
-/******************************************************************************************************************************************
-* FUNCTIONS
-***********************************************/
-
-    // Test if the cam password has been setup (read the config_file)
-    // if not, redirect to /cam/update_cam_pwd
-    function test_cam_pwd(res,template,template_args) {
-        
-        var pyshellUpload = new PythonShell('read_config.py', {
-            mode: 'json',
-            scriptPath: constants.python_path +'/config'
+// development error handler
+// will print stacktrace
+if (app.get('env') === 'development') {
+    app.use(function(err, req, res, next) {
+        res.status(err.status || 500);
+        res.render('error', {
+            message: err.message,
+            error: err
         });
-       
-       return async.parallel([
-           function() {
-                pyshellUpload.on('message',  function (config) { 
-                    console.log(config);
-                
-                    if(typeof config.cam_pwd  == "undefined") {
-                        res.redirect('/cam/update_cam_pwd');    
-                        return true;
-                    } else {
-                        // Add the config to the template
-                        template_args.config = config;
-                        res.render(template,template_args);
-                        return false;   
-                    }
-                })
-           }
-        ]);
-    }
-      
+    });
+}
+
+// production error handler
+// no stacktraces leaked to user
+app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('error', {
+        message: err.message,
+        error: {}
+    });
+});
+
+ 
      
-    // Test if the capture is running
-    function test_capture_running(res,template,opts) {
-        child_process.exec(constants.python_path +  'simple-capture-status.sh', function(error, stdout, stderr){
-            
-            opts.capture = stdout;   
-            test_cam_pwd(res,template,opts);
-            
-            // console.log('stdout: ' + stdout); // 1 or 0
-        });
-    }
+
 
 
 /******************************************************************************************************************************************
@@ -122,7 +115,7 @@ app.get('/', function(req, res) {
     }
      
     // Render
-    test_capture_running(res,'home',opts);
+    cam_capture.test_capture_running(res,'home',opts);
      
 });
    
@@ -163,7 +156,7 @@ app.get('/cam/log', function(req, res) {
         });
         
         readConfig.on('message', function (log_cont) {  
-            test_cam_pwd(res,'log',{log_content:JSON.parse(log_cont)});
+            read_config.test_cam_pwd(res,'log',{log_content:JSON.parse(log_cont)});
         });
     }
          
@@ -216,7 +209,7 @@ app.get('/cam/log/clean', function(req, res) {
 ***********************************************/
 app.get('/cam/focus_helper', function(req, res) {
     
-     test_cam_pwd(res,'focus_helper',{});
+     read_config.test_cam_pwd(res,'focus_helper',{});
     
 });
 
@@ -243,7 +236,7 @@ app.post('/cam/focus_helper', function(req, res) {
           
     }).every(_interval, 'sec').for(_period, 'sec').start.in(_delay, 'sec').then(function() {
         var dt = new Date(); 
-        test_cam_pwd(res,'focus_helper',{'success':'Focus helper stopped on ' +   dt.toUTCString()});
+        read_config.test_cam_pwd(res,'focus_helper',{'success':'Focus helper stopped on ' +   dt.toUTCString()});
     });
    
     
@@ -294,7 +287,7 @@ app.get('/cam/parameters', function(req, res) {
     PythonShell.run('get_parameter_from_file.py', opts, function (err, ress) {
        if (err) throw err;
        // Render
-       test_cam_pwd(res,'parameters',{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']});
+       read_config.test_cam_pwd(res,'parameters',{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']});
      });
   
     
@@ -328,7 +321,7 @@ app.post('/cam/parameters', function(req, res) {
 app.get('/cam/screenshot', function(req, res) {
     
     // If the cam password has already been updated:
-    test_cam_pwd(res,'screenshot',{});
+    read_config.test_cam_pwd(res,'screenshot',{});
     
 });
 
@@ -347,7 +340,7 @@ app.post('/cam/screenshot', function(req, resp) {
         pyshellUpload.on('message', function (message_success) { 
             if (message_success) {
                 // Render
-                return test_cam_pwd(resp,'screenshot',{  message_success: message_success});
+                return read_config.test_cam_pwd(resp,'screenshot',{  message_success: message_success});
              }        
         });
        
@@ -417,7 +410,7 @@ app.get('/cam/forget_cam_pwd', function(req, res) {
             
         pyshellSendEmail.on('message', function (config) { 
              // Redirect to /cam/update_cam_pwd with success message
-             test_cam_pwd(res,'update_cam_pwd',{
+             read_config.test_cam_pwd(res,'update_cam_pwd',{
                 success: 'Email sent',
                 config: config
              });
@@ -548,7 +541,7 @@ app.get('/detection/maybe', function(req, res) {
         opts_render.success = req.query.success.split("$");
       }
       
-      test_cam_pwd(res,'maybe',opts_render);
+      read_config.test_cam_pwd(res,'maybe',opts_render);
     
     });
      
@@ -624,7 +617,7 @@ app.get('/detection/false', function(req, res) {
         opts_render.success = req.query.success.split("$");
       }
            
-      test_cam_pwd(res,'false',opts_render);    
+      read_config.test_cam_pwd(res,'false',opts_render);    
        
     });
      
@@ -700,7 +693,7 @@ app.get('/detection/fireballs', function(req, res) {
         opts_render.success = req.query.success.split("$");
       }
        
-      test_cam_pwd(res,'fireballs',opts_render);   
+      read_config.test_cam_pwd(res,'fireballs',opts_render);   
             
     });
      
