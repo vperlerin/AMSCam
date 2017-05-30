@@ -6,10 +6,11 @@ var request         = require('request');
 var PythonShell     = require('python-shell');
 var bodyParser      = require('body-parser');
 var fs              = require('fs');
-var repeat          = require('repeat');
+
 var minifyHTML      = require('express-minify-html');
 var favicon         = require('serve-favicon');
 var logger          = require('morgan'); 
+var methodOverride = require('method-override');
 
 // Custom Scripts
 var read_config     = require('./utils/read_config');
@@ -17,10 +18,8 @@ var utils           = require('./utils/browser');
 var constants       = require('./utils/constants');
 var cam_capture     = require('./utils/capture_test');
 
-// Routes
-var index  = require('./routes/index'); 
 
-// Set default folder
+// Set public folder
 app.use(express.static(__dirname + '/public'));
 
 // Routes
@@ -29,10 +28,12 @@ app.use('/maybe',express.static(path.join(__dirname + '/../../../var/www/html/ou
 app.use('/false',express.static(path.join(__dirname + '/../../../var/www/html/out/false')));
 app.use('/fireballs',express.static(path.join(__dirname + '/../../../var/www/html/out/fireballs')));
 app.use('/js',express.static(path.join(__dirname + '/public/js')));
-app.use('/pnacl',express.static(path.join(__dirname + '/views/pnacl')));
+app.use('/pnacl',express.static(path.join(__dirname + '/views/pnacl'))); // RSTP Viewer
 
 // Logger
 app.use(logger('dev'));  
+
+
  
 // Compress HTML
 app.use(minifyHTML({
@@ -67,8 +68,10 @@ app.use('/node_modules', express.static(__dirname + '/node_modules'));
 
 // URLs 
 app.use(bodyParser.urlencoded({
-    extended: false
+    extended: true
 }));
+
+app.use(methodOverride('_method'));
 
 // development error handler
 // will print stacktrace
@@ -91,204 +94,33 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
- 
+
+module.exports = app;
+
+// Routes
+var index           = require('./routes/index'); 
+var logg            = require('./routes/cam_log'); 
+var focus_helper    = require('./routes/focus_helper'); 
+var cam_calib       = require('./routes/cam_calib'); 
 
 // Home
 app.use('/', index);
-   
 
-/******************************************************************************************************************************************
-* Read Log
-***********************************************/
-app.get('/cam/log', function(req, res) {
-  
-    if(typeof req.query.ot != "undefined") {
-        
-        // Pass something in argument (API Style)
-        var dt = new Date();
-        var tt   = (typeof req.query.time == "undefined")?dt.toUTCString():req.query.time;
-        var val1 = req.query.ot;
-        var val2 = req.query.it;
-        var val3 = req.query.ih; 
-        var to_update = {'log':tt+'$'+val1+'$'+val2+'$'+val3}; 
-     
-        var writeLog = new PythonShell('write_log.py', {
-                mode: 'text' ,
-                scriptPath: constants.python_path + "/log",
-                args:[constants.cam_log_file,JSON.stringify(to_update)]
-        });
-        
-        writeLog.on('message', function () {  
-              res.redirect('/cam/log');
-        }); 
-        
-    }  else {
-        
-         // Pass nothing
+// Cam Log
+app.get('/cam/log', logg.load);
+app.post('/cam/log', logg.add);
+app.get('/cam/log/clean', logg.clean);
 
-        var readConfig = new PythonShell('read_log.py', {
-                mode: 'text' ,
-                scriptPath: constants.python_path + "/log",
-                args:[constants.cam_log_file]
-        });
-        
-        readConfig.on('message', function (log_cont) {  
-            read_config.test_cam_pwd(res,'log',{log_content:JSON.parse(log_cont)});
-        });
-    }
-         
-});
+// Focus Helper
+app.get('/cam/focus_helper', focus_helper.load);
+app.post('/cam/focus_helper', focus_helper.start);
+
+// Cam Restart & Parameters
+app.get('/cam/restart', cam_calib.restart);
+app.get('/cam/parameters', cam_calib.load);
+app.post('/cam/parameters', cam_calib.post); // Ajax Call
 
 
-/*********************************************** 
-* Add Log entry (from form)
-***********************************************/
-app.post('/cam/log', function(req, res) {
-       
-        var tt   = req.body.timeV;
-        var val1 = req.body.val1;
-        var val2 = req.body.val2;
-        var val3 = req.body.val3; 
-        var to_update = {'log':tt+'$'+val1+'$'+val2+'$'+val3}; 
-     
-        var writeLog = new PythonShell('write_log.py', {
-                mode: 'text' ,
-                scriptPath: constants.python_path + "/log",
-                args:[constants.cam_log_file,JSON.stringify(to_update)]
-        });
-        
-        writeLog.on('message', function () {  
-              res.redirect('/cam/log');
-        }); 
- });
- 
- 
-/*********************************************** 
-* Clean cam log
-***********************************************/
-app.get('/cam/log/clean', function(req, res) {
-       
-        var delLog = new PythonShell('del_log.py', {
-            mode: 'text' ,
-            scriptPath: constants.python_path + "/log",
-            args:[constants.cam_log_file]
-        });
-        
-        delLog.on('message', function () {  
-              res.redirect('/cam/log');
-        }); 
- });
-
-
-
-/******************************************************************************************************************************************
-* FOCUS HELPER
-***********************************************/
-app.get('/cam/focus_helper', function(req, res) {
-    
-     read_config.test_cam_pwd(res,'focus_helper',{});
-    
-});
-
-
-/*********************************************** 
-* START FOCUS HELPER
-***********************************************/
-app.post('/cam/focus_helper', function(req, res) {
-  
-    // Setup the repeat
-    var _interval  = req.body._interval;
-    var _period    = req.body._period;
-    var _delay     = req.body._delay; 
-  
-   
-    repeat(function(done) {
-        
-       PythonShell.run('upload_latest.py', {
-            mode: 'text' ,
-            scriptPath: constants.python_path+'/cam'
-       }, function (err, results) {
-            done();
-       });
-          
-    }).every(_interval, 'sec').for(_period, 'sec').start.in(_delay, 'sec').then(function() {
-        var dt = new Date(); 
-        read_config.test_cam_pwd(res,'focus_helper',{'success':'Focus helper stopped on ' +   dt.toUTCString()});
-    });
-   
-    
-});
-
-
-/******************************************************************************************************************************************
-* Restart Cam
-***********************************************/
-app.get('/cam/restart', function(req, res) {
-    
-    // Test Browser
-    browser = utils.get_browser(req)
-    
-    var opts         = {scriptPath: constants.python_path + "/cam" };
-    var render_opts  = {browser:  browser };
-    
-        
-    // Get Current Cam Parameters
-    PythonShell.run('restart_cam_server.py', opts, function (err, ress) {
-       if (err) throw err;
-            res.redirect('../?msg='+'Camera restarting');
-      });
-  
-    
-});
-
-
-/******************************************************************************************************************************************
-* Cam calibration
-***********************************************/
-app.get('/cam/parameters', function(req, res) {
-    
-    // Test Browser
-    browser = utils.get_browser(req)
-    
-    var opts         = {scriptPath: constants.python_path + "/cam" };
-    var render_opts  = {browser:  browser };
-    
-   
-    if(typeof req.query.file == "undefined") {
-        opts['args']  = ['Calibration'];
-    } else {
-        opts['args']  = [req.query.file];
-    }
-       
-    // Get Current Cam Parameters
-    PythonShell.run('get_parameter_from_file.py', opts, function (err, ress) {
-       if (err) throw err;
-       // Render
-       read_config.test_cam_pwd(res,'parameters',{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']});
-     });
-  
-    
-});
-
-
-/******************************************************************************************************************************************
-* Update Cam calibration (JSON CALL)
-***********************************************/
-app.post('/cam/parameters', function(req, res) {
-     
-    var opts = {    args: [JSON.stringify(req.body)],
-                    scriptPath: constants.python_path + "/cam" 
-    };
-    
-     
-    PythonShell.run('set_parameters_to_file.py', opts, function (err, ress) {
-        if (err) throw err;
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify({ "RES": ress }, null, 3));
-    });
-    
-    
-});
 
 
 

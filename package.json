@@ -13,7 +13,8 @@
     "repeat":"^0.0.6",
     "express-minify-html":"^0.11.3",
     "morgan": "~1.7.0",
-    "serve-favicon": "~2.3.2"
+    "serve-favicon": "~2.3.2",
+    "method-override":"~2.3.9"
   },
   "devDependencies": {},
   "scripts": {
