@@ -102,6 +102,7 @@ var index           = require('./routes/index');
 var logg            = require('./routes/cam_log'); 
 var focus_helper    = require('./routes/focus_helper'); 
 var cam_calib       = require('./routes/cam_calib'); 
+var cam_scr         = require('./routes/cam_screenshot'); 
 
 // Home
 app.use('/', index);
@@ -120,41 +121,11 @@ app.get('/cam/restart', cam_calib.restart);
 app.get('/cam/parameters', cam_calib.load);
 app.post('/cam/parameters', cam_calib.post); // Ajax Call
 
+// Cam Screenshot
+app.get('/cam/screenshot', cam_scr.load);
+app.post('/cam/screenshot', cam_scr.update);  
 
 
-
-
-/******************************************************************************************************************************************
-* Screenshot Page
-***********************************************/
-app.get('/cam/screenshot', function(req, res) {
-    
-    // If the cam password has already been updated:
-    read_config.test_cam_pwd(res,'screenshot',{});
-    
-});
-
-
-/**********************************************
-* Take screenshot
-***********************************************/
-app.post('/cam/screenshot', function(req, resp) {
- 
-        var pyshellUpload = new PythonShell('upload_latest.py', {
-            mode: 'json' ,
-            scriptPath: constants.python_path+'/cam'
-         });
-        
-        // JSON.stringify(message_success, null, '\t')
-        pyshellUpload.on('message', function (message_success) { 
-            if (message_success) {
-                // Render
-                return read_config.test_cam_pwd(resp,'screenshot',{  message_success: message_success});
-             }        
-        });
-       
-          
-});
 
 
 
