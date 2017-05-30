@@ -17,8 +17,8 @@ var utils           = require('./utils/browser');
 var constants       = require('./utils/constants');
 var cam_capture     = require('./utils/capture_test');
 
-
-console.log(read_config);
+// Routes
+var index  = require('./routes/index'); 
 
 // Set default folder
 app.use(express.static(__dirname + '/public'));
@@ -57,15 +57,12 @@ app.set('views', [
     '/var/www/html/out']
 ); 
 app.set('view engine', 'ejs');
-
-
+ 
 // Favicon
 app.use(favicon(__dirname + '/public/img/favicon.png'));
 
-// Bower
-app.use('/bower_components', express.static(__dirname + '/bower_components'));
-
-// Nodes
+// Bower & Nodes
+app.use('/bower_components', express.static(__dirname + '/bower_components')); 
 app.use('/node_modules', express.static(__dirname + '/node_modules'));
 
 // URLs 
@@ -94,30 +91,10 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-
  
-     
 
-
-
-/******************************************************************************************************************************************
-* Home Page
-***********************************************/
-app.get('/', function(req, res) {
-     
-    
-    // Test Browser
-    var opts = {};
-    opts.browser = utils.get_browser(req)
-    
-    if(typeof req.query.msg != 'undefined') {
-        opts.msg =   req.query.msg 
-    }
-     
-    // Render
-    cam_capture.test_capture_running(res,'home',opts);
-     
-});
+// Home
+app.use('/', index);
    
 
 /******************************************************************************************************************************************
