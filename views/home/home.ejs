@@ -133,11 +133,11 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td> 
                                              <%if (typeof config.parameters === "undefined") { %>     
                                                 <a href="/cam/parameters">Parameters</a>
                                              <%} else {%>
-                                                <a href="/cam/parameters?file=<%= config.parameters %>">Current Parameters</a>
+                                                <a href="/cam/parameters?file=<%= config.parameters %>">Current Parameters (<%= config.parameters %>)</a>
                                              <% } %>
                                         </td>
                                     </tr>

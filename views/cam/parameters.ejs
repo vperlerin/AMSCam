@@ -95,10 +95,14 @@
                              
                         </div>
                         <hr/>
-                        <p>Once your set of parameters are defined, click the button below to automatically load the proper set of parameters based on the 
-                        current position of the sun.</p>
+                        <div class="alert alert-warning">
+                            <span class="fa fa-warning"></span> <strong>IMPORTANT</strong><br/>
+                            Once your set of parameters are defined, click the button below to automatically load 
+                            the proper set of parameters based on the current position of the sun. 
+                            If you don't, it may take up to 15 minutes for the appropriate parameters to load. 
+                        </div>
                         
-                        <a href="/cam/load_parameters" id="btn_screenshot" class="btn btn-lg btn-primary btn-block load-on-click mt" type="submit">Auto Cam Parameters</button>
+                        <a href="/cam/load_parameters" id="btn_parameters" class="btn btn-lg btn-primary btn-block load-on-click mt" type="submit">Auto Cam Parameters</button>
                        
                         
                   </div>
@@ -114,8 +118,8 @@
  
     
     <script>
-        $(function() {
-            
+      $(function() {
+            /* Setup Sliders */
             <%for (var file in config_files){%>
                 <%for (var slider in sliders){%>
                     var <%= config_files[file]  %><%= sliders[slider] %>_handle = $( "#sl_<%= config_files[file]  %><%= sliders[slider] %>-handle" );
@@ -150,10 +154,7 @@
                      }); 
                 <%}%>
             <%}%>
-             
-           
-             
-             
+               
         });
     </script>     
     
