@@ -13,9 +13,11 @@ router.get('/', function(req, res) {
     var opts = {};
     opts.browser = utils.get_browser(req)
     
+    // Eventual Msg
     if(typeof req.query.msg != 'undefined') {
         opts.msg =   req.query.msg 
     }
+    
      // Render
     cam_capture.test_capture_running(res,'home',opts);
      

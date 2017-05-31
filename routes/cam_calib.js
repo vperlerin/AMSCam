@@ -71,7 +71,21 @@ exports.post = function(req, res) {
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify({ "RES": ress }, null, 3));
     });
-   
-    
-    
+};
+
+
+/******************************************************************************************************************************************
+* Auto load the proper set of parameters depending on the sun position
+***********************************************/
+exports.load_default_param = function(req, res) {
+         
+    var opts = {    
+        args: [JSON.stringify(req.body)],
+        scriptPath: constants.python_path + "/cam" 
+    };
+      
+    PythonShell.run('auto_set_parameters.py', opts, function (err, ress) {
+        if (err) throw err;
+        res.redirect('/');
+    });
 };

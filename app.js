@@ -120,6 +120,7 @@ app.post('/cam/focus_helper', focus_helper.start);
 app.get('/cam/restart', cam_calib.restart);
 app.get('/cam/parameters', cam_calib.load);
 app.post('/cam/parameters', cam_calib.post); // Ajax Call
+app.get('/cam/load_parameters', cam_calib.load_default_param); // Ajax Call
 
 // Cam Screenshot
 app.get('/cam/screenshot', cam_scr.load);
@@ -173,7 +174,8 @@ app.get('/cam/forget_cam_pwd', function(req, res) {
     
     var pyshellReadConfig = new PythonShell('read_config.py', {
             mode: 'json',
-            scriptPath: constants.python_path +'/config'
+            scriptPath: constants.python_path +'/config',
+            argv: ['json']
     });
      
     // Read config
@@ -206,13 +208,14 @@ app.get('/cam/forget_cam_pwd', function(req, res) {
 ***********************************************/
 app.get('/cam/update_cam_pwd', function(req, res) {
      
-    var pyshellUpload = new PythonShell('read_config.py', {
+    var pyshellReadConfig = new PythonShell('read_config.py', {
             mode: 'json',
-            scriptPath: constants.python_path +'/config'
+            scriptPath: constants.python_path +'/config',
+            argv: ['json']
     });
         
     // Read config
-    pyshellUpload.on('message',  function (config) { 
+    pyshellReadConfig.on('message',  function (config) { 
           
           // Test if config.cam_pwd has been updated 
           // to properly display the warning message
@@ -241,7 +244,8 @@ app.post('/cam/update_cam_pwd', function(req, res) {
     
     var pyshellReadConfig = new PythonShell('read_config.py', {
         mode: 'json',
-        scriptPath: constants.python_path +'/config'
+        scriptPath: constants.python_path +'/config',
+        argv: ['json']
     });
     
     // Read config

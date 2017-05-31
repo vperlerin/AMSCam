@@ -15,7 +15,8 @@ define("test_cam_pwd", function test_cam_pwd(res,template,template_args) {
     
     var pyshellUpload = new PythonShell('read_config.py', {
         mode: 'json',
-        scriptPath: constants.python_path +'/config'
+        scriptPath: constants.python_path +'/config',
+        argv: ['json']
     });
    
    return async.parallel([
