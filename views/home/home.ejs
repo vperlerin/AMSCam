@@ -133,7 +133,13 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td><a href="/cam/parameters">Parameters</a></td>
+                                        <td>
+                                             <%if (typeof config.parameters === "undefined") { %>     
+                                                <a href="/cam/parameters">Parameters</a>
+                                             <%} else {%>
+                                                <a href="/cam/parameters?file=<%= config.parameters %>">Current Parameters</a>
+                                             <% } %>
+                                        </td>
                                     </tr>
                                      <tr>
                                         <td><a href="http://<%= config.cam_ip %>" target="_blank">Admin Config. <span class="fa fa-external-link"></span></a></td>

@@ -77,7 +77,7 @@ exports.post = function(req, res) {
 /******************************************************************************************************************************************
 * Auto load the proper set of parameters depending on the sun position
 ***********************************************/
-exports.load_default_param = function(req, res) {
+exports.load_auto_param = function(req, res) {
          
     var opts = {    
         args: [JSON.stringify(req.body)],

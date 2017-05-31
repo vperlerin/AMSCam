@@ -120,7 +120,7 @@ app.post('/cam/focus_helper', focus_helper.start);
 app.get('/cam/restart', cam_calib.restart);
 app.get('/cam/parameters', cam_calib.load);
 app.post('/cam/parameters', cam_calib.post); // Ajax Call
-app.get('/cam/load_parameters', cam_calib.load_default_param); // Ajax Call
+app.get('/cam/load_parameters', cam_calib.load_auto_param); // Ajax Call
 
 // Cam Screenshot
 app.get('/cam/screenshot', cam_scr.load);
@@ -537,3 +537,4 @@ app.post('/detection/fireballs/delete_multiple', function(req, res) {
 
  
 app.listen(constants.main_port);
+console.log('Listening on port 3000 - the AMSCam App is running.'); 
