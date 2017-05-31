@@ -21,9 +21,8 @@ define("test_cam_pwd", function test_cam_pwd(res,template,template_args) {
    return async.parallel([
        function() {
             pyshellUpload.on('message',  function (config) { 
-                //console.log(config);
-            
-                if(typeof config.cam_pwd  == "undefined") {
+              
+                 if(typeof config.cam_pwd  === "undefined" || config.cam_pwd === "admin") {
                     res.redirect('/cam/update_cam_pwd');    
                     return true;
                 } else {

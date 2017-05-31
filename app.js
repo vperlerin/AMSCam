@@ -205,14 +205,22 @@ app.get('/cam/forget_cam_pwd', function(req, res) {
 * UPDATE CAM PWD
 ***********************************************/
 app.get('/cam/update_cam_pwd', function(req, res) {
-    
+     
     var pyshellUpload = new PythonShell('read_config.py', {
             mode: 'json',
             scriptPath: constants.python_path +'/config'
     });
-       
+        
     // Read config
     pyshellUpload.on('message',  function (config) { 
+          
+          // Test if config.cam_pwd has been updated 
+          // to properly display the warning message
+          
+          if(typeof config.cam_pwd === "undefined" || config.cam_pwd === "admin") {
+             delete config.cam_pwd; 
+          }
+     
           res.render('update_cam_pwd', {
              config: config
         })
@@ -254,6 +262,11 @@ app.post('/cam/update_cam_pwd', function(req, res) {
         if(new_pwd !== new_pwd2) {
             _error.push('The 2 new passwords don\'t match. Please, try again.');
         }
+        
+        // Test if new passwords != admin
+        if(new_pwd === 'admin') {
+            _error.push('For security reasons, "admin" is forbidden as the camera password. Please, enter a new password.');
+        }
          
         // Error
         if(_error.length !== 0 ) {
@@ -261,7 +274,7 @@ app.post('/cam/update_cam_pwd', function(req, res) {
             // We have an error: we redirect with the error message
             res.render('update_cam_pwd', {
                 config : config,
-                errors      : _error
+                errors : _error
             });
            
          } else {
