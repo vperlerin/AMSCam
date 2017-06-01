@@ -52,12 +52,12 @@ exports.load =  function(req, res) {
 ***********************************************/
 exports.add =  function(req, res) {
        
-        var tt   = req.params.timeV;
-        var val1 = req.params.val1;
-        var val2 = req.params.val2;
-        var val3 = req.params.val3; 
+        var tt   = req.body.timeV;
+        var val1 = req.body.val1;
+        var val2 = req.body.val2;
+        var val3 = req.body.val3; 
         var to_update = {'log':tt+'$'+val1+'$'+val2+'$'+val3}; 
-     
+       
         var writeLog = new PythonShell('write_log.py', {
                 mode: 'text' ,
                 scriptPath: constants.python_path + "/log",
