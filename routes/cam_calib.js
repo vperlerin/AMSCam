@@ -29,7 +29,7 @@ exports.restart = function(req, res) {
 
 
 /******************************************************************************************************************************************
-* Cam calibration
+* Cam calibration 
 ***********************************************/
 exports.load = function(req, res) {
     
@@ -38,18 +38,19 @@ exports.load = function(req, res) {
     
     var opts         = {scriptPath: constants.python_path + "/cam" };
     var render_opts  = {browser:  browser };
-    
    
+    // By default the file is Calibration
     if(typeof req.query.file == "undefined") {
         opts['args']  = ['Calibration'];
     } else {
         opts['args']  = [req.query.file];
     }
        
-    // Get Current Cam Parameters
+    // Get Current Cam Parameters based on the opts['args'] (passed to the URL or default = Calibration)
     PythonShell.run('get_parameter_from_file.py', opts, function (err, ress) {
        if (err) throw err;
        // Render
+       console.log('Param for ' + opts['args'] + ':' + ress);
        read_config.test_cam_pwd(res,'parameters',{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']});
      });
   

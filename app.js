@@ -125,10 +125,7 @@ app.get('/cam/load_parameters', cam_calib.load_auto_param); // Ajax Call
 // Cam Screenshot
 app.get('/cam/screenshot', cam_scr.load);
 app.post('/cam/screenshot', cam_scr.update);  
-
-
-
-
+ 
 
 
 /******************************************************************************************************************************************

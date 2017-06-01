@@ -81,7 +81,7 @@
                             <%for (var file in config_files){%>
                                 <div class="tab-pane fade in dmt  <% if( config_files[file]== active_file){ %>active<% } %>" role="tabpanel" id="<%= config_files[file] %>"> 
                                     <% /* Coul add Chroma... */ %> 
-                                    <% sliders = ['Brightness','Contrast','Saturation']; %> 
+                                    <% sliders = ['Brightness','Contrast','Gamma']; %> 
                                          <%for (var slider in sliders){%>
                                             <div class="clearfix dmt">
                                                 <strong class="pull-left ui-slider-handle-label"><%= sliders[slider]  %></strong>    
