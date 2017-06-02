@@ -42,7 +42,7 @@ exports.load =  function(req, res) {
             });
             
             readConfig.on('message', function (log_cont) {  
-                read_config.test_cam_pwd(res,'log',{log_content:JSON.parse(log_cont)});
+                read_config.load_page_with_conf_test_cam_pwd(res,'log',{log_content:JSON.parse(log_cont)});
             });
         }
 };

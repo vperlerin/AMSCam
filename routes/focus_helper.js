@@ -14,7 +14,7 @@ var constants       = require('../utils/constants');
 // app.get('/cam/focus_helper', 
 
 exports.load = function(req, res) {
-      read_config.test_cam_pwd(res,'focus_helper',{});
+      read_config.load_page_with_conf_test_cam_pwd(res,'focus_helper',{});
 };
 
 
@@ -42,7 +42,7 @@ exports.start = function(req, res) {
           
     }).every(_interval, 'sec').for(_period, 'sec').start.in(_delay, 'sec').then(function() {
         var dt = new Date(); 
-        read_config.test_cam_pwd(res,'focus_helper',{'success':'Focus helper stopped on ' +   dt.toUTCString()});
+        read_config.load_page_with_conf_test_cam_pwd(res,'focus_helper',{'success':'Focus helper stopped on ' +   dt.toUTCString()});
     });
    
     

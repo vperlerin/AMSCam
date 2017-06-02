@@ -8,6 +8,11 @@
   line-height: 50px;
   font-size: 2em;
  }
+ 
+ #mobile-logo a:hover,  #mobile-logo a:focus {
+   text-decoration:none;
+   color:#3f94e0;
+ }
 
 .table-results{ width: auto;  margin: 1em auto 2em; }
 .dmr { margin-right:.5em }

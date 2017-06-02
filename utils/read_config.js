@@ -8,10 +8,29 @@ function define(name, value) {
         enumerable: true
     });
 }
+
+
+define("read_config", function read_config(callback) {
+    var pyshellUpload = new PythonShell('read_config.py', {
+        mode: 'json',
+        scriptPath: constants.python_path +'/config',
+        argv: ['json']
+    });
+    
+    return async.parallel([
+           function() {
+            pyshellUpload.on('message',  function (config) {  
+                callback(config);
+            });
+       }
+    ]);
+});
+
+
   
 // Test if the cam password has been setup (read the config_file)
 // if not, redirect to /cam/update_cam_pwd
-define("test_cam_pwd", function test_cam_pwd(res,template,template_args) {
+define("load_page_with_conf_test_cam_pwd", function load_page_with_conf_test_cam_pwd(res,template,template_args) {
     
     var pyshellUpload = new PythonShell('read_config.py', {
         mode: 'json',
@@ -23,7 +42,7 @@ define("test_cam_pwd", function test_cam_pwd(res,template,template_args) {
        function() {
             pyshellUpload.on('message',  function (config) { 
               
-                 if(typeof config.cam_pwd  === "undefined" || config.cam_pwd === "admin") {
+                if(typeof config.cam_pwd  === "undefined" || config.cam_pwd === "admin") {
                     res.redirect('/cam/update_cam_pwd');    
                     return true;
                 } else {

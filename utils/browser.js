@@ -2,7 +2,7 @@
 * Detect browser
 ********************************/
 
-var request = require('request'), 
+var request  = require('request'), 
     UAParser = require('ua-parser-js');
 
 

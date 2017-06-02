@@ -39,22 +39,32 @@ exports.load = function(req, res) {
     var opts         = {scriptPath: constants.python_path + "/cam" };
     var render_opts  = {browser:  browser };
    
-    // By default the file is Calibration
     if(typeof req.query.file == "undefined") {
-        opts['args']  = ['Calibration'];
+         
+        // By default we load the currently used param file (in the config)
+        read_config.read_config(
+            function(config) {
+                 PythonShell.run('get_parameter_from_file.py', {scriptPath: constants.python_path + "/cam", args:[config.parameters] }, function (err, ress) {
+                   if (err) throw err;
+                   // Render 
+                   read_config.load_page_with_conf_test_cam_pwd(res,'parameters',{ browser:  browser, calib: JSON.parse(ress), active_file:config.parameters});
+                 });
+            }
+        );
+     
+        
     } else {
-        opts['args']  = [req.query.file];
+        
+         // Or we load the file passed in arg
+         opts['args']  = [req.query.file];
+         PythonShell.run('get_parameter_from_file.py', opts, function (err, ress) {
+           if (err) throw err;
+           // Render 
+           read_config.load_page_with_conf_test_cam_pwd(res,'parameters',{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']});
+         });
     }
-       
-    // Get Current Cam Parameters based on the opts['args'] (passed to the URL or default = Calibration)
-    PythonShell.run('get_parameter_from_file.py', opts, function (err, ress) {
-       if (err) throw err;
-       // Render
-       console.log('Param for ' + opts['args'] + ':' + ress);
-       read_config.test_cam_pwd(res,'parameters',{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']});
-     });
   
-    
+ 
 };
 
 

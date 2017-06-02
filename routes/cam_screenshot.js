@@ -12,7 +12,7 @@ var constants       = require('../utils/constants');
 exports.load = function(req, res)   {
     
     // If the cam password has already been updated:
-    read_config.test_cam_pwd(res,'screenshot',{});
+    read_config.load_page_with_conf_test_cam_pwd(res,'screenshot',{});
     
 };
 
@@ -31,7 +31,7 @@ exports.update = function(req, resp) {
         pyshellUpload.on('message', function (message_success) { 
             if (message_success) {
                 // Render
-                return read_config.test_cam_pwd(resp,'screenshot',{  message_success: message_success});
+                return read_config.load_page_with_conf_test_cam_pwd(resp,'screenshot',{  message_success: message_success});
              }        
         });
 };

@@ -31,11 +31,6 @@
                 </div>
                 <div class="col-md-6">
                     <p>On the left is the latest image automatically taken by your camera and uploaded on the AMS server.</p>
-                    <hr/>
-                    <form action="/cam/screenshot" method="post" class="mt" >
-                        <button id="btn_screenshot" class="btn btn-lg btn-primary btn-block load-on-click" type="submit">Take New Screenshot</button>
-                    </form> 
-                    <hr/>
                     <%if (typeof message_success != 'undefined') { %> 
                         <div class="alert alert-success dmt alert-dismissable">
                             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -45,6 +40,12 @@
                             </a>
                         </div>
                     <% }  %>
+                    <hr/>
+                    <form action="/cam/screenshot" method="post" class="mt" >
+                        <button id="btn_screenshot" class="btn btn-lg btn-primary btn-block load-on-click" type="submit">Take New Screenshot</button>
+                    </form> 
+                    <hr/>
+                    
                        
                   </div>
             </div>

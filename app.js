@@ -189,7 +189,7 @@ app.get('/cam/forget_cam_pwd', function(req, res) {
             
         pyshellSendEmail.on('message', function (config) { 
              // Redirect to /cam/update_cam_pwd with success message
-             read_config.test_cam_pwd(res,'update_cam_pwd',{
+             read_config.load_page_with_conf_test_cam_pwd(res,'update_cam_pwd',{
                 success: 'Email sent',
                 config: config
              });
@@ -335,7 +335,7 @@ app.get('/detection/maybe', function(req, res) {
         opts_render.success = req.query.success.split("$");
       }
       
-      read_config.test_cam_pwd(res,'maybe',opts_render);
+      read_config.load_page_with_conf_test_cam_pwd(res,'maybe',opts_render);
     
     });
      
@@ -411,7 +411,7 @@ app.get('/detection/false', function(req, res) {
         opts_render.success = req.query.success.split("$");
       }
            
-      read_config.test_cam_pwd(res,'false',opts_render);    
+      read_config.load_page_with_conf_test_cam_pwd(res,'false',opts_render);    
        
     });
      
@@ -487,7 +487,7 @@ app.get('/detection/fireballs', function(req, res) {
         opts_render.success = req.query.success.split("$");
       }
        
-      read_config.test_cam_pwd(res,'fireballs',opts_render);   
+      read_config.load_page_with_conf_test_cam_pwd(res,'fireballs',opts_render);   
             
     });
      
