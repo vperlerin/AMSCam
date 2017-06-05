@@ -103,6 +103,9 @@ var logg            = require('./routes/cam_log');
 var focus_helper    = require('./routes/focus_helper'); 
 var cam_calib       = require('./routes/cam_calib'); 
 var cam_scr         = require('./routes/cam_screenshot'); 
+var cam_setup       = require('./routes/cam_setup'); 
+var detections      = require('./routes/detections'); 
+
 
 // Home
 app.use('/', index);
@@ -125,8 +128,14 @@ app.get('/cam/load_parameters', cam_calib.load_auto_param); // Ajax Call
 // Cam Screenshot
 app.get('/cam/screenshot', cam_scr.load);
 app.post('/cam/screenshot', cam_scr.update);  
- 
 
+// Cam Setup
+app.get('/cam/setup', cam_setup.load);
+
+// Detections
+app.get('/detection/:type', detections.load);
+app.get('/detection/:type/delete/:ev', detections.delete_single_detect);
+app.post('/detection/:type/delete_multiple/', detections.delete_multiple_detect);
 
 /******************************************************************************************************************************************
 * PI RESTART 
@@ -306,231 +315,6 @@ app.post('/cam/update_cam_pwd', function(req, res) {
 
 
 
-/******************************************************************************************************************************************
-* Detection maybe
-***********************************************/
-app.get('/detection/maybe', function(req, res) {
-    
-    // Get all maybe detections
-    var opts = {
-        mode: 'json',
-        args: ['/var/www/html/out/maybe/'],
-        scriptPath: constants.python_path
-    };
-    
-    // Test Browser
-    browser = utils.get_browser(req)
-      
-    PythonShell.run('list_files.py', opts, function (err, ress) {
-      if (err) throw err;
-      
-      // Render options
-      opts_render = {
-            results: ress,
-            folder: '/maybe',
-            browser: browser
-      };
-        
-      if(typeof req.query.success !== "undefined") {
-        opts_render.success = req.query.success.split("$");
-      }
-      
-      read_config.load_page_with_conf_test_cam_pwd(res,'maybe',opts_render);
-    
-    });
-     
-});
-
-
-/**********************************************
-* Detection maybe deletion (single)
-***********************************************/
-app.get('/detection/maybe/delete', function(req, res) {
-    
-    // Get select detection 
-    var opts = { 
-        mode: 'text',
-        args: ['/var/www/html/out/maybe/',req.query.ev],
-        scriptPath: constants.python_path+'/file_management'
-    }; 
-    
-    PythonShell.run('delete_file.py', opts, function (err, ress) {
-        if (err) throw err;
-        res.redirect('/detection/maybe?success='+ress[0]);
-    });
-      
-});
-
-
-/**********************************************
-* Detection maybe deletion (multiple)
-***********************************************/
-app.post('/detection/maybe/delete_multiple', function(req, res) {
-   
-    var opts = { 
-        mode: 'text',
-        args: ['/var/www/html/out/maybe/',req.body.events],
-        scriptPath: constants.python_path+'/file_management'
-    }; 
-     
-    PythonShell.run('delete_file.py', opts, function (err, ress) {
-        if (err) throw err;
-        res.redirect('/detection/maybe?success='+ress[0]);
-    });
-     
-});
-
-
-
-/******************************************************************************************************************************************
-* Detection false
-***********************************************/
-app.get('/detection/false', function(req, res) {
-    
-    // Get all maybe detections
-    var opts = {
-        mode: 'json',
-        args: ['/var/www/html/out/false/'],
-        scriptPath: constants.python_path
-    };
-    
-    // Test Browser
-    browser = utils.get_browser(req)
-      
-    PythonShell.run('list_files.py', opts, function (err, ress) {
-      if (err) throw err;
-      
-      // Render options
-      opts_render = {
-            results: ress,
-            folder: '/false',
-            browser: false
-      };
-        
-      if(typeof req.query.success !== "undefined") {
-        opts_render.success = req.query.success.split("$");
-      }
-           
-      read_config.load_page_with_conf_test_cam_pwd(res,'false',opts_render);    
-       
-    });
-     
-});
-
-
-/**********************************************
-* Detection false deletion (single)
-***********************************************/
-app.get('/detection/false/delete', function(req, res) {
-    
-    // Get select detection 
-    var opts = { 
-        mode: 'text',
-        args: ['/var/www/html/out/false/',req.query.ev],
-        scriptPath: constants.python_path+'/file_management'
-    };
-    
-    PythonShell.run('delete_file.py', opts, function (err, ress) {
-        if (err) throw err;
-        res.redirect('/detection/false?success='+ress[0]);
-    });
-      
-});
-
-
-/**********************************************
-* Detection false deletion (multiple)
-***********************************************/
-app.post('/detection/false/delete_multiple', function(req, res) {
-   
-    var opts = { 
-        mode: 'text',
-        args: ['/var/www/html/out/false/',req.body.events],
-        scriptPath: constants.python_path+'/file_management'
-    }; 
-     
-    PythonShell.run('delete_file.py', opts, function (err, ress) {
-        if (err) throw err;
-        res.redirect('/detection/false?success='+ress[0]);
-    });
-     
-});
-
-  
-/******************************************************************************************************************************************
-* Detection fireball
-***********************************************/
-app.get('/detection/fireballs', function(req, res) {
-    
-    // Get all maybe detections
-    var opts = {
-        mode: 'json',
-        args: ['/var/www/html/out/fireballs/'] ,
-        scriptPath: constants.python_path 
-
-    };
-    
-    // Test Browser
-    browser = utils.get_browser(req)
-      
-    PythonShell.run('list_files.py', opts, function (err, ress) {
-      if (err) throw err;
-      
-      // Render options
-      opts_render = {
-            results: ress,
-            folder: '/fireballs',
-            browser: false
-      };
-        
-      if(typeof req.query.success !== "undefined") {
-        opts_render.success = req.query.success.split("$");
-      }
-       
-      read_config.load_page_with_conf_test_cam_pwd(res,'fireballs',opts_render);   
-            
-    });
-     
-});
-
-
-/**********************************************
-* Detection false deletion (single)
-***********************************************/
-app.get('/detection/fireballs/delete', function(req, res) {
-    
-    // Get select detection 
-    var opts = { 
-        mode: 'text',
-        args: ['/var/www/html/out/fireballs/',req.query.ev],
-        scriptPath: constants.python_path +'/file_management'
-    }; 
-    
-    PythonShell.run('delete_file.py', opts, function (err, ress) {
-        if (err) throw err;
-        res.redirect('/detection/fireballs?success='+ress[0]);
-    });
-      
-});
-
-
-/**********************************************
-* Detection false deletion (multiple)
-***********************************************/
-app.post('/detection/fireballs/delete_multiple', function(req, res) {
-   
-    var opts = { 
-        mode: 'text',
-        args: ['/var/www/html/out/fireballs/',req.body.events],
-        scriptPath: constants.python_path +'/file_management'
-    }; 
-     
-    PythonShell.run('delete_file.py', opts, function (err, ress) {
-        if (err) throw err;
-        res.redirect('/detection/fireballs?success='+ress[0]);
-    });
-     
-});
 
  
 app.listen(constants.main_port);

@@ -10,9 +10,7 @@ var constants       = require('../utils/constants');
 
 /******************************************************************************************************************************************
 * FOCUS HELPER
-***********************************************/
-// app.get('/cam/focus_helper', 
-
+***********************************************/ 
 exports.load = function(req, res) {
       read_config.load_page_with_conf_test_cam_pwd(res,'focus_helper',{});
 };
@@ -21,9 +19,7 @@ exports.load = function(req, res) {
 /*********************************************** 
 * START FOCUS HELPER
 ***********************************************/
-// ('/cam/focus_helper'
 exports.start = function(req, res) {
-    
    
     // Setup the repeat
     var _interval  = req.body._interval;

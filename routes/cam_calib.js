@@ -23,8 +23,6 @@ exports.restart = function(req, res) {
        if (err) throw err;
             res.redirect('../?msg='+'Camera restarting');
       });
-  
-    
 };
 
 
@@ -100,3 +98,4 @@ exports.load_auto_param = function(req, res) {
         res.redirect('/');
     });
 };
+
