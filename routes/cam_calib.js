@@ -37,7 +37,7 @@ exports.load = function(req, res) {
     var opts         = {scriptPath: constants.python_path + "/cam" };
     var render_opts  = {browser:  browser };
     
-    var file = (typeof req.params.file!=='undefined')?req.params.file:'';
+    var file = (typeof req.params.file!=='undefined' && constants.possible_parameters_files.indexOf(req.params.file)>-1)?req.params.file:'';
      
    
     if(file === "") {

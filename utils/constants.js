@@ -16,3 +16,4 @@ define("config_file", path.join('/'+__dirname + '/../../fireball_camera/config.t
 define("cam_log_file", "cam_log");
 define("main_port",3000);
 define("DETECTION_PER_PAGE",30);
+define("possible_parameters_files",['Night','Day','Calibration']);
