@@ -76,7 +76,7 @@ window.vxgplayer = function(id, options){
 			options = options || {};
 			console.log(options);
 			var nmf_path = "media_player.nmf";
-			var nmf_src  = "../pnacl/Release/media_player.nmf";
+			var nmf_src  = "/pnacl/Release/media_player.nmf";
 			var url = "";
 			self.playerWidth=options.width || 640;
 			self.playerHeight=options.height || 480;

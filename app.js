@@ -122,6 +122,7 @@ app.post('/cam/focus_helper', focus_helper.start);
 
 // Cam Restart & Parameters
 app.get('/cam/restart', cam_calib.restart);
+app.get('/cam/parameters/:file', cam_calib.load);
 app.get('/cam/parameters', cam_calib.load);
 app.post('/cam/parameters', cam_calib.post); // Ajax Call
 app.get('/cam/load_parameters', cam_calib.load_auto_param); // Ajax Call

@@ -88,7 +88,7 @@ var constants       = require('../utils/constants');
                     redirected = true;
                       
                     updateConfig.on('message',  function (config_write_res) { 
-                         return res.redirect('/');    
+                         return res.redirect('/?success=Thank you for updating your camera password. Enjoy!');    
                     });
              }
             

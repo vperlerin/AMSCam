@@ -36,8 +36,11 @@ exports.load = function(req, res) {
     
     var opts         = {scriptPath: constants.python_path + "/cam" };
     var render_opts  = {browser:  browser };
+    
+    var file = (typeof req.params.file!=='undefined')?req.params.file:'';
+     
    
-    if(typeof req.query.file == "undefined") {
+    if(file === "") {
          
         // By default we load the currently used param file (in the config)
         read_config.read_config(
@@ -54,7 +57,7 @@ exports.load = function(req, res) {
     } else {
         
          // Or we load the file passed in arg
-         opts['args']  = [req.query.file];
+         opts['args']  = [file];
          PythonShell.run('get_parameter_from_file.py', opts, function (err, ress) {
            if (err) throw err;
            // Render 
@@ -71,8 +74,8 @@ exports.load = function(req, res) {
 ***********************************************/
 exports.post = function(req, res) {
          
-    var opts = {    args: [JSON.stringify(req.body)],
-                    scriptPath: constants.python_path + "/cam" 
+    var opts = { args: [JSON.stringify(req.body)],
+                 scriptPath: constants.python_path + "/cam" 
     };
       
     PythonShell.run('set_parameters_to_file.py', opts, function (err, ress) {

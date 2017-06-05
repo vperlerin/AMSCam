@@ -71,7 +71,7 @@
                         <ul class="nav nav-tabs dmt mb" id="tabs">
                             <%for (var file in possible_files){%>
                                 <li <% if( possible_files[file]== active_file){ %>class="active"<% } %>>
-                                    <a href="/cam/parameters?file=<%= possible_files[file]  %>" ><%= possible_files[file]  %></a>
+                                    <a href="/cam/parameters/<%= possible_files[file]  %>" ><%= possible_files[file]  %></a>
                                 </li>    
                             <% } %>
                         </ul>
