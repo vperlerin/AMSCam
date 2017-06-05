@@ -38,13 +38,13 @@
             
             <div class="in">
             
-                <%if (typeof config.cam_pwd == 'undefined' && typeof success == 'undefined') { %> 
+                <%if (typeof config.cam_pwd === 'undefined') { %> 
                 
                     <div class="alert alert-danger dmt">
                         <i class="fa fa-warning"></i> 
                         <strong>You have to update the default password of your camera for device # <%=config.device_id%></strong>
                     </div>
-                    <input type="hidden" name="oldPwd" id="oldPwd"  class="form-control" value="admin">
+                    <input type="hidden" name="oldPwd" id="oldPwd" class="form-control" value="admin">
                 
                 <%} else {%>
                  
