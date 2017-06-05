@@ -99,3 +99,25 @@ exports.delete_multiple_detect = function(req, res) {
     });
      
 };
+
+
+/******************************************************************************************************************************************
+* Detection ALL deletion  
+***********************************************/
+exports.delete_all_detect = function(req, res) { 
+   
+    // Detection type
+    var type = req.params.type; 
+   
+    var opts = { 
+        mode: 'text',
+        args: ['/var/www/html/out/'+type+'/'],
+        scriptPath: constants.python_path+'/file_management'
+    }; 
+     
+    PythonShell.run('delete_file.py', opts, function (err, ress) {
+        if (err) throw err;
+        res.redirect('/detection/'+type+'?success='+ress[0]);
+    });
+     
+};

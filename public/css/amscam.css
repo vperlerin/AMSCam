@@ -60,5 +60,16 @@
     }
 }
 
+.dml {
+    margin-left:2em;   
+}
+
 /* Table in Dashboard */
 td.dash { width: 10em; }
+
+/* UL multiple columns */
+ul.col-3 {
+  columns: 3;
+  -webkit-columns: 3;
+  -moz-columns: 3;
+}

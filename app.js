@@ -136,6 +136,7 @@ app.get('/cam/setup', cam_setup.load);
 app.get('/detection/:type', detections.load);
 app.get('/detection/:type/delete/:ev', detections.delete_single_detect);
 app.post('/detection/:type/delete_multiple/', detections.delete_multiple_detect);
+app.get('/detection/:type/delete_all/', detections.delete_all_detect);
 
 /******************************************************************************************************************************************
 * PI RESTART 

@@ -15,10 +15,12 @@
                 <%= results[0].total_detection %> 
             <% } %> 
             <%=title%>
-                                                        
-            <span class="pagination-info pull-right">
-                Page <%= results[0].cur_page %> / <%= results[0].total_page %>		
-            </span>
+                
+            <% if(results[0].cur_page != results[0].total_page){ %>                                        
+                <span class="pagination-info pull-right">
+                    Page <%= results[0].cur_page %> / <%= results[0].total_page %>		
+                </span>
+            <% } %> 
         </h3>
     </div>
   
@@ -26,8 +28,8 @@
         <div class="alert alert-success dmt alert-dismissable">
             <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
             <span class="fa fa-check"></span> 
-            Detection(s) successfully deleted:
-            <ul> 
+            <strong>Successfully deleted</strong>
+            <ul class="col-3"> 
                 <% for(var i=0; i<success.length; i++) {%>
                     <%if (success[i] != "")  { %> 
                         <li>#<%= success[i] %></li>
@@ -50,6 +52,13 @@
                     	<span class="fa fa-trash-o"></span>
 				</button>
         </div>
+        <% if(results[0].total_page>1) { %>
+            <div class="pull-left dml">
+				<a href="/detection/<%= type %>/delete_all/" class="btn btn-danger btn-sm"  title="Delete" data-confirm="<strong>You are about to permanently delete all the <%= results[0].total_detection %> <%=title%>.</strong><br/>Please, confirm."> 
+				    <span class="fa fa-trash-o"></span> Delete all the <%= results[0].total_detection %> <%=title%>
+                </a>
+            </div>
+        <% } %>
         <div class="pull-right">
               <%- include('../shared/pagination.ejs', {pagination_data: {
                  page : results[0].cur_page, 
@@ -97,8 +106,15 @@
                                      <%  } %>
                                      <a href="<%= folder %>/<%= results[i].detection[x].detect.video %>" class="btn btn-primary btn-xs"><span class="fa fa-video-camera"></span> Download</a>
                                 </td>
-                                <td><pre class="preview"><%= results[i].detection[x].detect.summaryTxt %></pre></td>
-                                <td class="text-center"><a title="Delete"  data-confirm="You are about to permanently remove this event. Please, confirm." class="btn btn-danger btn-xs" href="/detection/<%= type %>/delete/<%= results[i].detection[x].detect.name %>"><span class="fa fa-trash-o"></span></button></td>
+                                <td>
+                                    <% if(typeof results[i].detection[x].detect.summaryTxt != "undefined") { %>
+                                        <a href="<%= folder %>/<%= results[i].detection[x].detect.detail %>" target="_blank"><pre class="preview"><%= results[i].detection[x].detect.summaryTxt %></pre></a>
+                                    <%  } %>
+                                    <% if(typeof results[i].detection[x].detect.detailTxt != "undefined") { %>
+                                        <a href="<%= folder %>/<%= results[i].detection[x].detect.summary %>" target="_blank"><pre class="preview"><%= results[i].detection[x].detect.detailTxt %></pre></a>
+                                    <%  } %>
+                                </td>
+                                <td class="text-center"><a title="Delete" data-confirm="You are about to permanently remove this event. Please, confirm." class="btn btn-danger btn-xs" href="/detection/<%= type %>/delete/<%= results[i].detection[x].detect.name %>"><span class="fa fa-trash-o"></span></button></td>
                                  
                                 
                             </tr>
