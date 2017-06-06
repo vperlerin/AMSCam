@@ -6,11 +6,11 @@ var request         = require('request');
 var PythonShell     = require('python-shell');
 var bodyParser      = require('body-parser');
 var fs              = require('fs');
-
+var cookieSession   = require('cookie-session')
 var minifyHTML      = require('express-minify-html');
 var favicon         = require('serve-favicon');
 var logger          = require('morgan'); 
-var methodOverride = require('method-override');
+var methodOverride  = require('method-override');
 
 // Custom Scripts
 var read_config     = require('./utils/read_config');
@@ -28,11 +28,19 @@ app.use('/maybe',express.static(path.join(__dirname + '/../../../var/www/html/ou
 app.use('/false',express.static(path.join(__dirname + '/../../../var/www/html/out/false')));
 app.use('/fireballs',express.static(path.join(__dirname + '/../../../var/www/html/out/fireballs')));
 app.use('/js',express.static(path.join(__dirname + '/public/js')));
+app.use('/img',express.static(path.join(__dirname + '/public/img')));
 app.use('/pnacl',express.static(path.join(__dirname + '/views/pnacl'))); // RSTP Viewer
 
 // Logger
 app.use(logger('dev'));  
 
+
+// Cookie
+app.use(cookieSession({
+  name: 'session',
+  keys: ['toto','tata'],
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours 
+}));
 
  
 // Compress HTML

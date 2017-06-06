@@ -15,7 +15,8 @@
     "morgan": "~1.7.0",
     "serve-favicon": "~2.3.2",
     "method-override":"~2.3.9",
-    "async":"~2.4.0"
+    "async":"~2.4.0",
+    "cookie-session":"2.0.0-alpha.3"
   },
   "repository" : { 
     "type" : "git",
