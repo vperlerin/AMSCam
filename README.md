@@ -41,6 +41,8 @@ Then, add the following lines to the file:
 ```
 www-data ALL=/sbin/shutdown
 www-data ALL=NOPASSWD: /sbin/shutdown
+www-data ALL=/sbin/restart
+www-data ALL=NOPASSWD: /sbin/restart
 ```
 
 ## Run the App

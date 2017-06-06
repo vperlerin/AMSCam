@@ -9,8 +9,7 @@ function define(name, value) {
         enumerable: true
     });
 }
-
-
+ 
 // Test if the capture is running
 define("test_capture_running", function(res,template,opts) {
     child_process.exec(constants.python_path +  'simple-capture-status.sh', function(error, stdout, stderr){
@@ -18,3 +17,4 @@ define("test_capture_running", function(res,template,opts) {
         read_config.load_page_with_conf_test_cam_pwd(res,template,opts); 
     });
 });
+

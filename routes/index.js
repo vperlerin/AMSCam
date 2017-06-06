@@ -1,14 +1,17 @@
 var express = require('express');
 var router  = express.Router();
+var passport = require('passport'); 
  
 var utils = require('../utils/browser');
-var cam_capture = require('../utils/capture_test');
+var cam_capture = require('../utils/capture_test'); 
+ 
 
 /******************************************************************************************************************************************
 * Home Page
+* router.get('/', isAuthenticated,  function(req, res) {
 ***********************************************/
 router.get('/', function(req, res) {
-     
+   
     // Test Browser
     var opts = {};
     opts.browser = utils.get_browser(req)

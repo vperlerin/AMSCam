@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AMS Cam</title>
+    <% include ../shared/head.ejs %>
+</head>
+<body>
+
+    <div class="container">
+     
+        <div class="wrapper">
+            <form action="/login" class="form-signin" method="POST">       
+               <div class="text-center"><img src="/img/apple-touch-icon-144x144-precomposed.png" alt="American Meteor Society" class="img-responsive m-auto"/></div>
+               <input type="hidden" class="form-control" name="username" value="admin"/> 
+               <input type="password" class="form-control" name="password" placeholder="Password" required=""/> 
+               <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>   
+            </form>
+        </div>
+        
+    </div>
+    <link href="/css/login.css" rel="stylesheet">   

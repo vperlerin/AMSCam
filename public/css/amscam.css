@@ -16,6 +16,7 @@
 
 .table-results{ width: auto;  margin: 1em auto 2em; }
 .dmr { margin-right:.5em }
+.m-auto { margin-right: auto; margin-left:auto; }
 .img1 { max-width:200px }
 .preview { max-height:100px; overflow:auto}
 @media (min-width:1600px){.container{width:1470px}}
