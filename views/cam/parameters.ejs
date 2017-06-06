@@ -71,7 +71,7 @@
                         <ul class="nav nav-tabs dmt mb" id="tabs">
                             <%for (var file in possible_files){%>
                                 <li <% if( possible_files[file]== active_file){ %>class="active"<% } %>>
-                                    <a href="/cam/parameters/<%= possible_files[file]  %>" ><%= possible_files[file]  %></a>
+                                    <a href="/cam/parameters?file=<%= possible_files[file]  %>" ><%= possible_files[file]  %></a>
                                 </li>    
                             <% } %>
                         </ul>
@@ -88,6 +88,7 @@
                                                 <div class="pull-left ui-slider-handle-container">
                                                     <div id="sl_<%= config_files[file]  %><%= sliders[slider] %>" class="dmt"><div id="sl_<%= config_files[file]  %><%= sliders[slider] %>-handle" class="ui-slider-handle"></div></div>
                                                 </div>
+                                                <div class="pull-left"><input id="input_<%= config_files[file] %><%= sliders[slider] %>" type="number" class="form-control auto input-sm ui-slider-input-l " size="3" min="0" max="255"/></div>
                                             </div>
                                         <%}%>
                                   </div>   
@@ -117,40 +118,62 @@
     <script src="../../bower_components/jquery-ui/jquery-ui.min.js"></script>
      
     <script>
+      
+      function update_cam_param(_data,slider_hanlder,input,ui) {
+        $.ajax({
+            type: 'POST',
+            url:  window.location.pathname,
+            data: _data,  
+            dataType: "json",
+            success: function(response){
+                slider_hanlder.text(ui.value);
+                input.prop('disabled',false).val(ui.value);                 
+            }
+        });
+      }
+        
       $(function() {
             /* Setup Sliders */
             <%for (var file in config_files){%>
                 <%for (var slider in sliders){%>
                     var <%= config_files[file]  %><%= sliders[slider] %>_handle = $( "#sl_<%= config_files[file]  %><%= sliders[slider] %>-handle" );
-                    $("#sl_<%= config_files[file]  %><%= sliders[slider] %>").slider({
+                    /* Sliders */
+                    var $slider<%= config_files[file]  %><%= sliders[slider] %> =  $("#sl_<%= config_files[file]  %><%= sliders[slider] %>").slider({
                          animate: true,
                          range: "min",
                          min: 0,
                          max: 255,
+                         animate: "fast",
                          value: <%= calib[sliders[slider]]; %>,
                          create: function() {
                             <%= config_files[file]  %><%= sliders[slider] %>_handle.text( $( this ).slider( "value" ) );
                          },
                          slide: function( event, ui ) {
-                            <%= config_files[file]  %><%= sliders[slider] %>_handle.text( ui.value );
+                            <%= config_files[file]  %><%= sliders[slider] %>_handle.text(ui.value);
+                            $('#input_<%= config_files[file] %><%= sliders[slider] %>').val(ui.value);
                          },
-                         stop: function( event, ui ) {
-                            
+                         stop: function( event, ui ) { 
                             <%= config_files[file]  %><%= sliders[slider] %>_handle.html('<span class="fa fa-spin fa-refresh"></span>');
-                            
-                            $.ajax({
-                                    type: 'POST',
-                                    url:  window.location.pathname,
-                                    data: {<%= sliders[slider]  %>:ui.value, file:'<%= config_files[file]  %>'},  
-                                    dataType: "json",
-                                    success: function(response){
-                                        <%= config_files[file]  %><%= sliders[slider] %>_handle.text(ui.value);
-                                    }
-                            });
+                            $('#input_<%= config_files[file] %><%= sliders[slider] %>').prop('disabled',true);                            
                              
-                             
+                            update_cam_param({<%= sliders[slider]  %>:ui.value, file:'<%= config_files[file]  %>'},<%= config_files[file]  %><%= sliders[slider] %>_handle,$('#input_<%= config_files[file] %><%= sliders[slider] %>'),ui);
+                              
                          }
                      });  
+                     
+                     /* Inputs */
+                     $('#input_<%= config_files[file] %><%= sliders[slider] %>').val(<%= calib[sliders[slider]]; %>).change(function() {
+                            var val = parseInt($(this).val());
+                            <%= config_files[file]  %><%= sliders[slider] %>_handle.html('<span class="fa fa-spin fa-refresh"></span>');
+                            $('#input_<%= config_files[file] %><%= sliders[slider] %>').prop('disabled',true);                            
+                            $slider<%= config_files[file]  %><%= sliders[slider] %>.slider({value:val});
+                            update_cam_param({
+                                <%= sliders[slider]  %>:val,
+                                file:'<%= config_files[file]  %>'
+                            },<%= config_files[file]  %><%= sliders[slider] %>_handle,
+                            $('#input_<%= config_files[file] %><%= sliders[slider] %>'),
+                            {value:val});
+                     });
                 <%}%>
             <%}%>
                

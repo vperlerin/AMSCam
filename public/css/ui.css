@@ -19,7 +19,8 @@
 
 
 .ui-slider-handle-container {
-       min-width: 80%;
+    min-width: 70%;
+    padding-top: .1em;
 }
 
 .ui-slider-handle-container .ui-widget.ui-widget-content {
@@ -30,4 +31,12 @@
     min-width: 6em;
     margin-right: 1em;
     display: block;  
+}
+
+.ui-slider-input-l {
+    padding: 0em 0em 0em .3em;
+    line-height: 1em;
+    height: 25px;
+    text-align: right;
+    max-width: 5em; 
 }
