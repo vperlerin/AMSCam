@@ -109,6 +109,7 @@ var cam_scr         = require('./routes/cam_screenshot');
 var cam_setup       = require('./routes/cam_setup'); 
 var cam_pwd         = require('./routes/cam_pwd'); 
 var detections      = require('./routes/detections'); 
+var pi              = require('./routes/pi'); 
 
 
 /******************************************************************************************************************************************
@@ -130,18 +131,7 @@ passport.use(new LocalStrategy(
                     cb(null, false);
                 }
             }
-        );  
-      
-      
-    /*
-    if (username === 'admin' && password === 'bar')  {
-        console.log('PWD OK');
-        cb(null, { user: { username:'admin', password:'admin'} });
-    } else {
-        console.log('PWD NOT OK');
-        cb(null, false);
-    }
-    */
+        );   
 })); 
 
 // Configure Passport authenticated session persistence.
@@ -154,6 +144,7 @@ passport.deserializeUser(function(user, cb) {
 });
 
 
+// Passport config
 app.use(require('cookie-parser')());
 app.use(require('body-parser').urlencoded({ extended: true }));
 app.use(require('express-session')({
@@ -163,8 +154,7 @@ app.use(require('express-session')({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-/******************************************************************************************************************************************/
-
+ 
  
 app.get('/login',
   function(req, res){
@@ -181,6 +171,7 @@ app.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');  
 });
+
 
 /******************************************************************************************************************************************
 * ROUTES
@@ -222,6 +213,11 @@ app.get('/detection/:type',ensureLoggedIn('/login'), detections.load);
 app.get('/detection/:type/delete/:ev',ensureLoggedIn('/login'), detections.delete_single_detect);
 app.post('/detection/:type/delete_multiple/',ensureLoggedIn('/login'), detections.delete_multiple_detect);
 app.get('/detection/:type/delete_all/',ensureLoggedIn('/login'),detections.delete_all_detect);
+
+// PI
+app.get('/pi/shutdown',ensureLoggedIn('/login'), pi.shutdown);
+app.get('/pi/restart',ensureLoggedIn('/login'), pi.restart);
+
 
 
 /******************************************************************************************************************************************
