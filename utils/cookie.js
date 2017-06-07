@@ -14,7 +14,7 @@ module.exports = {
              
             read_config.read_config(function(config) {
               
-                res.cookie('config', config, {path:'/'});
+                res.cookie('config', config, {path:'/', maxAge: constants.config_cookie_maxAge});
                 template_opts.config = config;
                 
                 if(template_name==="home") {

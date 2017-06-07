@@ -5,8 +5,39 @@ var router          = express.Router();
 var read_config     = require('../utils/read_config');
 var utils           = require('../utils/browser');
 var constants       = require('../utils/constants');
-
+var cookie          = require('../utils/cookie');
 var crypt           = require('../utils/crypt');
+
+
+/******************************************************************************************************************************************
+* RESET PWD  
+***********************************************/
+exports.reset_pwd =  function(req, res) {
+    
+     // If no token : exit!
+     // TODO: test if it's a token
+     if(typeof req.params.token==='undefined') {
+        res.redirect('/');
+     }
+      
+     // Test token against the one in tok.sec
+     require('fs').readFile("tok.sec", "utf8", function (err,data) {
+         if (err) {  return console.log(err);  }
+         
+         if(data === crypt.encrypt(req.params.token.toString("utf8"))) {
+            // THIS IS OK
+            cookie.get_config_cookie_and_render(req, res,{}, 'reset_pwd');  
+
+         } else {
+            // THIS IS NOT OK
+            cookie.get_config_cookie_and_render(req, res,{'fatal_error':'This link has expired. Please try again.'}, 'reset_pwd');  
+         }
+     });
+    
+}
+
+
+
 
 /******************************************************************************************************************************************
 * UPDATE CAM PWD (GET)
@@ -40,7 +71,7 @@ var crypt           = require('../utils/crypt');
 /******************************************************************************************************************************************
 * UPDATE CAM PWD (POST)
 ***********************************************/
- exports.update_cam_pwd =  function(req, res) {
+ exports.update_pwd =  function(req, res) {
     
     var old_pwd     = req.body.oldPwd;
     var new_pwd     = req.body.newPwd;
@@ -79,6 +110,9 @@ var crypt           = require('../utils/crypt');
                  
                     // First time we update the password: we redirect to the home
                     config.new_cam_pwd = new_pwd;
+                    
+                    // We clear the config cookie so it re-read from config.txt
+                    res.clearCookie("config",{path:'/'});  
                  
                     var updateConfig = new PythonShell('update_config.py', {
                         mode: 'json',
@@ -128,6 +162,9 @@ var crypt           = require('../utils/crypt');
                     });
                       
                     updateConfig.on('message',  function (config_write_res) { 
+                              // We clear the config cookie so it re-read from config.txt
+                              res.clearCookie("config",{path:'/'});  
+                              
                               res.render('update_cam_pwd', {
                                 config : config_write_res,
                                 success : "Password updated"
@@ -140,24 +177,21 @@ var crypt           = require('../utils/crypt');
     
 };
 
+
+
+
 /******************************************************************************************************************************************
 * FORGET PWD (send email)
 ***********************************************/
  exports.forget_pwd =  function(req, res) {
      
-    console.log('IN FORGET PWD'); 
-     
-     res.render('update_cam_pwd', {
-             config: ""
-     });
-     
+      
     // Generate a random code
-    require('crypto').randomBytes(48, function(err, buffer) {
+    require('crypto').randomBytes(8, function(err, buffer) {
       var token = buffer.toString('hex');
       
       // Write the token in tok.sec file
-      var fs = require('fs');
-      fs.writeFile("tok.sec", crypt.encrypt(token),  { flag: 'w' }, function(err) {
+      require('fs').writeFile("tok.sec", crypt.encrypt(token),  { flag: 'w' }, function(err) {
             if(err) {
                 return console.log(err);
             }
@@ -178,26 +212,22 @@ var crypt           = require('../utils/crypt');
                 var pyshellSendEmail = new PythonShell('send_email.py', {
                     mode: 'text',
                     scriptPath: constants.python_path +'/mail',
-                    args: [config.email,"Password Recovery","Dear " + config.first_name + " "  + config.last_name + ",<br/><br/>Please, click the following link to reset your password:<br/><pre>" + config.cam_pwd + "</pre><br/><a href='http://"+config.lan_ip+":"+constants.main_port+"/cam/update_cam_pwd'>Update your Camera password</a> now!<br/><br/>Thank you,<br/>The AMS Team"]
+                    args: [config.email,"Password Recovery","Dear " + config.first_name + " "  + config.last_name + ",<br/><br/>Please, click the following link to reset your password:<br/><a href='http://"+config.lan_ip+":"+constants.main_port+"/pwd/reset_pwd/" + token + "'><b>Reset your password</b></a><br/><br/>Or copy and past the following link on your browser:<br/> http://"+config.lan_ip+":"+constants.main_port+"/pwd/reset_pwd/" + token + "<br/><br/><br/>Thank you,<br/>The AMS Team"]
                 });
                     
                 pyshellSendEmail.on('message', function (config) { 
                      // Redirect to /cam/update_cam_pwd with success message
+                     /*
                      read_config.load_page_with_conf_test_cam_pwd(res,'update_cam_pwd',{
                         success: 'Email sent',
                         config: config
                      });
+                     */
                 });
                 
             }); 
       }); 
       
-    });
-     
-    /*
-  
-     
-   
-    */
+    }); 
     
 };

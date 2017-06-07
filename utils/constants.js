@@ -17,3 +17,7 @@ define("cam_log_file", "cam_log");
 define("main_port",3000);
 define("DETECTION_PER_PAGE",30);
 define("possible_parameters_files",['Night','Day','Calibration']);
+// Cookie as a 15 min period of life because it's the period for the cron job to eventually update the parameters of the cam (switch between Night and Day)
+// define("config_cookie_maxAge",15 * 60 * 1000);  
+// Well... it's a pain so...
+define("config_cookie_maxAge",365 * 24 * 60 * 1000); 

@@ -41,13 +41,11 @@
                         <li role="presentation" class="divider"></li>
                         <li><a href="/cam/screenshot">Screenshot</a></li> 
                         <li role="presentation" class="divider"></li> 
-                        <li><a href="/cam/log">Log</a></li> 
+                        <li><a href="/cam/log">Temperature Log</a></li> 
                         <li role="presentation" class="divider"></li>
-                        <li><a href="/cam/update_cam_pwd">Update Password</a></li>
                         <%if (typeof config != 'undefined' && config.cam_ip != 'undefined') { %> 
                             <li><a href="http://<%= config.cam_ip %>" target="_blank">Configuration <span class="fa fa-external-link"></span></a></li>
                         <% } %> 
-                        <li role="presentation" class="divider"></li>  
                         <li><a href="/cam/restart" data-confirm="You are about to reboot your Camera. It may take up to 3 minutes. Please, confirm."><span class="fa fa-refresh btn btn-success btn-xs"></span> Restart</a></li>
                      </ul>
                 </li>
@@ -58,6 +56,13 @@
                         <li><a href="/pi/restart" data-confirm="You are about to reboot your Raspberry PI. Please, confirm."><span class="fa fa-refresh btn btn-success btn-xs"></span> Restart</a></li>
                         
                         <li><a href="/pi/shutdown" data-confirm="You are about to shutdown your Raspberry PI. Please, confirm."><span class="fa fa-close btn btn-danger btn-xs"></span> Shutdown</a></li>
+                     </ul>
+                </li>     
+                <li class="divider-v"></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="fa fa-cog"></span> <b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/pwd/update_pwd">Update Password</a></li>
                      </ul>
                 </li>     
                 <li class="divider-v"></li> 

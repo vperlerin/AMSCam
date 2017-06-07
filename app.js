@@ -171,10 +171,11 @@ app.get('/logout', function(req, res){
   res.clearCookie("config",{path:'/'});
   res.redirect('/');  
 });
-
-
+ 
 // Forget Password
 app.get('/pwd/forget_pwd',pwd.forget_pwd);
+// Reset Password
+app.get('/pwd/reset_pwd/:token',pwd.reset_pwd);
 
 
 /******************************************************************************************************************************************
@@ -209,8 +210,8 @@ app.post('/cam/screenshot',ensureLoggedIn('/login'), cam_scr.update);
 app.get('/cam/setup',ensureLoggedIn('/login'), cam_setup.load);
  
 // Update Password
-app.get('/pwd/update_cam_pwd', ensureLoggedIn('/login'), pwd.load);
-app.post('/pwd/update_cam_pwd', ensureLoggedIn('/login'), pwd.update_cam_pwd);
+app.get('/pwd/update_pwd', ensureLoggedIn('/login'), pwd.load);
+app.post('/pwd/update_pwd', ensureLoggedIn('/login'), pwd.update_pwd);
 
 // Detections
 app.get('/detection/:type',ensureLoggedIn('/login'), detections.load);
