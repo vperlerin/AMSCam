@@ -204,7 +204,7 @@ app.post('/cam/screenshot',ensureLoggedIn('/login'), cam_scr.update);
 app.get('/cam/setup',ensureLoggedIn('/login'), cam_setup.load);
 
 // Cam Password
-app.get('/cam/forget_cam_pwd',ensureLoggedIn('/login'), cam_pwd.forget_cam_pwd);
+app.get('/cam/forget_cam_pwd', cam_pwd.forget_cam_pwd);
 app.get('/cam/update_cam_pwd',ensureLoggedIn('/login'), cam_pwd.load);
 app.post('/cam/update_cam_pwd',ensureLoggedIn('/login'), cam_pwd.update_cam_pwd);
 

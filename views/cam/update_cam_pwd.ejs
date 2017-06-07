@@ -14,7 +14,7 @@
         
             <h3 class="mt bordered mb">Update Camera Password</h3>
             
-            <p>The camera password is the same than the one you're using to login to the app.</p>
+            <div class="alert alert-info"><span class="fa fa-info-circle"></span> The camera password is the same than the one you're using to log in to the app.</div>
             
             <%if (typeof success != 'undefined') { %> 
                 <div class="alert alert-success dmt alert-dismissable">
@@ -53,7 +53,7 @@
                     <div class="form-group">    
                         <label for="oldPwd">Old Password</label>
                         <input type="password" name="oldPwd" id="oldPwd" ng-model="oldPwd" class="form-control" placeholder="Old Password" autofocus>
-                        <a href="/cam/forget_cam_pwd">Forget password?</a>
+                        <a href="/cam/forget_cam_pwd">Forgot password?</a>
                     </div>
                     <hr/>
                 

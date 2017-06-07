@@ -146,7 +146,26 @@ var constants       = require('../utils/constants');
 * FORGET CAM PWD (send email)
 ***********************************************/
  exports.forget_cam_pwd =  function(req, res) {
-    
+     
+     
+     
+    // Generate a random code
+    require('crypto').randomBytes(48, function(err, buffer) {
+      var token = buffer.toString('hex');
+      
+      // Write the token in tok.sec file
+      var fs = require('fs');
+      fs.writeFile("tok.sec", token,  { flag: 'w' }, function(err) {
+            if(err) {
+                return console.log(err);
+            }
+        
+            console.log("The file was saved!");
+      }); 
+      
+    });
+     
+    /*
     var pyshellReadConfig = new PythonShell('read_config.py', {
             mode: 'json',
             scriptPath: constants.python_path +'/config',
@@ -174,6 +193,7 @@ var constants       = require('../utils/constants');
         });
         
     });
+    */
     
 };
 
