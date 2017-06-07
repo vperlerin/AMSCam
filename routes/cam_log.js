@@ -35,14 +35,14 @@ exports.load =  function(req, res) {
             
              // Pass nothing
     
-            var readConfig = new PythonShell('read_log.py', {
+            var readLog = new PythonShell('read_log.py', {
                     mode: 'text' ,
                     scriptPath: constants.python_path + "/log",
                     args:[constants.cam_log_file]
             });
             
-            readConfig.on('message', function (log_cont) {  
-                read_config.load_page_with_conf_test_cam_pwd(res,'log',{log_content:JSON.parse(log_cont)});
+            readLog.on('message', function (log_cont) {  
+                cookie.get_config_cookie_and_render(req, res, {log_content:JSON.parse(log_cont)}, 'log'); 
             });
         }
 };

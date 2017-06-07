@@ -1,10 +1,8 @@
 var express = require('express');
 var router  = express.Router();
-var passport = require('passport'); 
- 
-var utils = require('../utils/browser');
-var cam_capture = require('../utils/capture_test'); 
- 
+  
+var utils   = require('../utils/browser');
+var cookie  = require('../utils/cookie');
 
 /******************************************************************************************************************************************
 * Home Page
@@ -21,9 +19,8 @@ router.get('/', function(req, res) {
         opts.msg =   req.query.msg 
     }
     
-     // Render
-    cam_capture.test_capture_running(res,'home',opts);
-     
+    cookie.get_config_cookie_and_render(req, res, opts, 'home');
+      
 });
 
 module.exports = router;

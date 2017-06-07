@@ -6,13 +6,14 @@ var repeat          = require('repeat');
 var read_config     = require('../utils/read_config');
 var utils           = require('../utils/browser');
 var constants       = require('../utils/constants');
+var cookie          = require('../utils/cookie');
 
 
 /******************************************************************************************************************************************
 * FOCUS HELPER
 ***********************************************/ 
 exports.load = function(req, res) {
-      read_config.load_page_with_conf_test_cam_pwd(res,'focus_helper',{});
+      cookie.get_config_cookie_and_render(req, res, {}, 'focus_helper');   
 };
 
 
@@ -38,7 +39,7 @@ exports.start = function(req, res) {
           
     }).every(_interval, 'sec').for(_period, 'sec').start.in(_delay, 'sec').then(function() {
         var dt = new Date(); 
-        read_config.load_page_with_conf_test_cam_pwd(res,'focus_helper',{'success':'Focus helper stopped on ' +   dt.toUTCString()});
+        cookie.get_config_cookie_and_render(req, res, {'success':'Focus helper stopped on ' +   dt.toUTCString()}, 'focus_helper');    
     });
    
     

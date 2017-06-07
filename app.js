@@ -57,6 +57,7 @@ app.set('views', [
     path.join(__dirname + '/views/detections'),
     path.join(__dirname + '/views/home'),
     path.join(__dirname + '/views/cam'),
+    path.join(__dirname + '/views/pwd'),
     path.join(__dirname + '/views'),  
     '/var/www/html/out']
 ); 
@@ -107,10 +108,9 @@ var focus_helper    = require('./routes/focus_helper');
 var cam_calib       = require('./routes/cam_calib'); 
 var cam_scr         = require('./routes/cam_screenshot'); 
 var cam_setup       = require('./routes/cam_setup'); 
-var cam_pwd         = require('./routes/cam_pwd'); 
 var detections      = require('./routes/detections'); 
 var pi              = require('./routes/pi'); 
-
+var pwd             = require('./routes/pwd');
 
 /******************************************************************************************************************************************
 * LOGIN 
@@ -118,21 +118,18 @@ var pi              = require('./routes/pi');
 
 // Configure the local strategy for use by Passport.
 passport.use(new LocalStrategy(
-  
     function(username, password, cb) {
-      
         read_config.read_config(
             function(config) {
                 if(config.cam_pwd==password) {
-                    console.log('PWD OK');
                     cb(null, { user: { username:'admin', password:password} });
                 } else {
-                    console.log('PWD NOT OK');
                     cb(null, false);
                 }
             }
         );   
-})); 
+    }
+)); 
 
 // Configure Passport authenticated session persistence.
 passport.serializeUser(function(user, cb) {
@@ -140,12 +137,13 @@ passport.serializeUser(function(user, cb) {
 });
 
 passport.deserializeUser(function(user, cb) {
-  cb(null, user);
+   cb(null, user);
 });
-
+ 
+// Cookie
+app.use(require('cookie-parser')());
 
 // Passport config
-app.use(require('cookie-parser')());
 app.use(require('body-parser').urlencoded({ extended: true }));
 app.use(require('express-session')({
   secret: 'Allons Enfants 2 la Patrie',
@@ -158,6 +156,7 @@ app.use(passport.session());
  
 app.get('/login',
   function(req, res){
+    res.clearCookie("config",{path:'/'});  
     res.render('login');
   });
   
@@ -169,8 +168,13 @@ app.post('/login',
  
 app.get('/logout', function(req, res){
   req.logout();
+  res.clearCookie("config",{path:'/'});
   res.redirect('/');  
 });
+
+
+// Forget Password
+app.get('/pwd/forget_pwd',pwd.forget_pwd);
 
 
 /******************************************************************************************************************************************
@@ -179,6 +183,7 @@ app.get('/logout', function(req, res){
 
 // Home
 app.use('/',ensureLoggedIn('/login'), index);
+ 
 
 // Cam Log
 app.get('/cam/log',ensureLoggedIn('/login'), logg.load);
@@ -202,11 +207,10 @@ app.post('/cam/screenshot',ensureLoggedIn('/login'), cam_scr.update);
 
 // Cam Setup
 app.get('/cam/setup',ensureLoggedIn('/login'), cam_setup.load);
-
-// Cam Password
-app.get('/cam/forget_cam_pwd', cam_pwd.forget_cam_pwd);
-app.get('/cam/update_cam_pwd',ensureLoggedIn('/login'), cam_pwd.load);
-app.post('/cam/update_cam_pwd',ensureLoggedIn('/login'), cam_pwd.update_cam_pwd);
+ 
+// Update Password
+app.get('/pwd/update_cam_pwd', ensureLoggedIn('/login'), pwd.load);
+app.post('/pwd/update_cam_pwd', ensureLoggedIn('/login'), pwd.update_cam_pwd);
 
 // Detections
 app.get('/detection/:type',ensureLoggedIn('/login'), detections.load);
@@ -219,46 +223,6 @@ app.get('/pi/shutdown',ensureLoggedIn('/login'), pi.shutdown);
 app.get('/pi/restart',ensureLoggedIn('/login'), pi.restart);
 
 
-
-/******************************************************************************************************************************************
-* PI RESTART 
-***********************************************/
-app.get('/pi/restart', function(req, res) {
-     
-    var opts = {  scriptPath: constants.python_pi_path  };
-  
-    browser = utils.get_browser(req)
-      
-    PythonShell.run('restart_pi.py', opts, function (err, ress) {
-      if (err) throw err;
-       res.redirect('/');
-    });
-     
-});
-
-/******************************************************************************************************************************************
-* PI SHUTDOWN
-***********************************************/
-app.get('/pi/shutdown', function(req, res) {
-     
-    var opts = {  scriptPath: constants.python_pi_path  };
-  
-    browser = utils.get_browser(req)
-      
-    PythonShell.run('shutdown_pi.py', opts, function (err, ress) {
-      if (err) throw err;
-       res.redirect('/');
-    });
-     
-});
-
-
-
-
-
-
-
-
- 
+// Start APP
 app.listen(constants.main_port);
 console.log('Listening on port 3000 - the AMSCam App is running.'); 

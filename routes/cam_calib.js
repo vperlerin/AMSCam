@@ -2,9 +2,9 @@ var PythonShell     = require('python-shell');
 var express         = require('express');
 var router          = express.Router();
 
-var read_config     = require('../utils/read_config');
 var utils           = require('../utils/browser');
 var constants       = require('../utils/constants');
+var cookie          = require('../utils/cookie');
 
 /******************************************************************************************************************************************
 * Restart Cam
@@ -38,31 +38,32 @@ exports.load = function(req, res) {
     var render_opts  = {browser:  browser };
     
     var file = (typeof req.params.file!=='undefined' && constants.possible_parameters_files.indexOf(req.params.file)>-1)?req.params.file:'';
-     
-   
+    
     if(file === "") {
          
-        // By default we load the currently used param file (in the config)
-        read_config.read_config(
-            function(config) {
-                 PythonShell.run('get_parameter_from_file.py', {scriptPath: constants.python_path + "/cam", args:[config.parameters] }, function (err, ress) {
-                   if (err) throw err;
-                   // Render 
-                   read_config.load_page_with_conf_test_cam_pwd(res,'parameters',{ browser:  browser, calib: JSON.parse(ress), active_file:config.parameters});
-                 });
-            }
-        );
-     
+        // By default we load the currently used param file (in the config cookie)
+        var cookie_config = req.cookies.config;  
         
+        PythonShell.run('get_parameter_from_file.py', {scriptPath: constants.python_path + "/cam", args:[cookie_config.parameters] }, function (err, ress) {
+            if (err) throw err;
+            // Render 
+            cookie.get_config_cookie_and_render(req, res, { browser:  browser, calib: JSON.parse(ress), active_file:cookie_config.parameters}, 'parameters');  
+        });
+          
     } else {
         
+         // We delete the config cookie so parameters value will be updated
+         res.clearCookie("config", {path:'/'});
+         
          // Or we load the file passed in arg
          opts['args']  = [file];
          PythonShell.run('get_parameter_from_file.py', opts, function (err, ress) {
            if (err) throw err;
+           
            // Render 
-           read_config.load_page_with_conf_test_cam_pwd(res,'parameters',{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']});
-         });
+           cookie.get_config_cookie_and_render(req, res,{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']}, 'parameters');  
+          
+         }); 
     }
   
  
@@ -95,6 +96,9 @@ exports.load_auto_param = function(req, res) {
         args: [JSON.stringify(req.body)],
         scriptPath: constants.python_path + "/cam" 
     };
+    
+    // We delete the config cookie so parameters value will be updated
+    res.clearCookie("config", {path:'/'});
       
     PythonShell.run('auto_set_parameters.py', opts, function (err, ress) {
         if (err) throw err;

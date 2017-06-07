@@ -2,25 +2,22 @@ var PythonShell     = require('python-shell');
 var express         = require('express');
 var router          = express.Router();
 
-var read_config     = require('../utils/read_config');
 var constants       = require('../utils/constants');
+var cookie          = require('../utils/cookie');
 
 
 /******************************************************************************************************************************************
 * Screenshot Page
 ***********************************************/
 exports.load = function(req, res)   {
-    
-    // If the cam password has already been updated:
-    read_config.load_page_with_conf_test_cam_pwd(res,'screenshot',{});
-    
+    cookie.get_config_cookie_and_render(req, res, {}, 'screenshot');   
 };
 
 
 /**********************************************
 * Take screenshot
 ***********************************************/
-exports.update = function(req, resp) {
+exports.update = function(req, res) {
  
         var pyshellUpload = new PythonShell('upload_latest.py', {
             mode: 'json' ,
@@ -31,7 +28,8 @@ exports.update = function(req, resp) {
         pyshellUpload.on('message', function (message_success) { 
             if (message_success) {
                 // Render
-                return read_config.load_page_with_conf_test_cam_pwd(resp,'screenshot',{  message_success: message_success});
+                
+                return cookie.get_config_cookie_and_render(req, res, {  message_success: message_success}, 'screenshot');    
              }        
         });
 };

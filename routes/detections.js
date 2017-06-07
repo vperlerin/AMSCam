@@ -1,12 +1,10 @@
 var PythonShell     = require('python-shell');
 var express         = require('express');
-var router          = express.Router();
-var repeat          = require('repeat');
+var router          = express.Router(); 
  
-var read_config     = require('../utils/read_config');
 var utils           = require('../utils/browser');
 var constants       = require('../utils/constants');
-
+var cookie          = require('../utils/cookie');
 
 /******************************************************************************************************************************************
 * Detections
@@ -49,7 +47,7 @@ exports.load  = function(req, res) {
         opts_render.success = req.query.success.split("$");
       }
       
-      read_config.load_page_with_conf_test_cam_pwd(res,'detections',opts_render);
+      cookie.get_config_cookie_and_render(req, res, opts_render, 'detections'); 
     
     });
 };
