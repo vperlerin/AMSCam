@@ -33,6 +33,8 @@ function confirm_before($this) {
 
 $(function() {
     
+ 
+    
    // Action to confirm (link with href)
    $('[data-confirm]').click(function(e) {
         e.stopPropagation();
@@ -42,8 +44,8 @@ $(function() {
      
    // Load for screenshot 
    $('.load-on-click').click(function(e) {
-       //$('a,select,button').prop('disabled',true).addClass('disabled');
        $(this).html('<span class="fa fa-spinner fa-spin"></span>');
+       $('#loader').slideDown();
        return true;
    });
     

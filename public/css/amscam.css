@@ -1,5 +1,24 @@
 /* CSS Document */
 
+#loader {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,.6);
+    z-index: 9;
+}
+
+#loader span {
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%,-50%);  
+    -ms-transform: translate(-50%,-50%);   
+    transform: translate(-50%,-50%);  
+    font-size: 600%;
+}
+
 #mobile-logo { display: block }
 #mobile-logo img { padding: 1em; max-width: 5em; }
 #mobile-logo span  {  

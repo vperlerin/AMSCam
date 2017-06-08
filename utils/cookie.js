@@ -8,7 +8,7 @@ module.exports = {
     // or read config.txt, create cookie and return the result
     get_config_cookie_and_render: function (req, res, template_opts, template_name) {
         var cookie = req.cookies.config;  
-         
+          
         if (cookie === undefined) {
              
             read_config.read_config(function(config) {

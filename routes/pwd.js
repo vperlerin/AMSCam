@@ -23,7 +23,6 @@ exports.reset_pwd =  function(req, res) {
          res.redirect('/');
      }
       
-       
      // Test token against the one in tok.sec
      require('fs').readFile(tok_file_path, "utf8", function (err,data) {
          if (err) {  return console.log(err);  }
@@ -32,8 +31,7 @@ exports.reset_pwd =  function(req, res) {
          require('fs').unlinkSync(tok_file_path);
          
          if(data === crypt.encrypt(req.params.token.toString("utf8"))) {
-            
-            
+             
             if(typeof req.params.first !== 'undefined') {
                 template_opts.warning = 'This is the first time you are using this app. You have to choose a password.';
             } 
@@ -79,7 +77,6 @@ exports.reset_post_pwd =  function(req, res) {
      if(new_pwd === 'admin') {
             _error.push('For security reasons, "admin" is forbidden as the camera password. ');
      }  
-     
    
      if(_error.length !== 0 ) {
         // Error
@@ -109,36 +106,15 @@ exports.reset_post_pwd =  function(req, res) {
         }); 
      }
     
-}
+};
 
 
 
 /******************************************************************************************************************************************
 * UPDATE CAM PWD (GET)
 ***********************************************/
- exports.load = function(req, res) {
-     
-    var pyshellReadConfig = new PythonShell('read_config.py', {
-            mode: 'json',
-            scriptPath: constants.python_path +'/config',
-            argv: ['json']
-    });
-        
-    // Read config
-    pyshellReadConfig.on('message',  function (config) { 
-          
-          // Test if config.cam_pwd has been updated 
-          // to properly display the warning message
-          
-          if(typeof config.cam_pwd === "undefined" || config.cam_pwd === "admin") {
-             delete config.cam_pwd; 
-          }
-      
-          res.render('update_cam_pwd', {
-             config: config
-          });
-    });
-    
+exports.load = function(req, res) {
+    cookie.get_config_cookie_and_render(req, res,{}, 'update_cam_pwd');         
 };
 
 
@@ -151,108 +127,44 @@ exports.reset_post_pwd =  function(req, res) {
     var new_pwd     = req.body.newPwd;
     var new_pwd2    = req.body.newPwd2;
     var _error      = [];
-    var first_time  = false;
-    var redirected  = false;
-    
-    var pyshellReadConfig = new PythonShell('read_config.py', {
-        mode: 'json',
-        scriptPath: constants.python_path +'/config',
-        argv: ['json']
-    });
-    
-    // Read config
-    pyshellReadConfig.on('message',  function (config) { 
-     
-        // Test if new passwords match
-        if(new_pwd !== new_pwd2) {
-            _error.push('The 2 new passwords don\'t match. Please, try again.');
-        }
+    var cookie_config = req.cookies.config;
+      
+    // Test if new passwords match
+    if(new_pwd !== new_pwd2) {
+        _error.push('The 2 new passwords don\'t match. Please, try again.');
+    }
         
-        // Test if new passwords != admin
-        if(new_pwd === 'admin') {
-            _error.push('For security reasons, "admin" is forbidden as the camera password. Please, enter a new password.');
-        }
+    // Test if new passwords != admin
+    if(new_pwd === 'admin') {
+        _error.push('For security reasons, "admin" is forbidden as the camera password. Please, enter a new password.');
+    }
         
-        // Test the old pwd 
-        if(typeof config.cam_pwd !== 'undefined') {
+    if(cookie_config.cam_pwd !== old_pwd) {
+        _error.push('The old password is wrong. Please, try again.');
+    }
             
-            if(config.cam_pwd !== old_pwd) {
-                _error.push('The old password is wrong. Please, try again.');
-            }
-            
-            if(config.cam_pwd == 'admin' && _error.length == 0) {
-                 
-                    // First time we update the password: we redirect to the home
-                    config.new_cam_pwd = new_pwd;
-                    
-                    // We clear the config cookie so it re-read from config.txt
-                    res.clearCookie("config",{path:'/'});  
-                 
-                    var updateConfig = new PythonShell('update_config.py', {
-                        mode: 'json',
-                        scriptPath: constants.python_path+'/config',
-                        args:[JSON.stringify(config)]
-                    });
-                      
-                    redirected = true;
-                      
-                    updateConfig.on('message',  function (config_write_res) { 
-                         return res.redirect('/?success=Thank you for updating your camera password. Enjoy!');    
-                    });
-             }
-            
-            
-            
-        } else {
-            if(old_pwd !== 'admin') {
-                _error.push('The old password has never been updated. Please, try "admin".');
-            }  
-        }
-          
-        if(!redirected) {
-          
-            // Error
-            if(_error.length !== 0 ) {
-                
-                if(typeof config.cam_pwd === "undefined" || config.cam_pwd === "admin") {
-                    delete config.cam_pwd; 
-                }
-                         
-                // We have an error: we redirect with the error message
-                res.render('update_cam_pwd', {
-                    config : config,
-                    errors : _error
-                });
-               
-             } else {
-                  
-                    // Add PWD to the config file
-                    config.new_cam_pwd = new_pwd;
+    if(_error.length !== 0) {
+        // Error
+        cookie.get_config_cookie_and_render(req, res,{ errors : _error}, 'update_cam_pwd');         
+    } else {
+        // Add PWD to the config file
+        cookie_config.new_cam_pwd = new_pwd;
+       
+        // We clear the config cookie so it re-read from config.txt
+        res.clearCookie("config",{path:'/'});       
                      
-                    var updateConfig = new PythonShell('update_config.py', {
-                        mode: 'json',
-                        scriptPath: constants.python_path+'/config',
-                        args:[JSON.stringify(config)]
-                    });
+        var updateConfig = new PythonShell('update_config.py', {
+            mode: 'json',
+            scriptPath: constants.python_path+'/config',
+            args:[JSON.stringify(cookie_config)]
+        });
                       
-                    updateConfig.on('message',  function (config_write_res) { 
-                              // We clear the config cookie so it re-read from config.txt
-                              res.clearCookie("config",{path:'/'});  
-                              
-                              res.render('update_cam_pwd', {
-                                config : config_write_res,
-                                success : "Password updated"
-                            });
-                    });
-              
-             }
-        }
-    });
-    
+        updateConfig.on('message',  function (config_write_res) { 
+            res.redirect('/logout');               
+        });
+        
+    }
 };
-
-
-
 
 /******************************************************************************************************************************************
 * FORGET PWD (send email)

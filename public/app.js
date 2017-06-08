@@ -152,18 +152,19 @@ app.use(require('express-session')({
 app.use(passport.initialize());
 app.use(passport.session());
  
- 
+
 app.get('/login',
   function(req, res){
     res.clearCookie("config",{path:'/'});  
-    res.render('login');
+    res.render('login' );
 });
-
+ 
 app.get('/login/WrongPassword',
   function(req, res){
     res.clearCookie("config",{path:'/'});  
     res.render('login',{'error':'Wrong Password'});
 });
+ 
   
 app.post('/login', 
   passport.authenticate('local', { failureRedirect: '/login/WrongPassword', successRedirect: '/' }),
