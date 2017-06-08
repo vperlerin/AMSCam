@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AMS Cam</title>
+    <% include ../shared/head.ejs %>
+</head>
+ 
+<body>
+
+<% include ../shared/header.ejs %>
+
+    <div class="box box-header-like clearfix">
+        <div class="clearfix">
+            <h3 class="pull-left">Focus Helper</h3>
+        </div>
+    </div>
+    
+    
+    <div class="step np">
+        <div class="container nl">       
+         
+            <div class="row dmt">
+                <div class="col-md-6">
+                    <img id="screenshot_img" class="img-response"/>
+                </div>
+                <div class="col-md-6">
+                    <p>
+                        This functionality allows you to check your camera images even when you are out of range of your network.<br/>
+                        The images are dropped according to a defined interval and uploaded to the AMS website so you can check the images
+                        on the AMS website (on your mobile phone for instance).<br/>
+                        
+                        <hr/>
+                        <strong>The images will appear at the following URL:</strong>
+                        <a href="http://www.amsmeteors.org/members/upload_cam_api/<%= config.device_id; %>/latest.jpg" target="_blank">
+                            http://www.amsmeteors.org/members/upload_cam_api/<%= config.device_id; %>/latest.jpg
+                        </a>
+                        <hr/>
+                        
+                        <%if (typeof success != 'undefined') { %> 
+                            <div class="alert alert-success dmt alert-dismissable">
+                                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                                <i class="fa fa-check"></i> <strong><%=success%></strong> 
+                            </div>
+                        <% }  %>
+                        
+                    </p>
+                    <form method="POST" id="focus_help_form">
+                         <div class="form-group">    
+                            <label for="_interval">Images will be uploaded every</label>
+                            <select name="_interval" id="_interval" class="form-control">
+                                 <% for(var i=15; i<=60; i=i+5) {%>
+                                    <option value="<%=i%>"><%=i%> sec.</option>
+                                  <% } %>
+                            </select>
+                        </div>
+                        <div class="form-group">    
+                            <label for="_period">During</label>
+                            <select name="_period" id="_period" class="form-control">
+                                 <% for(var i=60; i<=(60*60); i=i+(59*5)) {%>
+                                    <option value="<%=i%>"><%= Math.floor(i / 60)%> min.</option>
+                                  <% } %>
+                            </select>
+                        </div>
+                         <div class="form-group">    
+                            <label for="_delay">This process will start in</label>
+                            <select name="_delay" id="_delay" class="form-control">
+                                 <% for(var i=0; i<361; i=i+10) {%>
+                                    <option value="<%=i%>"><%=i%> sec.</option>
+                                  <% } %>
+                            </select>
+                        </div>
+                        <button id="start_focus_helper" type="submit" class="btn btn-lg btn-primary btn-block load-on-click" type="submit">Start Focus Helper</button>
+                    </form>
+                    <div id="focus_help_go" class="hidden">
+                        <div id="start_in_h"><strong>Process will start in </strong> <span id="start_in"></span></div>
+                        <div id="upload_in_h" class="hidden"><strong>Next image will uploaded in </strong> <span id="upload_in"></span></div>
+                    </div>
+
+                    
+                 </div>
+            </div>
+                    
+             
+            
+        </div>
+    </div>
+         
+    <% include ../shared/footer.ejs %>
+  
+   
+    <script>
+    
+         var imageT ;
+    
+        function update_latest() {
+            // Reload Image
+            $('#screenshot_img').attr("src","/py_img/latest.jpg?" + new Date().getTime());
+        }
+        
+        function start_in($start_in,sec) {
+            var startT = setInterval(function(){
+              sec--;
+          
+              $start_in.text( sec + " sec");
+              if(sec <= 0) {
+                $('#start_in_h').html('Process Started.');
+                $('#upload_in_h').removeClass('hidden');
+                // Image Uploaded
+                image_upload($('#upload_in'),$('#_interval').val(),$('#_period').val());
+                clearInterval(startT);
+              }
+            },1000);
+         }
+         
+         function image_upload($interval,sec_interval,sec_period) {
+            
+                  imageT  = setInterval(function(){
+                        
+                          sec_interval--;
+                          sec_period--;
+                          $interval.text( sec_interval + " sec");
+                          
+                          $('#upload_in_h').html('<strong>Next image will be uploaded in </strong> ' + sec_interval + ' sec ');
+                          update_latest();
+                          
+                          if(sec_interval<= 0) {
+                             clearInterval(imageT);
+                          }
+                          if(sec_period>0 && sec_interval<= 0) {
+                            clearInterval(imageT);
+                            image_upload($interval,$('#_interval').val(),sec_period);
+                          }  
+                          
+                          if(sec_period<=0) {
+                            $('#upload_in_h').html('<strong>Process stopped. Page reloading. <span class="fa fa-spin fa-refresh"></span> <strong>');
+                          }
+                  },1000);
+                
+         }
+        
+            
+        $(function() {
+           update_latest();
+            
+            $('#start_focus_helper').click(function() {
+                var _start_in = $('#_delay').val();
+                $('#focus_help_form').addClass('hidden');
+                $('#focus_help_go').removeClass('hidden');
+                $('#start_in').text($('#_delay').val() + " sec");
+                
+                // Delay
+                if(_start_in!=0) {
+                    start_in($('#start_in'),$('#_delay').val())
+                } else {
+                    $('#start_in_h').remove();
+                    $('#upload_in_h').removeClass('hidden');
+                    // Image Uploaded
+                    image_upload($('#upload_in'),$('#_interval').val(),$('#_period').val());
+                }
+                
+              
+            });
+         })
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AMS Cam</title>
+    <% include ../shared/head.ejs %>
+</head>
+ 
+<body>
+
+<% include ../shared/header.ejs %>
+
+    <div class="box box-header-like clearfix">
+        <div class="clearfix">
+            <h3 class="pull-left">Screenshot</h3>
+        </div>
+    </div>
+    
+     <div class="step np">
+        <div class="container nl">       
+         
+            <div class="row dmt">
+                <div class="col-md-6 text-center">
+                    <%if (typeof error != 'undefined') { %> 
+                        <div class="alert alert-danger alert-dismissable text-left">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <i class="fa fa-check"></i> <strong><%=error%></strong> 
+                        </div>
+                    <% }  %>
+                    <img id="screenshot_img" class="img-response"/>
+                   
+                </div>
+                <div class="col-md-6">
+                    <p>On the left is the latest image automatically taken by your camera and uploaded on the AMS server.</p>
+                    <%if (typeof message_success != 'undefined') { %> 
+                        <div class="alert alert-success dmt alert-dismissable">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            <i class="fa fa-check"></i> <strong>The new image has been automatically sent to the AMS server and is available to this address: </strong> 
+                            <a href="http://www.amsmeteors.org/members/upload_cam_api/<%= config.device_id; %>/latest.jpg?<%= Math.floor(Math.random()*100000) %>" target="_blank">
+                                http://www.amsmeteors.org/members/upload_cam_api/<%= config.device_id; %>/latest.jpg
+                            </a>
+                        </div>
+                    <% }  %>
+                    <hr/>
+                    <form action="/cam/screenshot" method="post" class="mt" >
+                        <button id="btn_screenshot" class="btn btn-lg btn-primary btn-block load-on-click" type="submit">Take New Screenshot</button>
+                    </form> 
+                    <hr/>
+                    
+                       
+                  </div>
+            </div>
+                
+           
+        
+            </div>
+    </div>
+         
+    <% include ../shared/footer.ejs %>
+  
+   
+    <script>
+        $(function() {
+        
+            // Reload Image
+            $('#screenshot_img').attr("src","/py_img/latest.jpg?" + new Date().getTime());
+           
+         })
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AMS Cam</title>
+    <% include ../shared/head.ejs %>
+</head>
+<body>
+
+<% include ../shared/header.ejs %>
+
+     <div class="box box-header-like clearfix">
+        <div class="clearfix">
+            <h3 class="pull-left">AMSCam Dashboard</h3>
+        </div>
+    </div>
+ 
+    <div class="step np">
+        <div class="container nl">   
+            <div class="row">
+                  <div class="col-md-6 text-center"> 
+                        <% if (browser === 'Chrome') { %>
+                                 <%if (config) { %> 
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <div id="vxg_media_player1" class="vxgplayer dmt" url="rtsp://<%= config.cam_ip %>/av0_1" latency="3000000" autostart  avsync></div>
+                                    </div>
+                                    <div id="runtimePlayers"></div>
+                                     <script src="/js/vxgplayer.js"></script> 
+                                 <% } else { %>
+                                    <div class="alert alert-danger dmt">Config.txt missing - please makedevice and try again.</div>
+                                 <% } %> 
+                        <% } else if (browser === 'Firefox') { %>
+                                 
+                                 <%if (config) { %> 
+                                    <div class="dmt">
+                                        <div class="embed-responsive embed-responsive-4by3">
+                                            <object classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921"
+                                                             codebase="http://downloads.videolan.org/pub/videolan/vlc/last/win32/axvlc.cab"
+                                                             width="640" height="500" id="vlc" events="True">
+                                                <param name="src" value="rtsp://<%= config.cam_ip %>/av0_1" />
+                                                <param name="ShowDisplay" value="True" />
+                                                <param name="AutoLoop" value="False" />
+                                                <param name="AutoPlay" value="True" />
+                                                <embed id="vlcEmb"  type="application/x-google-vlc-plugin" version="VideoLAN.VLCPlugin.2" autoplay="yes" loop="no" width="640" height="480" target="rtsp://<%= config.cam_ip %>/av0_1" ></embed>
+                                            </object> 
+                                        </div>
+                                    </div>
+                                 <% } else { %>
+                                    <div class="alert alert-danger dmt">Config.txt missing - please makedevice and try again.</div>
+                                 <% } %>    
+                            
+                            <% } else { %>
+                        <div class="alert alert-danger dmt">Unsupported browser. Please, update to <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a href="https://www.mozilla.org/en-US/firefox/products/">Firefox</a>. </div>
+                            
+                        <% } %>
+                  </div>
+                  <div class="col-md-6 text-center">
+                   
+                        <div id="config" class="dmt">
+                         
+                            <%if (capture && typeof msg == "undefined") { %> 
+                                <div class="text-left alert alert-<%if (capture==1) { %>success<% } else { %>danger<%}%>">
+                                 <%if (capture==1) { %>
+                                    <span class="fa fa-check"></span> Capture Program running
+                                <% } else { %>
+                                    <span class="fa fa-warning"></span> Capture Program Stopped!
+                                 <% } %>
+                                </div>
+                            <% } %>   
+                            
+                            <%if (typeof msg !== "undefined") { %> 
+                                <div class="text-left alert alert-warning">
+                                     <span class="fa fa-info-circle"></span> 
+                                     <strong>Camera restarting</strong> 
+                                     Click <a href="/">here</a> after the preview goes black.
+                                 </div>
+                            <% } %>   
+                         
+                            <%if (config) { %> 
+                                <table class="table table-condensed table-striped text-left">
+                                    <tr>
+                                        <td class="dash"><strong>Cam Owner</strong></td>
+                                        <td><a href="http://www.amsmeteors.org/members/user/view_profile?user_id=<%= config.user_id %>" target="_blank"><%= config.first_name %> <%= config.last_name %></a></td>
+                                    </tr>
+                                 </table>    
+                                 
+                                 <table class="table table-condensed table-striped text-left">
+                                    <tr>
+                                        <td class="dash"><strong>LAN IP</strong></td>
+                                        <td><%= config.lan_ip %></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="dash"><strong>CAM IP</strong></td>
+                                        <td><%= config.cam_ip %></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="dash"><strong>WLAN MAC</strong></td>
+                                        <td><%= config.wlan_mac %></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="dash"><strong>LAN MAC</strong></td>
+                                        <td><%= config.lan_mac %></td>
+                                    </tr>
+                                 </table>    
+                                 <table class="table table-condensed table-striped text-left">
+                                    <tr>
+                                        <td class="dash"><strong>Device Location</strong></td>
+                                        <td>
+                                            <a href="https://www.google.fr/maps/place/<%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;" target="_blank"><%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;</a>
+                                            <a href="http://www.amsmeteors.org/members/cam/edit_geoloc?device_id=<%= config.device_id %>" class="btn btn-primary btn-xs pull-right"><span class="fa fa-edit"></span></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="dash"><strong>Altitude</strong></td>
+                                        <td><%= config.device_alt %>m</td>
+                                    </tr>
+                                     <tr>
+                                        <td class="dash"><strong>FOV</strong></td>
+                                        <td id="fov"><%= config.fov; %></td>
+                                    </tr>
+                                    
+                                 </table>    
+                                 
+                                 <table class="table table-condensed table-striped text-left">
+                                    <tr>
+                                        <td class="dash" rowspan="3"><strong>Cam</strong></td>
+                                        <td>
+                                         
+                                            <% if(config.calibration=='1') { %>
+                                                <span class="text-success"><span class="fa fa-check"></span> Camera Calibrated</span>
+                                            <% } else { %>
+                                                <span class="text-danger"><span class="fa fa-times"></span> Camera Not Calibrated</span>
+                                             <% } %>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> 
+                                             <%if (typeof config.parameters === "undefined") { %>     
+                                                <a href="/cam/parameters">Parameters</a>
+                                             <%} else {%>
+                                                <a href="/cam/parameters/<%= config.parameters %>">Current Parameters (<%= config.parameters %>)</a>
+                                             <% } %>
+                                        </td>
+                                    </tr>
+                                     <tr>
+                                        <td><a href="http://<%= config.cam_ip %>" target="_blank">Admin Config. <span class="fa fa-external-link"></span></a></td>
+                                    </tr>
+                                 </table>     
+                                                      
+                            <% } %>   
+                             
+                        </div>
+                  </div>
+            </div>  
+       </div>
+  
+    </div>
+</div>
+ 
+
+<% include ../shared/footer.ejs %>
+<script>
+    $(function() {
+        var str = $('#fov').text();
+        var pos = str.lastIndexOf('|');
+        str = str.substring(0,pos) + "" + str.substring(pos+1)
+        $('#fov').text(str.replace(/\|/g, " | "));
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AMS Cam</title>
+    <% include ../shared/head.ejs %>
+</head>
+ 
+<body>
+
+<% include ../shared/header.ejs %>
+
+    <div class="box box-header-like clearfix">
+        <div class="clearfix">
+            <h3 class="pull-left">Camera Parameters</h3>
+        </div>
+    </div>
+    
+    <div class="step np">
+        <div class="container nl">   
+            <div class="row">
+                  <div class="col-md-6 text-center"> 
+                         <% if (browser === 'Chrome') { %>
+                                <%if (config) { %> 
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <div id="vxg_media_player1" class="vxgplayer dmt" url="rtsp://<%= config.cam_ip %>/av0_1" latency="3000000" autostart  avsync></div>
+                                    </div>
+                                    <div id="runtimePlayers"></div>
+                                     <script src="/js/vxgplayer.js"></script> 
+                                 <% } else { %>
+                                    <div class="alert alert-danger dmt">Config.txt missing - please makedevice and try again.</div>
+                                 <% } %> 
+                        <% } else if (browser === 'Firefox') { %>
+                                 
+                                 <%if (config) { %> 
+                                    
+                                    <div class="dmt">
+                                        <div class="embed-responsive embed-responsive-4by3">
+                                            <object classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921"
+                                                             codebase="http://downloads.videolan.org/pub/videolan/vlc/last/win32/axvlc.cab"
+                                                             width="640" height="500" id="vlc" events="True">
+                                                <param name="src" value="rtsp://<%= config.cam_ip %>/av0_1" />
+                                                <param name="ShowDisplay" value="True" />
+                                                <param name="AutoLoop" value="False" />
+                                                <param name="AutoPlay" value="True" />
+                                                <embed id="vlcEmb"  type="application/x-google-vlc-plugin" version="VideoLAN.VLCPlugin.2" autoplay="yes" loop="no" width="640" height="480" target="rtsp://<%= config.cam_ip %>/av0_1" ></embed>
+                                            </object> 
+                                        </div>
+                                    </div>
+                                 <% } else { %>
+                                    <div class="alert alert-danger dmt">Config.txt missing - please makedevice and try again.</div>
+                                 <% } %>    
+                            
+                            <% } else { %>
+                        <div class="alert alert-danger dmt">Unsupported browser. Please, update to <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a href="https://www.mozilla.org/en-US/firefox/products/">Firefox</a>. </div>
+                            
+                        <% } %>
+                  </div>
+                  <div class="col-md-6">
+                        
+                        <h3 class="bordered">Camera Parameters</h3> 
+                        
+                        <div class="alert alert-info">
+                            <span class="fa fa-info-circle"></span> Depending on your network, it may take several seconds for the video to update.
+                        </div>
+                         
+                        <% 
+                            config_files = [active_file]; 
+                            possible_files = ['Calibration','Night','Day'];
+                        %>  
+                   
+                        <ul class="nav nav-tabs dmt mb" id="tabs">
+                            <%for (var file in possible_files){%>
+                                <li <% if( possible_files[file]== active_file){ %>class="active"<% } %>>
+                                    <a href="/cam/parameters/<%= possible_files[file]  %>" ><%= possible_files[file]  %></a>
+                                </li>    
+                            <% } %>
+                        </ul>
+                        
+                        <div class="tab-content"> 
+                          
+                            <%for (var file in config_files){%>
+                                <div class="tab-pane fade in dmt  <% if( config_files[file]== active_file){ %>active<% } %>" role="tabpanel" id="<%= config_files[file] %>"> 
+                                    <% /* Coul add Chroma... */ %> 
+                                    <% sliders = ['Brightness','Contrast','Gamma']; %> 
+                                         <%for (var slider in sliders){%>
+                                            <div class="clearfix dmt">
+                                                <strong class="pull-left ui-slider-handle-label"><%= sliders[slider]  %></strong>    
+                                                <div class="pull-left ui-slider-handle-container">
+                                                    <div id="sl_<%= config_files[file]  %><%= sliders[slider] %>" class="dmt"><div id="sl_<%= config_files[file]  %><%= sliders[slider] %>-handle" class="ui-slider-handle"></div></div>
+                                                </div>
+                                                <div class="pull-left"><input id="input_<%= config_files[file] %><%= sliders[slider] %>" type="number" class="form-control auto input-sm ui-slider-input-l " size="3" min="0" max="255"/></div>
+                                            </div>
+                                        <%}%>
+                                  </div>   
+                             <% } %>
+                             
+                        </div>
+                        <hr/>
+                        <div class="alert alert-warning">
+                            <span class="fa fa-warning"></span> <strong>IMPORTANT</strong><br/>
+                            Once your set of parameters are defined, click the button below to automatically load 
+                            the proper set of parameters based on the current position of the sun. 
+                            If you don't, it may take up to 15 minutes for the appropriate parameters to load. 
+                        </div>
+                        
+                        <a href="/cam/load_parameters" id="btn_parameters" class="btn btn-lg btn-primary btn-block load-on-click mt" type="submit">Auto Cam Parameters</button>
+                       
+                        
+                  </div>
+            </div>  
+       </div>
+         
+     </div>    
+ 
+    <% include ../shared/footer.ejs %>
+    <link href="../../bower_components/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet">
+    <link href="../../bower_components/jquery-ui/themes/base/theme.css" rel="stylesheet">
+    <script src="../../bower_components/jquery-ui/jquery-ui.min.js"></script>
+     
+    <script>
+      
+      function update_cam_param(_data,slider_hanlder,input,ui) {
+        $.ajax({
+            type: 'POST',
+            url:  '/cam/parameters/',
+            data: _data,  
+            dataType: "json",
+            success: function(response){
+                slider_hanlder.text(ui.value);
+                input.prop('disabled',false).val(ui.value);                 
+            }
+        });
+      }
+        
+      $(function() {
+            /* Setup Sliders */
+            <%for (var file in config_files){%>
+                <%for (var slider in sliders){%>
+                    var <%= config_files[file]  %><%= sliders[slider] %>_handle = $( "#sl_<%= config_files[file]  %><%= sliders[slider] %>-handle" );
+                    /* Sliders */
+                    var $slider<%= config_files[file]  %><%= sliders[slider] %> =  $("#sl_<%= config_files[file]  %><%= sliders[slider] %>").slider({
+                         animate: true,
+                         range: "min",
+                         min: 0,
+                         max: 255,
+                         animate: "fast",
+                         value: <%= calib[sliders[slider]]; %>,
+                         create: function() {
+                            <%= config_files[file]  %><%= sliders[slider] %>_handle.text( $( this ).slider( "value" ) );
+                         },
+                         slide: function( event, ui ) {
+                            <%= config_files[file]  %><%= sliders[slider] %>_handle.text(ui.value);
+                            $('#input_<%= config_files[file] %><%= sliders[slider] %>').val(ui.value);
+                         },
+                         stop: function( event, ui ) { 
+                            <%= config_files[file]  %><%= sliders[slider] %>_handle.html('<span class="fa fa-spin fa-refresh"></span>');
+                            $('#input_<%= config_files[file] %><%= sliders[slider] %>').prop('disabled',true);                            
+                             
+                            update_cam_param({<%= sliders[slider]  %>:ui.value, file:'<%= config_files[file]  %>'},<%= config_files[file]  %><%= sliders[slider] %>_handle,$('#input_<%= config_files[file] %><%= sliders[slider] %>'),ui);
+                              
+                         }
+                     });  
+                     
+                     /* Inputs */
+                     $('#input_<%= config_files[file] %><%= sliders[slider] %>').val(<%= calib[sliders[slider]]; %>).change(function() {
+                            var val = parseInt($(this).val());
+                            <%= config_files[file]  %><%= sliders[slider] %>_handle.html('<span class="fa fa-spin fa-refresh"></span>');
+                            $('#input_<%= config_files[file] %><%= sliders[slider] %>').prop('disabled',true);                            
+                            $slider<%= config_files[file]  %><%= sliders[slider] %>.slider({value:val});
+                            update_cam_param({
+                                <%= sliders[slider]  %>:val,
+                                file:'<%= config_files[file]  %>'
+                            },<%= config_files[file]  %><%= sliders[slider] %>_handle,
+                            $('#input_<%= config_files[file] %><%= sliders[slider] %>'),
+                            {value:val});
+                     });
+                <%}%>
+            <%}%>
+               
+        });
+    </script>     
+    
+</body>
+</html>

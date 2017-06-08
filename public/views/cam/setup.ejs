@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AMS Cam</title>
+    <% include ../shared/head.ejs %>
+</head>
+ 
+<body>
+
+<% include ../shared/header.ejs %>
+
+    <div class="box box-header-like clearfix">
+        <div class="clearfix">
+            <h3 class="pull-left">Camera Setup</h3>
+        </div>
+    </div>
+    
+    <div class="step np">
+        <div class="container nl">   
+            <div class="row">
+                  <div class="col-md-6 text-center"> 
+                         <% if (browser === 'Chrome') { %>
+                                <%if (config) { %> 
+                                    <div class="embed-responsive embed-responsive-4by3">
+                                        <div id="vxg_media_player1" class="vxgplayer dmt" url="rtsp://<%= config.cam_ip %>/av0_1" latency="3000000" autostart  avsync></div>
+                                    </div>
+                                    <div id="runtimePlayers"></div>
+                                     <script src="/js/vxgplayer.js"></script> 
+                                 <% } else { %>
+                                    <div class="alert alert-danger dmt">Config.txt missing - please makedevice and try again.</div>
+                                 <% } %> 
+                        <% } else if (browser === 'Firefox') { %>
+                                 
+                                 <%if (config) { %> 
+                                    
+                                    <div class="dmt">
+                                        <div class="embed-responsive embed-responsive-4by3">
+                                            <object classid="clsid:9BE31822-FDAD-461B-AD51-BE1D1C159921"
+                                                             codebase="http://downloads.videolan.org/pub/videolan/vlc/last/win32/axvlc.cab"
+                                                             width="640" height="500" id="vlc" events="True">
+                                                <param name="src" value="rtsp://<%= config.cam_ip %>/av0_1" />
+                                                <param name="ShowDisplay" value="True" />
+                                                <param name="AutoLoop" value="False" />
+                                                <param name="AutoPlay" value="True" />
+                                                <embed id="vlcEmb"  type="application/x-google-vlc-plugin" version="VideoLAN.VLCPlugin.2" autoplay="yes" loop="no" width="640" height="480" target="rtsp://<%= config.cam_ip %>/av0_1" ></embed>
+                                            </object> 
+                                        </div>
+                                    </div>
+                                 <% } else { %>
+                                    <div class="alert alert-danger dmt">Config.txt missing - please makedevice and try again.</div>
+                                 <% } %>    
+                            
+                            <% } else { %>
+                        <div class="alert alert-danger dmt">Unsupported browser. Please, update to <a href="https://www.google.com/chrome/" target="_blank">Chrome</a> or <a href="https://www.mozilla.org/en-US/firefox/products/">Firefox</a>. </div>
+                            
+                        <% } %>
+                  </div>
+                  <div class="col-md-6">
+                        
+                        <h3 class="bordered">Camera Setup</h3> 
+                        <p class="dmt">Current parameters for the preview: <a href="/cam/parameters/<%= active_file %>"><strong><%= active_file %></strong></a></p>
+                        <hr/>
+                         <div class="alert alert-warning">
+                            <span class="fa fa-warning"></span> <strong>WARNING</strong><br/>
+                            Changing the rotation of the camera will restart the camera.
+                            Don't change the rotation again until the preview image is back.
+                        </div>
+                        <form action="POST">
+                            <div class="form-group">
+                                <label class="rotation">Rotation</label>
+                                <select name="rotation" class="form-control">
+                                      <option value="0">Non-Rotation</option>
+                                      <option value="1">90 Rotation</option>
+                                      <option value="2">270 Rotation</option>
+                                </select>
+                            </div>
+                        </form>
+                 
+                  </div>
+            </div>  
+       </div>
+         
+     </div>    
+ 
+    <% include ../shared/footer.ejs %>
+   
+    
+</body>
+</html>

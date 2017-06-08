@@ -1,0 +1,9 @@
+{
+  "short_name": "AMSCam",
+  "name": "American Meteor Society All Shy Cam",
+  "start_url": "/",
+  "background_color": "#000000",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#000000"
+}

@@ -75,9 +75,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-// Cookie
-app.use(require('cookie-parser')());
-
 app.use(methodOverride('_method'));
 
 // development error handler
@@ -173,8 +170,6 @@ app.post('/login',
   function(req, res) {
      res.redirect('/');
 });
- 
- 
  
 app.get('/logout', function(req, res){
   req.logout();

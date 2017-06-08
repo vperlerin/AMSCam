@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AMS Cam</title>
+    <% include ../shared/head.ejs %>
+</head>
+ 
+<body>
+
+<% include ../shared/header.ejs %>
+
+    <div class="box box-header-like clearfix">
+        <div class="clearfix">
+            <h3 class="pull-left">Log</h3>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="step welcome-step np">
+                <div class="form-cont">
+                    <form method="POST">
+                            <h3 class="mt bordered mb">Add Cam log entry</h3>
+                        
+                            <div class="in">
+                                <div class="form-group">    
+                                    <label for="time">Time</label>
+                                    <input type="text" name="timeV" id="timeV" class="form-control" placeholder="Time" autofocus="">
+                                </div>
+                                <div class="form-group">    
+                                    <label for="time">Outside Temperature</label>
+                                    <input type="text" name="val1" id="val1" class="form-control" placeholder="Outside Temperature" autofocus="">
+                                </div>  
+                                
+                                <div class="form-group">    
+                                    <label for="time">Inside Temperature</label>
+                                    <input type="text" name="val2" id="val2" class="form-control" placeholder="Outside Temperature" autofocus="">
+                                </div> 
+                                
+                                <div class="form-group">    
+                                    <label for="time">Inside Humidity</label>
+                                    <input type="text" name="val3" id="val3" class="form-control" placeholder="Outside Temperature" autofocus="">
+                                </div>                           
+
+                                <button class="btn btn-lg btn-primary btn-block">Add log entry</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+           
+            
+            <div class="alert alert-info">
+                <strong><span class="fa fa-info-circle"></span> You can use this page as an API</strong><br/>
+                <code>http://<%= config.lan_ip %>:3000/cam/log?<strong>ot</strong>=[OUT. TEMP.]&<strong>it</strong>=[INS. TEMP.]&<strong>ot</strong>=[OUT. HUMIDITY]</code>                <br/>
+                <em>(In this case the time = current GMT time)</em><br/>
+                or<br/>
+                <code>http://<%= config.lan_ip %>:3000/cam/log?<strong>time</strong>=[GMT TIME]ot=[OUT. TEMP.]&<strong>it</strong>=[INS. TEMP.]&<strong>ot</strong>=[OUT. HUMIDITY]</code> 
+            </div>
+            
+        </div>
+        <div class="col-md-6">
+            <div class="step welcome-step np">
+                <div class="form-cont">
+                    <div class="clearfix">
+                        <h3 class="mt mb pull-left">Cam log</h3>
+                        <a href="/cam/log/clean"  data-confirm="You are about to delete all the log entries. Please, confirm." class="btn btn-sm btn-danger pull-right"><span class="fa fa-trash"></span> Clean Log</a>
+                    </div>    
+                     <%if (typeof log_content != "undefined") { %> 
+                      
+                         <table  class="table table-condensed table-striped table-hover table-results" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>  
+                                    <th>Out. T&deg;</th> 
+                                    <th>Ins. T&deg;</th>
+                                    <th>Ins. Hum.</th> 
+                               </tr>
+                            </thead>
+                            <tbody>
+                               <% if (log_content) { %>
+                                    <%= log_content.length %>
+                                  <% for(key in log_content) { %>
+                                        <tr id="<%= key %>">
+                                           <td><strong><%= log_content[key]['Time'] %></strong></td>
+                                           <td><%= log_content[key]['Outside Temperature'] %></td>
+                                           <td><%= log_content[key]['Inside Temperature'] %></td>
+                                           <td><%= log_content[key]['Inside Humidity'] %></td>
+                                        </tr>    
+                                   <% } %>
+                                <% } %>
+                            </tbody>
+                         </table> 
+                         
+                      <% } %> 
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+     <% include ../shared/footer.ejs %>
+
+     <script>
+        $(function() {
+            var dt = new Date();
+            $('#timeV').val(dt.toUTCString());
+        });
+     </script>
+</body>
+</html>  
+ 
