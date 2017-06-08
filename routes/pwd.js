@@ -10,7 +10,7 @@ var crypt           = require('../utils/crypt');
 
 
 /******************************************************************************************************************************************
-* RESET PWD  
+* RESET PWD (GET)
 ***********************************************/
 exports.reset_pwd =  function(req, res) {
     
@@ -19,7 +19,7 @@ exports.reset_pwd =  function(req, res) {
      // If no token or tok.sec doesnt exist: exit!
      // TODO: test if it's a token
      if(typeof req.params.token==='undefined' || !require('fs').existsSync(tok_file_path)) {
-        res.redirect('/');
+         res.redirect('/');
      }
        
      // Test token against the one in tok.sec
@@ -41,6 +41,67 @@ exports.reset_pwd =  function(req, res) {
     
 }
 
+
+/******************************************************************************************************************************************
+* RESET PWD (POST)
+***********************************************/
+exports.reset_post_pwd =  function(req, res) {
+    
+     var tok_file_path = constants.APP_PATH + "tok.sec";
+     var new_pwd     = req.body.newPwd;
+     var new_pwd2    = req.body.newPwd2;
+     var _error      = [];
+     
+     // We delete the tok.sec if necessary
+     if(require('fs').existsSync(tok_file_path)) {
+         require('fs').unlinkSync(tok_file_path);
+     }
+       
+     // Test password
+     if(new_pwd.trim() == '') {
+            _error.push('Please, enter a valid password.');
+     }
+       
+     // Test if new passwords match
+     if(new_pwd !== new_pwd2) {
+            _error.push('The 2 new passwords don\'t match.');
+     }
+        
+     // Test if new passwords != admin
+     if(new_pwd === 'admin') {
+            _error.push('For security reasons, "admin" is forbidden as the camera password. ');
+     }  
+     
+   
+     if(_error.length !== 0 ) {
+        // Error
+        cookie.get_config_cookie_and_render(req, res,{errors : _error}, 'reset_pwd');       
+     } else {
+         
+        // We get the cookie values
+        var cookie_config = req.cookies.config;  
+        
+        // Send warning new password
+        cookie_config.new_cam_pwd = new_pwd; 
+         
+        // We update the password    
+        var updateConfig = new PythonShell('update_config.py', {
+            mode: 'json',
+            scriptPath: constants.python_path+'/config',
+            args:[JSON.stringify(cookie_config)]
+        });
+                      
+        updateConfig.on('message',  function (config_write_res) { 
+            // We clear the config cookie so it re-read from config.txt
+            res.clearCookie("config",{path:'/'});  
+                   
+            // THIS IS OK
+            cookie.get_config_cookie_and_render(req, res,{ success : "Password updated."}, 'reset_pwd');         
+           
+        }); 
+     }
+    
+}
 
 
 

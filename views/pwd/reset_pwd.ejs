@@ -11,7 +11,7 @@
 
 <div class="step welcome-step np">
     <div class="container">
-        <form method="POST">
+        <form method="POST" action="/pwd/reset_pwd">
         
             <h3 class="mt bordered mb">Update Password</h3>
             
@@ -19,7 +19,8 @@
             <%if (typeof success != 'undefined') { %> 
                 <div class="alert alert-success dmt alert-dismissable">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                    <i class="fa fa-check"></i> <strong><%=success%></strong> 
+                    <i class="fa fa-check"></i> <strong><%=success%></strong> <br/>
+                    <a href='/logout'>Login now</a>
                 </div>
             <% }  %>
             

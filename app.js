@@ -186,7 +186,7 @@ app.get('/logout', function(req, res){
 app.get('/pwd/forget_pwd',pwd.forget_pwd);
 // Reset Password
 app.get('/pwd/reset_pwd/:token',pwd.reset_pwd);
-
+app.post('/pwd/reset_pwd',pwd.reset_post_pwd);
 
 /******************************************************************************************************************************************
 * ROUTES
