@@ -10,6 +10,8 @@ var cookie  = require('../utils/cookie');
 ***********************************************/
 router.get('/', function(req, res) {
    
+    console.log('GET INDEX');
+   
     // Test Browser
     var opts = {};
     opts.browser = utils.get_browser(req)

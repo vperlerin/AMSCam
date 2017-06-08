@@ -20,7 +20,7 @@ var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 var read_config     = require('./utils/read_config');
 var utils           = require('./utils/browser');
 var constants       = require('./utils/constants');
-var cam_capture     = require('./utils/capture_test');
+var crypt            = require('./utils/crypt');  
   
 // Set public folder
 app.use(express.static(__dirname + '/public'));
@@ -31,6 +31,7 @@ app.use('/maybe',express.static(path.join(__dirname + '/../../../var/www/html/ou
 app.use('/false',express.static(path.join(__dirname + '/../../../var/www/html/out/false')));
 app.use('/fireballs',express.static(path.join(__dirname + '/../../../var/www/html/out/fireballs')));
 app.use('/js',express.static(path.join(__dirname + '/public/js')));
+app.use('/bower',express.static(path.join(__dirname + '/bower_components')));
 app.use('/img',express.static(path.join(__dirname + '/public/img')));
 app.use('/manifest',express.static(path.join(__dirname + '/views')));
 app.use('/pnacl',express.static(path.join(__dirname + '/views/pnacl'))); // RSTP Viewer
@@ -77,20 +78,7 @@ app.use(bodyParser.urlencoded({
 
 // Cookie
 app.use(require('cookie-parser')());
-
 app.use(methodOverride('_method'));
-
-// development error handler
-// will print stacktrace
-if (app.get('env') === 'development') {
-    app.use(function(err, req, res, next) {
-        res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: err
-        });
-    });
-}
 
 // production error handler
 // no stacktraces leaked to user
@@ -142,9 +130,7 @@ passport.serializeUser(function(user, cb) {
 passport.deserializeUser(function(user, cb) {
    cb(null, user);
 });
- 
-
-
+  
 // Passport config
 app.use(require('body-parser').urlencoded({ extended: true }));
 app.use(require('express-session')({
@@ -154,12 +140,50 @@ app.use(require('express-session')({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
- 
- 
+  
 app.get('/login',
   function(req, res){
     res.clearCookie("config",{path:'/'});  
-    res.render('login');
+    
+    // Read the config.txt to know if the admin has already been changed
+    var pyshellReadConfig = new PythonShell('read_config.py', {
+            mode: 'json',
+            scriptPath: constants.python_path +'/config',
+            argv: ['json']
+    });
+        
+    // Read config
+    pyshellReadConfig.on('message',  function (config) { 
+       
+        // THIS IS THE FIRST LOGIN  !
+        if(typeof config.cam_pwd === 'undefined' || config.cam_pwd == 'admin') {
+            
+            var tok_file_path = constants.APP_PATH + "tok.sec";
+            
+            // We delete the tok.sec if necessary
+            if(require('fs').existsSync(tok_file_path)) {
+                 require('fs').unlinkSync(tok_file_path);
+            }
+            
+            // We generate a new code
+            require('crypto').randomBytes(8, function(err, buffer) {
+                var token = buffer.toString('hex');
+                 
+                // Write the token in tok.sec file and redirect to reset_pwd
+                require('fs').writeFile(constants.APP_PATH +"tok.sec", crypt.encrypt(token),  { flag: 'w' }, function(err) {
+                    if(err) { return console.log(err); }
+                    res.redirect("http://"+config.lan_ip+":"+constants.main_port+"/pwd/reset_pwd/" + token + '/first_timer');
+                });
+             
+            });
+            
+        } else {
+        // THIS IS NOT THE FIRST ONE !    
+            res.render('login');
+        }
+    });
+    
+    
 });
 
 app.get('/login/WrongPassword',
@@ -173,8 +197,7 @@ app.post('/login',
   function(req, res) {
      res.redirect('/');
 });
- 
- 
+  
  
 app.get('/logout', function(req, res){
   req.logout();
@@ -186,6 +209,7 @@ app.get('/logout', function(req, res){
 app.get('/pwd/forget_pwd',pwd.forget_pwd);
 // Reset Password
 app.get('/pwd/reset_pwd/:token',pwd.reset_pwd);
+app.get('/pwd/reset_pwd/:token/:first',pwd.reset_pwd);
 app.post('/pwd/reset_pwd',pwd.reset_post_pwd);
 
 /******************************************************************************************************************************************

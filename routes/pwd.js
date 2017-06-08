@@ -15,12 +15,14 @@ var crypt           = require('../utils/crypt');
 exports.reset_pwd =  function(req, res) {
     
      var tok_file_path = constants.APP_PATH + "tok.sec";
+     var template_opts = {};
     
      // If no token or tok.sec doesnt exist: exit!
      // TODO: test if it's a token
      if(typeof req.params.token==='undefined' || !require('fs').existsSync(tok_file_path)) {
          res.redirect('/');
      }
+      
        
      // Test token against the one in tok.sec
      require('fs').readFile(tok_file_path, "utf8", function (err,data) {
@@ -30,8 +32,14 @@ exports.reset_pwd =  function(req, res) {
          require('fs').unlinkSync(tok_file_path);
          
          if(data === crypt.encrypt(req.params.token.toString("utf8"))) {
+            
+            
+            if(typeof req.params.first !== 'undefined') {
+                template_opts.warning = 'This is the first time you are using this app. You have to choose a password.';
+            } 
+              
             // THIS IS OK
-            cookie.get_config_cookie_and_render(req, res,{}, 'reset_pwd');  
+            cookie.get_config_cookie_and_render(req, res, template_opts, 'reset_pwd');  
 
          } else {
             // THIS IS NOT OK
@@ -39,7 +47,7 @@ exports.reset_pwd =  function(req, res) {
          }
      });
     
-}
+};
 
 
 /******************************************************************************************************************************************
@@ -258,9 +266,7 @@ exports.forget_pwd =  function(req, res) {
       // Write the token in tok.sec file
       require('fs').writeFile(constants.APP_PATH +"tok.sec", crypt.encrypt(token),  { flag: 'w' }, function(err) {
             if(err) { return console.log(err); }
-            
-            console.log('TOK.SEC CREATED');
-            
+             
             var pyshellReadConfig = new PythonShell('read_config.py', {
                 mode: 'json',
                 scriptPath: constants.python_path +'/config',
@@ -268,7 +274,6 @@ exports.forget_pwd =  function(req, res) {
             });
         
             // Send an email with the code
-            // Read config
             pyshellReadConfig.on('message',  function (config) { 
                 if(typeof config.cam_pwd === 'undefined') {
                      config.cam_pwd = 'admin'; // Default (in the case the user ask to send the password before he modified it)

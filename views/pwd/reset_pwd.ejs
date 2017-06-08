@@ -13,7 +13,13 @@
     <div class="container">
         <form method="POST" action="/pwd/reset_pwd">
         
-            <h3 class="mt bordered mb">Update Password</h3>
+            <h3 class="mt bordered mb">
+                <%if (typeof warning != 'undefined') { %> 
+                    Create Password
+                <% }else{%> 
+                    Update Password
+                <% } %>    
+            </h3>
             
              
             <%if (typeof success != 'undefined') { %> 
@@ -22,9 +28,8 @@
                     <i class="fa fa-check"></i> <strong><%=success%></strong> <br/>
                     <a href='/logout'>Login now</a>
                 </div>
-            <% }  %>
-            
-            <%if (typeof errors != 'undefined') { %> 
+            <% } else { %>
+                <%if (typeof errors != 'undefined') { %> 
                 <div class="alert alert-danger dmt alert-dismissable">
                     <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                     <i class="fa fa-warning"></i> <strong>Error</strong>
@@ -38,19 +43,41 @@
                 </div>
             <% }  %>
             
+            <%if (typeof warning != 'undefined') { %> 
+                <div class="alert alert-warning dmt alert-dismissable">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <i class="fa fa-warning"></i> <strong>Warning</strong><br/>
+                    <%= warning %> 
+                </div>
+            <%}%>            
+            
+            
+            
             
             <div class="in">
             
                 <%if (typeof fatal_error == 'undefined') { %>  
                     <div class="form-group">    
-                        <label for="newPwd">New Password</label>
-                        <input type="password" name="newPwd" id="newPwd" ng-model="newPwd" class="form-control" placeholder="New Password">
+                        <%if (typeof warning != 'undefined') { %> 
+                            <label for="newPwd">Choose a Password</label>
+                        <% }else{%> 
+                            <label for="newPwd">New Password</label>
+                        <%}%>            
+                        <input type="password" name="newPwd" id="newPwd" ng-model="newPwd" class="form-control" placeholder="Password">
                     </div>
                     <div class="form-group">    
-                        <label for="newPwd2">Repeat New Password</label>
-                        <input type="password" name="newPwd2" id="newPwd2" ng-model="newPwd2" class="form-control" placeholder="Repeat New Password">
+                        <%if (typeof warning != 'undefined') { %> 
+                            <label for="newPwd2">Repeat your Password</label>
+                        <% }else{%> 
+                            <label for="newPwd2">Repeat New Password</label>
+                        <%}%>            
+                        <input type="password" name="newPwd2" id="newPwd2" ng-model="newPwd2" class="form-control" placeholder="Repeat Password">
                     </div>
-                    <button id="btnSignIn" class="btn btn-lg btn-primary btn-block load-on-click">Update password</button>
+                    <%if (typeof warning != 'undefined') { %> 
+                        <button id="btnSignIn" class="btn btn-lg btn-primary btn-block load-on-click">Create password</button>
+                    <% }else{%> 
+                        <button id="btnSignIn" class="btn btn-lg btn-primary btn-block load-on-click">Update password</button>
+                    <%}%>            
                 <%} else {%>  
                     <div class="alert alert-danger">
                         This link has expired. Please try again.      
@@ -58,6 +85,9 @@
                 <% } %>
                      
             </div>
+            <% }  %>
+            
+            
         </form>
     </div>
 </div>
