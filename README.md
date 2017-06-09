@@ -48,7 +48,7 @@ www-data ALL=NOPASSWD: /sbin/restart
 ## Run the App
 Under /home/pi/AMSCam 
 ```sh
-$ node app.js
+$ forever app.js
 ```
 
 To see the app in action, open your browser (Firefox or Chrome) on your computer (warning: your computer has to be on the same LAN than the PI). Point your browser to 

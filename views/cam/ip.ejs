@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AMS Cam</title>
+    <% include ../shared/head.ejs %>
+</head>
+<body>
+
+
+<% if(typeof config.cam_ip == 'undefined') { 
+    var node_header_menu= true; 
+} %>
+<% include ../shared/header.ejs %>
+
+
+<div class="step welcome-step np">
+    <div class="container">
+        <form method="POST">
+        
+            <h3 class="mt bordered mb">
+                <%if (typeof config.cam_ip === 'undefined') { %> 
+                    Setup Camera IP
+                <% } else { %>
+                    Update Camera IP
+                <% }   %>
+             </h3>
+              
+            
+            <%if (typeof errors != 'undefined') { %> 
+                <div class="alert alert-danger dmt alert-dismissable">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <i class="fa fa-warning"></i> <strong>Error</strong>
+                    <ul> 
+                        <% for(var i=0; i<errors.length; i++) {%>
+                            <%if (errors[i] != "")  { %> 
+                                <li><%= errors[i] %></li>
+                            <% } %>    
+                        <% } %>
+                    </ul>
+                </div>
+            <% }  %>
+            
+            <%if (typeof success != 'undefined') { %> 
+                <div class="alert alert-success dmt alert-dismissable">
+                    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <i class="fa fa-check"></i> <strong><%=success%></strong> 
+                </div>
+            <% }  %>
+             
+            <div class="in">
+            
+                <%if (typeof config.cam_ip === 'undefined') { %> 
+                    <div class="alert alert-info">
+                       Please, enter your Camera IP (this IP is usually reserved with DHCP). 
+                    </div>
+                 
+                <% }   %>
+                <div class="form-group">    
+                    <label for="cam_ip">Your Camera IP (it should start like <%= config.lan_ip %>)</label>
+                    <input type="text" name="cam_ip" id="cam_ip" class="form-control" placeholder="Camera IP (IPv4)" <% if(typeof config.cam_ip !== 'undefined') {%>value="<%= config.cam_ip%>" <% } %>>
+                </div>
+                
+                <button class="btn btn-lg btn-primary btn-block load-on-click">Update Camera IP</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<% include ../shared/footer.ejs %>
+</body>
+</html>

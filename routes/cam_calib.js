@@ -44,6 +44,11 @@ exports.load = function(req, res) {
         // By default we load the currently used param file (in the config cookie)
         var cookie_config = req.cookies.config;  
         
+        // If absent from the config file
+        if(typeof cookie_config.parameters == "undefined") {
+            cookie_config.parameters  = "Day";
+        }
+        
         PythonShell.run('get_parameter_from_file.py', {scriptPath: constants.python_path + "/cam", args:[cookie_config.parameters] }, function (err, ress) {
             if (err) throw err;
             // Render 

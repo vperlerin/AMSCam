@@ -16,7 +16,7 @@ router.get('/', function(req, res) {
     
     // Eventual Msg
     if(typeof req.query.msg != 'undefined') {
-        opts.msg =   req.query.msg 
+        opts.msg = req.query.msg 
     }
     
     cookie.get_config_cookie_and_render(req, res, opts, 'home');

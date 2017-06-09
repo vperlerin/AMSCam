@@ -105,6 +105,7 @@ var detections      = require('./routes/detections');
 var pi              = require('./routes/pi'); 
 var pwd             = require('./routes/pwd');
 var appli           = require('./routes/app');
+var cam_ip          = require('./routes/cam_ip');
 
 /******************************************************************************************************************************************
 * LOGIN 
@@ -144,6 +145,18 @@ app.use(require('express-session')({
 app.use(passport.initialize());
 app.use(passport.session());
   
+  
+// Forget Password
+app.get('/pwd/forget_pwd',pwd.forget_pwd);
+// Reset Password
+app.get('/pwd/reset_pwd/:token',pwd.reset_pwd);
+app.get('/pwd/reset_pwd/:token/:first',pwd.reset_pwd);
+app.post('/pwd/reset_pwd',pwd.reset_post_pwd);
+
+// Cam IP
+app.get('/cam/ip',cam_ip.load);
+app.post('/cam/ip',cam_ip.update_ip);  
+  
 app.get('/login',
   function(req, res){
     res.clearCookie("config",{path:'/'});  
@@ -157,9 +170,14 @@ app.get('/login',
         
     // Read config
     pyshellReadConfig.on('message',  function (config) { 
+     
+        // IF THE CAM IP isn't setup
+        if(typeof config.cam_ip === 'undefined') {
+            res.redirect("/cam/ip/");
+        } else
        
         // THIS IS THE FIRST LOGIN  !
-        if(typeof config.cam_pwd === 'undefined' || config.cam_pwd == 'admin') {
+        if(typeof config.cam_pwd === 'undefined' || config.cam_pwd === 'admin') {
             
             var tok_file_path = constants.APP_PATH + "tok.sec";
             
@@ -173,7 +191,7 @@ app.get('/login',
                 var token = buffer.toString('hex');
                  
                 // Write the token in tok.sec file and redirect to reset_pwd
-                require('fs').writeFile(constants.APP_PATH +"tok.sec", crypt.encrypt(token),  { flag: 'w' }, function(err) {
+                require('fs').writeFile(tok_file_path, crypt.encrypt(token),  { flag: 'w' }, function(err) {
                     if(err) { return console.log(err); }
                     res.redirect("http://"+config.lan_ip+":"+constants.main_port+"/pwd/reset_pwd/" + token + '/first_timer');
                 });
@@ -207,13 +225,11 @@ app.get('/logout', function(req, res){
   res.clearCookie("config",{path:'/'});
   res.redirect('/');  
 });
+
+
+
  
-// Forget Password
-app.get('/pwd/forget_pwd',pwd.forget_pwd);
-// Reset Password
-app.get('/pwd/reset_pwd/:token',pwd.reset_pwd);
-app.get('/pwd/reset_pwd/:token/:first',pwd.reset_pwd);
-app.post('/pwd/reset_pwd',pwd.reset_post_pwd);
+
 
 /******************************************************************************************************************************************
 * ROUTES
@@ -244,7 +260,9 @@ app.get('/cam/screenshot',ensureLoggedIn('/login'), cam_scr.load);
 app.post('/cam/screenshot',ensureLoggedIn('/login'), cam_scr.update);  
 
 // Cam Setup
-app.get('/cam/setup',ensureLoggedIn('/login'), cam_setup.load);
+//app.get('/cam/setup',ensureLoggedIn('/login'), cam_setup.load);
+
+
  
 // Update Password
 app.get('/pwd/update_pwd', ensureLoggedIn('/login'), pwd.load);
