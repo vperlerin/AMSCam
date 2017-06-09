@@ -8,7 +8,7 @@
     z-index: 9;
 }
 
-#loader span {
+#loader div {
     color: #fff;
     position: absolute;
     top: 50%;
@@ -16,7 +16,7 @@
     -webkit-transform: translate(-50%,-50%);  
     -ms-transform: translate(-50%,-50%);   
     transform: translate(-50%,-50%);  
-    font-size: 600%;
+    text-align: center;
 }
 
 #mobile-logo { display: block }

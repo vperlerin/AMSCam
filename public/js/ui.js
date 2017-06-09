@@ -45,6 +45,10 @@ $(function() {
    // Load for screenshot 
    $('.load-on-click').click(function(e) {
        $(this).html('<span class="fa fa-spinner fa-spin"></span>');
+       var attr = $(this).attr('loader-text');
+       if(typeof attr !== typeof undefined && attr !== false) {
+            $('#loader').html('<div><span class="fa fa-spinner fa-pulse fa-5x fa-fw"></span><br/><h2 class="text-cente">'+$(this).attr('loader-text')+'</h2></div>') ; 
+       }
        $('#loader').slideDown();
        return true;
    });

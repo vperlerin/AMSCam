@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>AMS Cam</title>
+    <% include ../shared/head.ejs %>
+</head>
+ 
+<body>
+
+<% include ../shared/header.ejs %>
+
+    <div class="box box-header-like clearfix">
+        <div class="clearfix">
+            <h3 class="pull-left">Update App</h3>
+        </div>
+    </div>
+    
+     <div class="step np">
+        <div class="container nl">       
+         
+            <div class="row dmt">
+                <div class="col-md-12">
+                    
+                    
+                    <div class="alert alert-info">
+                        <span class="fa fa-info-circle"></span>
+                        
+                        Updating the app will temporarily shut it down and log you out.<br/>
+                        Please, wait few minutes before refreshing this page after you clicked the button below.
+                    </div>
+                    
+                    <strong>Current version:</strong> <%= version %> 
+                    
+                    <hr/>
+                    <form action="/app/update" method="post" class="mt">
+                        <button  class="btn btn-lg btn-primary btn-block load-on-click" type="submit" loader-text="The app will restart soon. Please wait...">Update</button>
+                    </form>    
+                    <hr/>
+                </div>
+            </div>
+                
+           
+        
+        </div>
+    </div>
+         
+    <% include ../shared/footer.ejs %>
+  
+    
+
+</body>
+</html>

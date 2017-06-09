@@ -59,6 +59,8 @@ app.set('views', [
     path.join(__dirname + '/views/home'),
     path.join(__dirname + '/views/cam'),
     path.join(__dirname + '/views/pwd'),
+    path.join(__dirname + '/views/update'),
+    path.join(__dirname + '/views/app'),
     path.join(__dirname + '/views'),  
     '/var/www/html/out']
 ); 
@@ -102,6 +104,7 @@ var cam_setup       = require('./routes/cam_setup');
 var detections      = require('./routes/detections'); 
 var pi              = require('./routes/pi'); 
 var pwd             = require('./routes/pwd');
+var appli           = require('./routes/app');
 
 /******************************************************************************************************************************************
 * LOGIN 
@@ -257,6 +260,9 @@ app.get('/detection/:type/delete_all/',ensureLoggedIn('/login'),detections.delet
 app.get('/pi/shutdown',ensureLoggedIn('/login'), pi.shutdown);
 app.get('/pi/restart',ensureLoggedIn('/login'), pi.restart);
 
+/// Update the app
+app.get('/app/update',ensureLoggedIn('/login'), appli.load);
+app.post('/app/update',ensureLoggedIn('/login'), appli.update);
 
 // Start APP
 app.listen(constants.main_port);
