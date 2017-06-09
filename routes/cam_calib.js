@@ -39,13 +39,15 @@ exports.load = function(req, res) {
     
     var file = (typeof req.params.file!=='undefined' && constants.possible_parameters_files.indexOf(req.params.file)>-1)?req.params.file:'';
     
-    if(file === "") {
+     
+    if(file.trim() === "" || typeof req.cookies.config !== "undefined") {
          
         // By default we load the currently used param file (in the config cookie)
         var cookie_config = req.cookies.config;  
         
         // If absent from the config file
-        if(typeof cookie_config.parameters == "undefined") {
+        if(typeof config === "undefined" || typeof cookie_config.parameters === "undefined") {
+            cookie_config = {}
             cookie_config.parameters  = "Day";
         }
         
@@ -57,6 +59,8 @@ exports.load = function(req, res) {
           
     } else {
         
+        console.log('FILE ' + file);
+        
          // We delete the config cookie so parameters value will be updated
          res.clearCookie("config", {path:'/'});
          
@@ -64,7 +68,6 @@ exports.load = function(req, res) {
          opts['args']  = [file];
          PythonShell.run('get_parameter_from_file.py', opts, function (err, ress) {
            if (err) throw err;
-           
            // Render 
            cookie.get_config_cookie_and_render(req, res,{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']}, 'parameters');  
           
