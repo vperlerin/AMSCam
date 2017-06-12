@@ -40,3 +40,9 @@
     text-align: right;
     max-width: 5em; 
 }
+
+.input-sm-inl {
+    line-height: 1!important;
+    margin-left: 1.5em;
+    margin-top: -.51em;
+}

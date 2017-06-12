@@ -22,3 +22,7 @@ define("possible_parameters_files",['Night','Day','Calibration']);
 // Well... it's a pain so...
 define("config_cookie_maxAge",365 * 24 * 60 * 1000); 
 define("APP_PATH","/home/pi/AMSCam/");
+
+
+// Exposure Time
+define("EXPOSURE_TIME",[25,50,100,150,200,250,300,400,500,1000,2000,4000,6000,8000]); 

@@ -64,8 +64,8 @@
                         </div>
                          
                         <% 
-                            config_files = [active_file]; 
-                            possible_files = ['Calibration','Night','Day'];
+                            config_files    = [active_file]; 
+                            possible_files  = ['Calibration','Night','Day'];
                         %>  
                    
                         <ul class="nav nav-tabs dmt mb" id="tabs">
@@ -79,10 +79,9 @@
                         <div class="tab-content"> 
                           
                             <%for (var file in config_files){%>
-                                <div class="tab-pane fade in dmt  <% if( config_files[file]== active_file){ %>active<% } %>" role="tabpanel" id="<%= config_files[file] %>"> 
-                                    <% /* Coul add Chroma... */ %> 
+                                <div class="tab-pane fade in dmt  <% if( config_files[file]== active_file){ %>active<% } %>" role="tabpanel" id="<%= config_files[file] %>">                                   
                                     <% sliders = ['Brightness','Contrast','Gamma']; %> 
-                                         <%for (var slider in sliders){%>
+                                    <%for (var slider in sliders){%>
                                             <div class="clearfix dmt">
                                                 <strong class="pull-left ui-slider-handle-label"><%= sliders[slider]  %></strong>    
                                                 <div class="pull-left ui-slider-handle-container">
@@ -90,12 +89,35 @@
                                                 </div>
                                                 <div class="pull-left"><input id="input_<%= config_files[file] %><%= sliders[slider] %>" type="number" class="form-control auto input-sm ui-slider-input-l " size="3" min="0" max="255"/></div>
                                             </div>
-                                        <%}%>
+                                    <%}%>
+                                    
+                                    
+                                    <!-- Other Parameters -->
+                                    <% other_params = ['Exposure']; %> 
+                                    
+                                    <%for (var param in other_params){%>
+                                        <div class="clearfix dmt">
+                                            <strong class="pull-left ui-slider-handle-label"><%= other_params[param] %></strong>    
+                                            <div class="pull-left">
+                                                <select name="<%= other_params[param] %>" class="form-group input-sm input-sm-inl update-on-change">
+                                                    <% if(other_params[param]=='Exposure') { %>
+                                                        <%for (var exp in exposures){%>    
+                                                            <option value="<%=exposures[exp]%>"><%=exposures[exp]%></option>
+                                                        <%}%>
+                                                    <%}%>
+                                                </select>
+                                            </div>
+                                        </div>         
+                                    <%}%>
                                   </div>   
                              <% } %>
                              
                         </div>
-                        <hr/>
+                       
+                  </div>
+                  
+                  <div class="col-md-12">
+                   <hr/>
                         <div class="alert alert-warning">
                             <span class="fa fa-warning"></span> <strong>IMPORTANT</strong><br/>
                             Once your set of parameters are defined, click the button below to automatically load 
@@ -105,12 +127,13 @@
                         
                         <a href="/cam/load_parameters" id="btn_parameters" class="btn btn-lg btn-primary btn-block load-on-click mt" type="submit">Auto Cam Parameters</button>
                        
+                  </div>      
                         
-                  </div>
             </div>  
        </div>
          
      </div>    
+      
  
     <% include ../shared/footer.ejs %>
     <link href="../../bower_components/jquery-ui/themes/base/jquery-ui.min.css" rel="stylesheet">
@@ -118,9 +141,9 @@
     <script src="../../bower_components/jquery-ui/jquery-ui.min.js"></script>
      
     <script>
-      
+        
       function update_cam_param(_data,slider_hanlder,input,ui) {
-        $.ajax({
+         $.ajax({
             type: 'POST',
             url:  '/cam/parameters/',
             data: _data,  
@@ -136,6 +159,7 @@
             /* Setup Sliders */
             <%for (var file in config_files){%>
                 <%for (var slider in sliders){%>
+                 
                     var <%= config_files[file]  %><%= sliders[slider] %>_handle = $( "#sl_<%= config_files[file]  %><%= sliders[slider] %>-handle" );
                     /* Sliders */
                     var $slider<%= config_files[file]  %><%= sliders[slider] %> =  $("#sl_<%= config_files[file]  %><%= sliders[slider] %>").slider({
@@ -176,7 +200,32 @@
                      });
                 <%}%>
             <%}%>
-               
+          
+            // Specific param
+            <%for (var file in config_files){%>
+                <%for (var param in other_params){%>
+                   /* Selects */
+                   $('.update-on-change[name=<%=other_params[param]%>]').val(<%= calib[other_params[param]]; %>).change(function() {
+                       var $t = $(this);
+                       $t.prop('disabled',true).hide().after('<span class="fa fa-spin fa-refresh"></span>');
+                       _data = {};
+                       _data[$(this).attr('name')] = $(this).val();
+                       _data['file'] = '<%= config_files[file]  %>';
+                       $.ajax({
+                          type: 'POST',
+                          url:  '/cam/parameters/',
+                          data: _data,  
+                          dataType: "json",
+                          success: function(response){
+                            $t.prop('disabled',false).show().next().remove();
+                          }
+                      });
+                   });
+                <%}%>
+            <%}%>
+ 
+          
+                        
         });
     </script>     
     

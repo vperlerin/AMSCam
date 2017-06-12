@@ -54,13 +54,11 @@ exports.load = function(req, res) {
         PythonShell.run('get_parameter_from_file.py', {scriptPath: constants.python_path + "/cam", args:[cookie_config.parameters] }, function (err, ress) {
             if (err) throw err;
             // Render 
-            cookie.get_config_cookie_and_render(req, res, { browser:  browser, calib: JSON.parse(ress), active_file:cookie_config.parameters}, 'parameters');  
+            cookie.get_config_cookie_and_render(req, res, { browser:  browser, calib: JSON.parse(ress), active_file:cookie_config.parameters, exposures:constants.EXPOSURE_TIME}, 'parameters');  
         });
           
     } else {
-        
-        console.log('FILE ' + file);
-        
+         
          // We delete the config cookie so parameters value will be updated
          res.clearCookie("config", {path:'/'});
          
@@ -69,7 +67,7 @@ exports.load = function(req, res) {
          PythonShell.run('get_parameter_from_file.py', opts, function (err, ress) {
            if (err) throw err;
            // Render 
-           cookie.get_config_cookie_and_render(req, res,{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args']}, 'parameters');  
+           cookie.get_config_cookie_and_render(req, res,{ browser:  browser, calib: JSON.parse(ress), active_file:opts['args'], exposures:constants.EXPOSURE_TIME}, 'parameters');  
           
          }); 
     }

@@ -20,7 +20,7 @@ var ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 var read_config     = require('./utils/read_config');
 var utils           = require('./utils/browser');
 var constants       = require('./utils/constants');
-var crypt            = require('./utils/crypt');  
+var crypt           = require('./utils/crypt');  
   
 // Set public folder
 app.use(express.static(__dirname + '/public'));
@@ -199,7 +199,7 @@ app.get('/login',
             });
             
         } else {
-        // THIS IS NOT THE FIRST ONE !    
+            // THIS IS NOT THE FIRST ONE !    
             res.render('login');
         }
     });
