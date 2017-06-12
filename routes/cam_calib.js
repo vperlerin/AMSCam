@@ -40,7 +40,7 @@ exports.load = function(req, res) {
     var file = (typeof req.params.file!=='undefined' && constants.possible_parameters_files.indexOf(req.params.file)>-1)?req.params.file:'';
     
      
-    if(file.trim() === "" || typeof req.cookies.config !== "undefined") {
+    if(file.trim() === "" && typeof req.cookies.config !== "undefined") {
          
         // By default we load the currently used param file (in the config cookie)
         var cookie_config = req.cookies.config;  
