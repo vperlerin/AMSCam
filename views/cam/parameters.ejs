@@ -91,24 +91,26 @@
                                             </div>
                                     <%}%>
                                     
-                                    
-                                    <!-- Other Parameters -->
-                                    <% other_params = ['Exposure']; %> 
-                                    
-                                    <%for (var param in other_params){%>
-                                        <div class="clearfix dmt">
-                                            <strong class="pull-left ui-slider-handle-label"><%= other_params[param] %></strong>    
-                                            <div class="pull-left">
-                                                <select name="<%= other_params[param] %>" class="form-group input-sm input-sm-inl update-on-change">
-                                                    <% if(other_params[param]=='Exposure') { %>
-                                                        <%for (var exp in exposures){%>    
-                                                            <option value="<%=exposures[exp]%>"><%=exposures[exp]%></option>
+                                    <div class="hidden">
+                                        <!-- Other Parameters (Mike dont want to allow the user to play with them)-->
+                                        <% other_params = ['Exposure']; %> 
+                                        
+                                        <%for (var param in other_params){%>
+                                            <div class="clearfix dmt">
+                                                <strong class="pull-left ui-slider-handle-label"><%= other_params[param] %></strong>    
+                                                <div class="pull-left">
+                                                    <select name="<%= other_params[param] %>" class="form-group input-sm input-sm-inl update-on-change">
+                                                        <% if(other_params[param]=='Exposure') { %>
+                                                            <%for (var exp in exposures){%>    
+                                                                <option value="<%=exposures[exp]%>"><%=exposures[exp]%></option>
+                                                            <%}%>
                                                         <%}%>
-                                                    <%}%>
-                                                </select>
-                                            </div>
-                                        </div>         
-                                    <%}%>
+                                                    </select>
+                                                </div>
+                                            </div>         
+                                        <%}%>
+                                    </div>
+                                    
                                   </div>   
                              <% } %>
                              
