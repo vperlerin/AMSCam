@@ -17,21 +17,20 @@ The AMSCam app allows you to interact with your AMS Cam & Raspberry Pi from a de
 ## Installation
 
 ### Clone this github repository
-Clone this repository.
+Clone this repository and fireball_camera directory.
+
 On your PI, go to /home/pi and:
 ```sh
 $ cd /home/pi
 $ git clone https://github.com/vperlerin/AMSCam.git
 ```
 
-### Install Dependencies 
-On your PI, go to /home/pi/AMSCam and:
+On your PI, /home/pi:
 ```sh
-$ sudo npm install 
-$ sudo bower install
+$ git clone https://github.com/mikehankey/fireball_camera.git
 ```
 
-### Add app as sudoer
+### Add your app as sudoer on the PI
 On your PI, 
 ```sh
 $ sudo vi /etc/sudoers
@@ -45,10 +44,20 @@ www-data ALL=/sbin/restart
 www-data ALL=NOPASSWD: /sbin/restart
 ```
 
-## Run the App
-Under /home/pi/AMSCam 
+## Add you as sudoer on the PI
 ```sh
-$ forever app.js
+$ sudo vi /etc/hosts
+```
+Then add the following line under root
+```
+127.0.1.1    ams[ID]
+```
+where [ID] is the ID of your Device (ex: ams22)
+
+### Install 
+On your PI, go to /home/pi/fireball_camera and:
+```sh
+$ sudo python ./setup/install.py
 ```
 
 To see the app in action, open your browser (Firefox or Chrome) on your computer (warning: your computer has to be on the same LAN than the PI). Point your browser to 
@@ -57,7 +66,7 @@ http://[PI_IP]:3000
 ```
 > (replace [PI_IP] by the local IP of your Raspberry PI - ex: http://192.168.0.11:3000/)
 
-## Setup the autostart
+## Setup the autostart (optional)
 If not already done, you can setup the automatic start of the AMSCam app on your PI:
 ```sh
 $ sudo vi /etc/rc.local
@@ -70,7 +79,7 @@ sudo /usr/local/bin/node /home/pi/AMSCam/app.js &
 
 #  Troubleshooting
 
-## Install Python Packages
+## Missing Python Packages
 
 If you receive an error message about pycrypto / AES, please
 
@@ -78,20 +87,23 @@ If you receive an error message about pycrypto / AES, please
 $ sudo pip install pycrypto
 ```
 
+
+## 'forever' Missing
+
+If you receive an error message about forever, please
+
+```sh
+$ sudo npm install forever -g
+```
+
 ## Stop the app from the PI
 ```sh
 $ killall node
 ```
-
-## Add you as sudoer on the PI
+OR
 ```sh
-$ sudo vi /etc/hosts
+$ killall forever
 ```
-Then add the following line under root
-```
-127.0.1.1    ams[ID]
-```
-where [ID] is the ID of your Device (ex: ams22)
 
 ## Update Nodejs
 You may want to update Nodejs on your Raspberry PI:
