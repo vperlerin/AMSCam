@@ -16,7 +16,7 @@ module.exports = {
                 res.cookie('config', config, {path:'/', maxAge: constants.config_cookie_maxAge});
                 template_opts.config = config;
                 
-                if(template_name==="home") {
+                if(template_name==="home" ) {
                      
                     child_process.exec(constants.python_path +  'simple-capture-status.sh', function(error, stdout, stderr){
                         template_opts.capture = stdout;   

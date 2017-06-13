@@ -29,7 +29,7 @@ exports.update_ip =  function(req, res) {
          
         // We get the cookie values
         var cookie_config = req.cookies.config;  
-        var first_time = false;
+        var first_time    = false;
     
         // It is the first time?
         if (typeof cookie_config.cam_ip === 'undefined') {
@@ -47,12 +47,13 @@ exports.update_ip =  function(req, res) {
         });
                       
         updateConfig.on('message',  function (config_write_res) { 
+        
             // We clear the config cookie so it re-read from config.txt
             res.clearCookie("config",{path:'/'});  
                    
             // THIS IS OK
             if(first_time) {
-                res.redirect('/');      
+                return res.redirect('/');      
             } else {
                 cookie.get_config_cookie_and_render(req, res,{ success : "IP updated."}, 'ip');         
             }

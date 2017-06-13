@@ -25,16 +25,31 @@ var crypt           = require('./utils/crypt');
 // Set public folder
 app.use(express.static(__dirname + '/public'));
 
-// Routes
+// Routes Use
 app.use('/py_img',express.static(path.join(__dirname + '/../../../var/www/html/out')));
 app.use('/maybe',express.static(path.join(__dirname + '/../../../var/www/html/out/maybe')));
 app.use('/false',express.static(path.join(__dirname + '/../../../var/www/html/out/false')));
 app.use('/fireballs',express.static(path.join(__dirname + '/../../../var/www/html/out/fireballs')));
 app.use('/js',express.static(path.join(__dirname + '/public/js')));
 app.use('/bower',express.static(path.join(__dirname + '/bower_components')));
+app.use('/node_modules', express.static(__dirname + '/node_modules'));
 app.use('/img',express.static(path.join(__dirname + '/public/img')));
 app.use('/manifest',express.static(path.join(__dirname + '/views')));
 app.use('/pnacl',express.static(path.join(__dirname + '/views/pnacl'))); // RSTP Viewer
+
+// Routes Requires
+var index           = require('./routes/index'); 
+var logg            = require('./routes/cam_log'); 
+var focus_helper    = require('./routes/focus_helper'); 
+var cam_calib       = require('./routes/cam_calib'); 
+var cam_scr         = require('./routes/cam_screenshot'); 
+var cam_setup       = require('./routes/cam_setup'); 
+var detections      = require('./routes/detections'); 
+var pi              = require('./routes/pi'); 
+var pwd             = require('./routes/pwd');
+var appli           = require('./routes/app');
+var cam_ip          = require('./routes/cam_ip');
+
 
 // Logger
 app.use(logger('dev'));  
@@ -69,18 +84,12 @@ app.set('view engine', 'ejs');
 // Favicon
 app.use(favicon(__dirname + '/public/img/favicon.png'));
 
-// Bower & Nodes
-app.use('/bower_components', express.static(__dirname + '/bower_components')); 
-app.use('/node_modules', express.static(__dirname + '/node_modules'));
-
-// URLs 
-app.use(bodyParser.urlencoded({
-    extended: true
-}));
-
 // Cookie
 app.use(require('cookie-parser')());
 app.use(methodOverride('_method'));
+
+// URLs 
+app.use(bodyParser.urlencoded({  extended: true }));
 
 // production error handler
 // no stacktraces leaked to user
@@ -94,18 +103,9 @@ app.use(function(err, req, res, next) {
 
 module.exports = app;
 
-// Routes
-var index           = require('./routes/index'); 
-var logg            = require('./routes/cam_log'); 
-var focus_helper    = require('./routes/focus_helper'); 
-var cam_calib       = require('./routes/cam_calib'); 
-var cam_scr         = require('./routes/cam_screenshot'); 
-var cam_setup       = require('./routes/cam_setup'); 
-var detections      = require('./routes/detections'); 
-var pi              = require('./routes/pi'); 
-var pwd             = require('./routes/pwd');
-var appli           = require('./routes/app');
-var cam_ip          = require('./routes/cam_ip');
+
+
+
 
 /******************************************************************************************************************************************
 * LOGIN 
@@ -113,10 +113,10 @@ var cam_ip          = require('./routes/cam_ip');
 
 // Configure the local strategy for use by Passport.
 passport.use(new LocalStrategy(
-    function(username, password, cb) {
+    function(username, password, cb) { 
         read_config.read_config(
             function(config) {
-                if(config.cam_pwd==password) {
+                if(config.cam_pwd===password ) {
                     cb(null, { user: { username:'admin', password:password} });
                 } else {
                     cb(null, false);
@@ -146,6 +146,71 @@ app.use(passport.initialize());
 app.use(passport.session());
   
   
+
+app.get('/login',
+  function(req, res){ 
+    
+    // Read the config.txt to know if the admin pwd has already been changed
+    var pyshellReadConfig = new PythonShell('read_config.py', {
+            mode: 'json',
+            scriptPath: constants.python_path +'/config',
+            argv: ['json']
+    });
+        
+    // Read config
+    return pyshellReadConfig.on('message',  function (config) {  
+ 
+     
+        // IF THE CAM IP isn't setup
+        if(typeof config.cam_ip === 'undefined') {
+            return res.redirect("/cam/ip/");
+        } else  if(typeof config.cam_pwd !== 'undefined' && config.cam_pwd !== 'admin')  {
+           return res.render("login");
+        } else {
+             // THIS IS THE FIRST LOGIN  !
+             var tok_file_path = constants.APP_PATH + "tok.sec";
+            
+            // We delete the tok.sec if necessary
+            if(require('fs').existsSync(tok_file_path)) {
+                require('fs').unlinkSync(tok_file_path);
+            }
+            
+            
+            // We generate a new code
+            return require('crypto').randomBytes(8, function(err, buffer) {
+                var token = buffer.toString('hex');
+                 
+                // Write the token in tok.sec file and redirect to reset_pwd
+                require('fs').writeFileSync(tok_file_path, crypt.encrypt(token),  { flag: 'w' });
+                return res.redirect("http://"+config.lan_ip+":"+constants.main_port+"/pwd/reset_pwd/" + token + '/first_timer');
+                             
+            });
+           
+         }  
+    });
+     
+});
+
+app.get('/login/WrongPassword',
+  function(req, res){
+    res.clearCookie("config",{path:'/'});  
+     return res.render('login',{'error':'Wrong Password'});
+});
+  
+app.post('/login', 
+  passport.authenticate('local', { failureRedirect: '/login/WrongPassword', successRedirect: '/' }),
+  function(req, res) {
+     return res.redirect('/');
+});
+  
+ 
+app.get('/logout', function(req, res){
+  req.logout();
+  res.clearCookie("config",{path:'/'});
+     return res.redirect('/');  
+});
+
+
 // Forget Password
 app.get('/pwd/forget_pwd',pwd.forget_pwd);
 // Reset Password
@@ -156,79 +221,7 @@ app.post('/pwd/reset_pwd',pwd.reset_post_pwd);
 // Cam IP
 app.get('/cam/ip',cam_ip.load);
 app.post('/cam/ip',cam_ip.update_ip);  
-  
-app.get('/login',
-  function(req, res){
-    res.clearCookie("config",{path:'/'});  
-    
-    // Read the config.txt to know if the admin has already been changed
-    var pyshellReadConfig = new PythonShell('read_config.py', {
-            mode: 'json',
-            scriptPath: constants.python_path +'/config',
-            argv: ['json']
-    });
-        
-    // Read config
-    pyshellReadConfig.on('message',  function (config) { 
-     
-        // IF THE CAM IP isn't setup
-        if(typeof config.cam_ip === 'undefined') {
-            res.redirect("/cam/ip/");
-        } else
-       
-        // THIS IS THE FIRST LOGIN  !
-        if(typeof config.cam_pwd === 'undefined' || config.cam_pwd === 'admin') {
-            
-            var tok_file_path = constants.APP_PATH + "tok.sec";
-            
-            // We delete the tok.sec if necessary
-            if(require('fs').existsSync(tok_file_path)) {
-                 require('fs').unlinkSync(tok_file_path);
-            }
-            
-            // We generate a new code
-            require('crypto').randomBytes(8, function(err, buffer) {
-                var token = buffer.toString('hex');
-                 
-                // Write the token in tok.sec file and redirect to reset_pwd
-                require('fs').writeFile(tok_file_path, crypt.encrypt(token),  { flag: 'w' }, function(err) {
-                    if(err) { return console.log(err); }
-                    res.redirect("http://"+config.lan_ip+":"+constants.main_port+"/pwd/reset_pwd/" + token + '/first_timer');
-                });
-             
-            });
-            
-        } else {
-            // THIS IS NOT THE FIRST ONE !    
-            res.render('login');
-        }
-    });
-    
-    
-});
 
-app.get('/login/WrongPassword',
-  function(req, res){
-    res.clearCookie("config",{path:'/'});  
-    res.render('login',{'error':'Wrong Password'});
-});
-  
-app.post('/login', 
-  passport.authenticate('local', { failureRedirect: '/login/WrongPassword', successRedirect: '/' }),
-  function(req, res) {
-     res.redirect('/');
-});
-  
- 
-app.get('/logout', function(req, res){
-  req.logout();
-  res.clearCookie("config",{path:'/'});
-  res.redirect('/');  
-});
-
-
-
- 
 
 
 /******************************************************************************************************************************************
@@ -238,7 +231,6 @@ app.get('/logout', function(req, res){
 // Home
 app.use('/',ensureLoggedIn('/login'), index);
  
-
 // Cam Log
 app.get('/cam/log',ensureLoggedIn('/login'), logg.load);
 app.post('/cam/log',ensureLoggedIn('/login'), logg.add);

@@ -19,7 +19,7 @@ router.get('/', function(req, res) {
         opts.msg = req.query.msg 
     }
     
-    cookie.get_config_cookie_and_render(req, res, opts, 'home');
+    return cookie.get_config_cookie_and_render(req, res, opts, 'home');
       
 });
 

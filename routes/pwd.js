@@ -17,33 +17,49 @@ exports.reset_pwd =  function(req, res) {
      var tok_file_path = constants.APP_PATH + "tok.sec";
      var template_opts = {};
     
+     console.log(typeof req.params.token==='undefined'?'TOKEN UNDEFINED':'TOKEN DEFINED');
+     console.log(!require('fs').existsSync(tok_file_path)?'.toc FILE DONT EXIST':'.toc FILE EXISTS');
+     console.log(tok_file_path);
+         
      // If no token or tok.sec doesnt exist: exit!
      // TODO: test if it's a token
+     
+     // Clear cookie  
+     res.clearCookie("config",{path:'/'});  
+      /*
      if(typeof req.params.token==='undefined' || !require('fs').existsSync(tok_file_path)) {
-         res.redirect('/');
-     }
-      
-     // Test token against the one in tok.sec
-     require('fs').readFile(tok_file_path, "utf8", function (err,data) {
-         if (err) {  return console.log(err);  }
-         
-         // We delete the tok.sec
-         require('fs').unlinkSync(tok_file_path);
-         
-         if(data === crypt.encrypt(req.params.token.toString("utf8"))) {
+        res.redirect('/');
+     } else {
+          */
+     
+         // Test token against the one in tok.sec
+         return require('fs').readFile(tok_file_path, "utf8", function (err,data) {
+             if (err) {  return console.log(err);  }
              
-            if(typeof req.params.first !== 'undefined') {
-                template_opts.warning = 'This is the first time you are using this app. You have to choose a password.';
-            } 
-              
-            // THIS IS OK
-            cookie.get_config_cookie_and_render(req, res, template_opts, 'reset_pwd');  
-
-         } else {
-            // THIS IS NOT OK
-            cookie.get_config_cookie_and_render(req, res,{'fatal_error':'This link has expired. Please try again.'}, 'reset_pwd');  
-         }
-     });
+             var tok_decrypt = crypt.encrypt(req.params.token.toString("utf8"));
+             
+             // We delete the tok.sec
+             if(require('fs').existsSync(tok_file_path)) {
+                require('fs').unlinkSync(tok_file_path);
+             }
+             
+             if(data === tok_decrypt) {
+                 
+                if(typeof req.params.first !== 'undefined') {
+                    template_opts.warning = 'This is the first time you are using this app. You have to choose a password.';
+                } 
+                  
+                // THIS IS OK
+                return cookie.get_config_cookie_and_render(req, res, template_opts, 'reset_pwd');   
+     
+             } else {
+                // THIS IS NOT OK
+                return cookie.get_config_cookie_and_render(req, res,{'fatal_error':'This link has expired. Please try again.'}, 'reset_pwd');  
+             }
+         });
+        /*
+     }
+    */
     
 };
 
