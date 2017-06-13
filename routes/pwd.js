@@ -7,7 +7,7 @@ var utils           = require('../utils/browser');
 var constants       = require('../utils/constants');
 var cookie          = require('../utils/cookie');
 var crypt           = require('../utils/crypt');
-
+var read_config     = require('../utils/read_config');
 
 /******************************************************************************************************************************************
 * RESET PWD (GET)
@@ -102,24 +102,56 @@ exports.reset_post_pwd =  function(req, res) {
         // We get the cookie values
         var cookie_config = req.cookies.config;  
         
-        // Send warning new password
-        cookie_config.new_cam_pwd = new_pwd; 
+       
+        
+        if(typeof cookie_config === "undefined") {
+             read_config.read_config(function(config) {
+                     // Send warning new password
+                  config.new_cam_pwd = new_pwd; 
+                    
+                 
+                    // We update the password    
+                    var updateConfig = new PythonShell('update_config.py', {
+                        mode: 'json',
+                        scriptPath: constants.python_path+'/config',
+                        args:[JSON.stringify(config)]
+                    });
+                  
+                  
+                   updateConfig.on('message',  function (config_write_res) { 
+                         
+                         // THIS IS OK
+                        cookie.get_config_cookie_and_render(req, res,{ success : "Password updated."}, 'reset_pwd');         
+                       
+                    }); 
+             });
+            
+        } else {
+             // Send warning new password
+                  cookie_config.new_cam_pwd = new_pwd; 
+                  
+                   var updateConfig = new PythonShell('update_config.py', {
+                        mode: 'json',
+                        scriptPath: constants.python_path+'/config',
+                        args:[JSON.stringify(cookie_config)]
+                    });
+                  
+                   updateConfig.on('message',  function (config_write_res) { 
+                        // We clear the config cookie so it re-read from config.txt
+                        res.clearCookie("config",{path:'/'});  
+                               
+                        // THIS IS OK
+                        cookie.get_config_cookie_and_render(req, res,{ success : "Password updated."}, 'reset_pwd');         
+                       
+                    }); 
+        }
+        
+        
+       
          
-        // We update the password    
-        var updateConfig = new PythonShell('update_config.py', {
-            mode: 'json',
-            scriptPath: constants.python_path+'/config',
-            args:[JSON.stringify(cookie_config)]
-        });
+        
                       
-        updateConfig.on('message',  function (config_write_res) { 
-            // We clear the config cookie so it re-read from config.txt
-            res.clearCookie("config",{path:'/'});  
-                   
-            // THIS IS OK
-            cookie.get_config_cookie_and_render(req, res,{ success : "Password updated."}, 'reset_pwd');         
-           
-        }); 
+       
      }
     
 };
