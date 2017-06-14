@@ -8,7 +8,7 @@ var cookie          = require('../utils/cookie');
 ***********************************************/
 exports.load  = function(req, res)  {
    var pjson = require(constants.APP_PATH+'/package.json');
-   cookie.get_config_cookie_and_render(req, res, { info: pjson}, 'appli');    
+   cookie.get_config_cookie_and_render(req, res, {  info: pjson}, 'appli');    
 };
 
 
@@ -16,10 +16,18 @@ exports.load  = function(req, res)  {
 * UPDATE
 ***********************************************/
 exports.update  = function(req, res)  {
-    
-     PythonShell.run(constants.python_path+'/setup/update.py', { uid: 0 }, function (err, results) {
-        console.log(results);
-     });
-  
+     
+     
+     PythonShell.run('update.py', {
+            scriptPath: constants.python_path+'/setup',
+            uid:0,
+            gid:0
+     }, function (err, results) {
+          if (err) throw err;
+          // results is an array consisting of messages collected during execution
+          console.log('results: %j', results);
+    });
+     
+     
     
 };
