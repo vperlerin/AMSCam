@@ -3,6 +3,7 @@
   "version": "1.0.5",
   "description": "",
   "main": "app.js",
+  "keywords":["meteor","fireball","AMS"], 
   "dependencies": { 
     "body-parser": "^1.13.3",
     "express": "^4.13.3",
@@ -31,10 +32,17 @@
   },
   "devDependencies": {
   },
+  "engines" : { "node" : ">=v7.8.0"  ,
+               "npm"  : ">=4.2.0"  ,
+             "bower": ">=1.8.0" }
+    ,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "sudo forever app.js"
   },
+  "homepage":"http://www.amsmeteors.org",
   "author": "Vincent Perlerin for Mike Hankey, LLC",
-  "license": "MIT"
+  "license": "Mike Hankey, LLC"
 }
+
+

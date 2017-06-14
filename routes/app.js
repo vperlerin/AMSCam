@@ -8,7 +8,7 @@ var cookie          = require('../utils/cookie');
 ***********************************************/
 exports.load  = function(req, res)  {
    var pjson = require(constants.APP_PATH+'/package.json');
-   cookie.get_config_cookie_and_render(req, res, {  version: pjson.version}, 'appli');    
+   cookie.get_config_cookie_and_render(req, res, { info: pjson}, 'appli');    
 };
 
 
@@ -17,11 +17,9 @@ exports.load  = function(req, res)  {
 ***********************************************/
 exports.update  = function(req, res)  {
     
-     var pyshellUpload = new PythonShell('update.py', {
-            scriptPath: constants.python_path+'/setup'
+     PythonShell.run(constants.python_path+'/setup/update.py', { uid: 0 }, function (err, results) {
+        console.log(results);
      });
-     pyshellUpload.on('message', function (message_success) { 
-            // Nothing here as the app will shut down anymay
-     });
+  
     
 };

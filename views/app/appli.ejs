@@ -22,18 +22,17 @@
                 <div class="col-md-12">
                     
                     
-                    <div class="alert alert-info">
+                    <div class="alert alert-danger">
                         <span class="fa fa-info-circle"></span>
-                        
-                        <strong>Updating the app will temporarily shut it down and log you out.</strong><br/>
-                        Please, wait few seconds after this page crashed before refreshing it.
+                        <strong>Updating the app will temporarily shut it down and log you out.</strong> 
                     </div>
                     
-                    <strong>Current version:</strong> <%= version %> 
+                    <strong>Current version:</strong> <%= info.version %><br/>
+                    <strong>Licence:</strong> <%= info.license %>
                     
                     <hr/>
                     <form action="/app/update" method="post" class="mt">
-                        <button  class="btn btn-lg btn-primary btn-block load-on-click" type="submit" loader-text="The app will restart soon. Please wait...">Update</button>
+                        <button class="btn btn-lg btn-primary btn-block load-on-click" type="submit" loader-text="Please wait...<br/>The process may take up to 10 minutes. Once this page crashes, please go back to the app homepage.<br/>DO NOT RELOAD THIS PAGE BEFORE IT CRASHES.">Update</button>
                     </form>    
                     <hr/>
                 </div>

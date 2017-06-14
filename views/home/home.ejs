@@ -114,28 +114,56 @@
                                         </tr>
                                         <tr>
                                             <td class="dash"><strong>WLAN MAC</strong></td>
-                                            <td><%= config.wlan_mac %></td>
+                                            <td>
+                                                <% if(typeof config.wlan_mac==="undefined"){%>
+                                                    <strong class="text-danger">?</strong>
+                                                <%}else{%>
+                                                    <%=config.wlan_mac%>
+                                                <%}%> 
+                                            </td>     
                                         </tr>
                                         <tr>
                                             <td class="dash"><strong>LAN MAC</strong></td>
-                                            <td><%= config.lan_mac %></td>
+                                            <td>
+                                                <% if(typeof config.lan_mac==="undefined"){%>
+                                                    <strong class="text-danger">?</strong>
+                                                <%}else{%>
+                                                    <%=config.lan_mac%>
+                                                <%}%> 
+                                            </td>
                                         </tr>
                                      </table>    
                                      <table class="table table-condensed table-striped text-left">
                                         <tr>
                                             <td class="dash"><strong>Device Location</strong></td>
                                             <td>
-                                                <a href="https://www.google.fr/maps/place/<%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;" target="_blank"><%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;</a>
-                                                <a href="http://www.amsmeteors.org/members/cam/edit_geoloc?device_id=<%= config.device_id %>" class="btn btn-primary btn-xs pull-right"><span class="fa fa-edit"></span></a>
+                                                <% if(typeof config.device_lng==="undefined" || typeof config.device_lat==="undefined" ){%>
+                                                    <strong class="text-danger">?</strong>
+                                                <%}else{%>
+                                                    <a href="https://www.google.fr/maps/place/<%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;" target="_blank"><%= config.device_lat %>&deg;,<%= config.device_lng %>&deg;</a>
+                                                <%}%> 
+                                                 <a href="http://www.amsmeteors.org/members/cam/edit_geoloc?device_id=<%= config.device_id %>" class="btn btn-primary btn-xs pull-right"><span class="fa fa-edit"></span></a>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td class="dash"><strong>Altitude</strong></td>
-                                            <td><%= config.device_alt %>m</td>
+                                            <td>
+                                                <% if(typeof config.device_alt==="undefined"){%>
+                                                    <strong class="text-danger">?</strong>
+                                                <%}else{%>
+                                                    <%=config.device_alt%>m
+                                                <%}%> 
+                                            </td>
                                         </tr>
                                          <tr>
                                             <td class="dash"><strong>FOV</strong></td>
-                                            <td id="fov"><%= config.fov; %></td>
+                                            <td id="fov">
+                                                <% if(typeof config.fov==="undefined"){%>
+                                                    <strong class="text-danger">?</strong>
+                                                <%}else{%>
+                                                    <%=config.fov%>m
+                                                <%}%> 
+                                            </td>
                                         </tr>
                                         
                                      </table>    
