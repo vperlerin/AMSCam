@@ -18,6 +18,21 @@
     <div class="step np">
         <div class="container nl">   
             <div class="row">
+
+                  <% if(typeof config.device_lat!='undefined' && typeof config.device_lng!='undefined'){ %>  
+                  <div id="warning_parameters" class="col-md-12" style="display:none">
+                        <div class="alert alert-danger"> 
+                            <span class="fa fa-warning"></span> <strong>IMPORTANT</strong><br/>
+                            Once your set of parameters are defined, click the button below to automatically load 
+                            the proper set of parameters based on the current position of the sun. 
+                            If you don't, it may take up to 15 minutes for the appropriate parameters to load. 
+                        </div>
+                        
+                        <a href="/cam/load_parameters" id="btn_parameters" class="btn btn-lg btn-danger btn-block load-on-click mt" type="submit">Auto Cam Parameters</a>
+                     <hr/>
+                  </div>   
+                  <% } %>        
+
                   <div class="col-md-6 text-center"> 
                          <% if (browser === 'Chrome') { %>
                                 <%if (config) { %> 
@@ -118,18 +133,7 @@
                        
                   </div>
                   
-                  <div class="col-md-12">
-                   <hr/>
-                        <div class="alert alert-warning">
-                            <span class="fa fa-warning"></span> <strong>IMPORTANT</strong><br/>
-                            Once your set of parameters are defined, click the button below to automatically load 
-                            the proper set of parameters based on the current position of the sun. 
-                            If you don't, it may take up to 15 minutes for the appropriate parameters to load. 
-                        </div>
-                        
-                        <a href="/cam/load_parameters" id="btn_parameters" class="btn btn-lg btn-primary btn-block load-on-click mt" type="submit">Auto Cam Parameters</button>
-                       
-                  </div>      
+                 
                         
             </div>  
        </div>
@@ -210,6 +214,7 @@
                    $('.update-on-change[name=<%=other_params[param]%>]').val(<%= calib[other_params[param]]; %>).change(function() {
                        var $t = $(this);
                        $t.prop('disabled',true).hide().after('<span class="fa fa-spin fa-refresh"></span>');
+                       $('#warning_parameters').removeClass('hidden');
                        _data = {};
                        _data[$(this).attr('name')] = $(this).val();
                        _data['file'] = '<%= config_files[file]  %>';
