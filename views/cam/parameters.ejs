@@ -149,6 +149,7 @@
     <script>
         
       function update_cam_param(_data,slider_hanlder,input,ui) {
+         $('#warning_parameters').fadeIn();
          $.ajax({
             type: 'POST',
             url:  '/cam/parameters/',
@@ -214,7 +215,7 @@
                    $('.update-on-change[name=<%=other_params[param]%>]').val(<%= calib[other_params[param]]; %>).change(function() {
                        var $t = $(this);
                        $t.prop('disabled',true).hide().after('<span class="fa fa-spin fa-refresh"></span>');
-                       $('#warning_parameters').removeClass('hidden');
+                       $('#warning_parameters').fadeIn();
                        _data = {};
                        _data[$(this).attr('name')] = $(this).val();
                        _data['file'] = '<%= config_files[file]  %>';
