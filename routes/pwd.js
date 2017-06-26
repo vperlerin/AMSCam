@@ -83,6 +83,14 @@ exports.reset_post_pwd =  function(req, res) {
      if(new_pwd.trim() == '') {
             _error.push('Please, enter a valid password.');
      }
+     
+     
+     // Test password format
+     // can only contain charc & digits
+     if(!/^\w+$/i.test(new_pwd) ) {
+            _error.push('The paswword can only contain characters and digits.');
+     }
+     
        
      // Test if new passwords match
      if(new_pwd !== new_pwd2) {
@@ -176,7 +184,14 @@ exports.load = function(req, res) {
     var new_pwd2    = req.body.newPwd2;
     var _error      = [];
     var cookie_config = req.cookies.config;
-      
+ 
+     // Test password format
+     // can only contain charc & digits
+     if(!/^\w+$/i.test(new_pwd) ) {
+            _error.push('The paswword can only contain characters and digits.');
+     }
+          
+ 
     // Test if new passwords match
     if(new_pwd !== new_pwd2) {
         _error.push('The 2 new passwords don\'t match. Please, try again.');

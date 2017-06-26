@@ -3,7 +3,9 @@ var read_config     = require('./read_config');
 var child_process   = require('child_process');
  
 module.exports = {
-     
+    
+    
+   
     // Return config from cookie 
     // or read config.txt, create cookie and return the result
     get_config_cookie_and_render: function (req, res, template_opts, template_name) {

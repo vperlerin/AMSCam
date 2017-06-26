@@ -14,7 +14,7 @@
                
                <% if(typeof error !== 'undefined') { %>
                 <div class="alert alert-danger">
-                    <span class="fa fa-times-circle"></span> Wrong Password.
+                    <span class="fa fa-times-circle"></span> <%= error %>.
                 </div>
                <% } %>
                
@@ -24,17 +24,32 @@
                 </div>
                <% } %>
                
-               <input type="hidden" class="form-control" name="username" value="admin"/> 
-               <input type="password" class="form-control" name="password" placeholder="Password" required=""/> 
-               <button class="btn btn-lg btn-primary btn-block load-on-click" type="submit">Login</button>   
-               <a href="/pwd/forget_pwd" class="load-on-click">Forgot password?</a>
+               <% if(typeof fatal_error !== 'undefined') { %>
+                <div class="alert alert-danger">
+                    <span class="fa fa-times-circle"></span> <%= fatal_error %>.
+                </div>
+               <% } else { %> 
+                  <input type="hidden" class="form-control" name="username" value="admin"/> 
+                  <input type="password" class="form-control" name="password" placeholder="Password" required=""/> 
+                  <button class="btn btn-lg btn-primary btn-block load-on-click" type="submit">Login</button>   
+                  <a href="/pwd/forget_pwd" class="load-on-click">Forgot password?</a>
+               <% } %>
+              
             </form>
         </div>
         
     </div>
     <link href="/css/login.css" rel="stylesheet">   
 
-<% include ../shared/footer.ejs %>    
+<% include ../shared/footer.ejs %>   
+<script>
+    $(function() {
+        if(!navigator.cookieEnabled) {
+            $('form').remove();
+            $('.wrapper').html('<div class="alert alert-danger">Please, enable cookies.</div>');
+        }
+    });
+</script>
 
 </body>
 </html>

@@ -10,7 +10,7 @@ var minifyHTML      = require('express-minify-html');
 var favicon         = require('serve-favicon');
 var logger          = require('morgan'); 
 var methodOverride  = require('method-override');
-
+ 
 // Security
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
@@ -21,7 +21,8 @@ var read_config     = require('./utils/read_config');
 var utils           = require('./utils/browser');
 var constants       = require('./utils/constants');
 var crypt           = require('./utils/crypt');  
-  
+var cookie          = require('./utils/cookie');
+   
 // Set public folder
 app.use(express.static(__dirname + '/public'));
 
@@ -49,8 +50,7 @@ var pi              = require('./routes/pi');
 var pwd             = require('./routes/pwd');
 var appli           = require('./routes/app');
 var cam_ip          = require('./routes/cam_ip');
-
-
+ 
 // Logger
 app.use(logger('dev'));  
   
@@ -149,52 +149,55 @@ app.use(passport.session());
 
 app.get('/login',
   function(req, res){ 
-    
-    // Read the config.txt to know if the admin pwd has already been changed
-    var pyshellReadConfig = new PythonShell('read_config.py', {
-            mode: 'json',
-            scriptPath: constants.python_path +'/config',
-            argv: ['json']
-    });
-        
-    // Read config
-    return pyshellReadConfig.on('message',  function (config) {  
- 
-     
-        // IF THE CAM IP isn't setup
-        if(typeof config.cam_ip === 'undefined') {
-            return res.redirect("/cam/ip/");
-        } else  if(typeof config.cam_pwd !== 'undefined' && config.cam_pwd !== 'admin')  {
-           return res.render("login");
-        } else {
-             // THIS IS THE FIRST LOGIN  !
-             var tok_file_path = constants.APP_PATH + "tok.sec";
+       
+        // Read the config.txt to know if the admin pwd has already been changed
+        var pyshellReadConfig = new PythonShell('read_config.py', {
+                mode: 'json',
+                scriptPath: constants.python_path +'/config',
+                argv: ['json']
+        });
             
-            // We delete the tok.sec if necessary
-            if(require('fs').existsSync(tok_file_path)) {
-                require('fs').unlinkSync(tok_file_path);
+        // Read config
+        return pyshellReadConfig.on('message',  function (config) {  
+             
+            if(typeof config.error !== 'undefined') {
+                  return res.render('login',{'fatal_error':config.error});  
             }
-            
-            
-            // We generate a new code
-            return require('crypto').randomBytes(8, function(err, buffer) {
-                var token = buffer.toString('hex');
-                 
-                // Write the token in tok.sec file and redirect to reset_pwd
-                require('fs').writeFileSync(tok_file_path, crypt.encrypt(token),  { flag: 'w' });
-                return res.redirect("http://"+config.lan_ip+":"+constants.main_port+"/pwd/reset_pwd/" + token + '/first_timer');
-                             
-            });
-           
-         }  
-    });
+            // IF THE CAM IP isn't setup
+            else if(typeof config.cam_ip === 'undefined') {
+                return res.redirect("/cam/ip/");
+            } else  if(typeof config.cam_pwd !== 'undefined' && config.cam_pwd !== 'admin')  {
+               return res.render("login");
+            } else {
+                 // THIS IS THE FIRST LOGIN  !
+                 var tok_file_path = constants.APP_PATH + "tok.sec";
+                
+                // We delete the tok.sec if necessary
+                if(require('fs').existsSync(tok_file_path)) {
+                    require('fs').unlinkSync(tok_file_path);
+                }
+                
+                // We generate a new code
+                return require('crypto').randomBytes(8, function(err, buffer) {
+                    var token = buffer.toString('hex');
+                     
+                    // Write the token in tok.sec file and redirect to reset_pwd
+                    require('fs').writeFileSync(tok_file_path, crypt.encrypt(token),  { flag: 'w' });
+                    return res.redirect("http://"+config.lan_ip+":"+constants.main_port+"/pwd/reset_pwd/" + token + '/first_timer');
+                                 
+                });
+               
+             }  
+        });
+    
+    
      
 });
 
 app.get('/login/WrongPassword',
   function(req, res){
     res.clearCookie("config",{path:'/'});  
-     return res.render('login',{'error':'Wrong Password'});
+    return res.render('login',{'error':'Wrong Password'});
 });
   
 app.post('/login', 
@@ -253,8 +256,7 @@ app.post('/cam/screenshot',ensureLoggedIn('/login'), cam_scr.update);
 
 // Cam Setup
 //app.get('/cam/setup',ensureLoggedIn('/login'), cam_setup.load);
-
-
+ 
  
 // Update Password
 app.get('/pwd/update_pwd', ensureLoggedIn('/login'), pwd.load);
