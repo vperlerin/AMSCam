@@ -162,6 +162,9 @@ app.get('/login',
              
             if(typeof config.error !== 'undefined') {
                   return res.render('login',{'fatal_error':config.error});  
+            } else if(typeof config.lan_ip === 'undefined') {
+                  console.log(config);
+                  return res.render('login',{'fatal_error':'lan_ip is missing in the config file'});  
             }
             // IF THE CAM IP isn't setup
             else if(typeof config.cam_ip === 'undefined') {
