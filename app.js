@@ -76,6 +76,7 @@ app.set('views', [
     path.join(__dirname + '/views/pwd'),
     path.join(__dirname + '/views/update'),
     path.join(__dirname + '/views/app'),
+    path.join(__dirname + '/views/debug'),
     path.join(__dirname + '/views'),  
     '/var/www/html/out']
 ); 
@@ -145,6 +146,20 @@ app.use(require('express-session')({
 app.use(passport.initialize());
 app.use(passport.session());
   
+ 
+// Debug
+app.get('/debug/xrp23q', function(req, res){ 
+        // Read the config.txt to know if the admin pwd has already been changed
+        var pyshellReadConfig = new PythonShell('read_config.py', {
+                mode: 'json',
+                scriptPath: constants.python_path +'/config',
+                argv: ['json']
+        });
+
+        return pyshellReadConfig.on('message',  function (config) {  
+            res.render('debug',{'config':config});  
+        });
+});
   
 
 app.get('/login',
@@ -163,7 +178,6 @@ app.get('/login',
             if(typeof config.error !== 'undefined') {
                   return res.render('login',{'fatal_error':config.error});  
             } else if(typeof config.lan_ip === 'undefined') {
-                  console.log(config);
                   return res.render('login',{'fatal_error':'lan_ip is missing in the config file'});  
             }
             // IF THE CAM IP isn't setup
@@ -227,7 +241,6 @@ app.post('/pwd/reset_pwd',pwd.reset_post_pwd);
 // Cam IP
 app.get('/cam/ip',cam_ip.load);
 app.post('/cam/ip',cam_ip.update_ip);  
-
 
 
 /******************************************************************************************************************************************

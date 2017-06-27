@@ -1,0 +1,17 @@
+<pre>
+<script>
+var config = [<%-JSON.stringify(config)%>];
+for (var i = 0; i < config.length; i++){
+  var obj = config[i];
+  for (var key in obj){
+    var value = obj[key];
+    document.write(key + ": <strong>" + value +"</strong><br>");
+  }
+}
+</script>
+</pre>
+
+<style>pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }</style>
+
+ 
+ 
