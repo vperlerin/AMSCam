@@ -5,13 +5,13 @@ for (var i = 0; i < config.length; i++){
   var obj = config[i];
   for (var key in obj){
     var value = obj[key];
-    document.write(key + ": <strong>" + value +"</strong><br>");
+    document.write("<span>"+key + "</span> <strong>" + value +"</strong><br>");
   }
 }
 </script>
 </pre>
 
-<style>pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }</style>
+<style>body{ background-color:#f0f0f0; }pre {outline: 1px solid #ccc; max-width: 700px; margin: 0 auto; padding: 1em 1em 0 1em; background: #fff; } span { display:inline-block; display: inline-block; width: 10em;}</style>
 
  
  
