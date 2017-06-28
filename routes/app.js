@@ -16,18 +16,38 @@ exports.load  = function(req, res)  {
 * UPDATE
 ***********************************************/
 exports.update  = function(req, res)  {
-     
-     
+      
      PythonShell.run('update.py', {
             scriptPath: constants.python_path+'/setup',
             uid:0,
             gid:0
      }, function (err, results) {
           if (err) throw err;
-          // results is an array consisting of messages collected during execution
-          console.log('results: %j', results);
+          // Redirect to the restart page
+          res.redirect('/app/restart');
     });
-     
-     
-    
+      
+};
+
+
+/******************************************************************************************************************************************
+* RESTART
+***********************************************/
+exports.restart  = function(req, res)  {
+     return cookie.get_config_cookie_and_render(req, res, {}, 'restart');
+};
+
+/******************************************************************************************************************************************
+* CRASH (real 'forever' restart)
+***********************************************/
+exports.crash  = function(req, res)  {
+    PythonShell.run('restart.py', {
+            scriptPath: constants.python_path+'/setup',
+            uid:0,
+            gid:0
+     }, function (err, results) {
+          if (err) throw err;
+          // Redirect to login (but it won't happen)
+          res.redirect('/');
+    });
 };

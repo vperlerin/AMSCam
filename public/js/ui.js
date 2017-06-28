@@ -47,7 +47,7 @@ $(function() {
        $(this).html('<span class="fa fa-spinner fa-spin"></span>');
        var attr = $(this).attr('loader-text');
        if(typeof attr !== typeof undefined && attr !== false) {
-            $('#loader').html('<div><span class="fa fa-spinner fa-pulse fa-5x fa-fw"></span><br/><h2 class="text-cente">'+$(this).attr('loader-text')+'</h2></div>') ; 
+            $('#loader').html('<div><span class="fa fa-spinner fa-pulse fa-5x fa-fw"></span><br/><h2 class="text-center">'+$(this).attr('loader-text')+'</h2></div>') ; 
        }
        $('#loader').slideDown();
        return true;

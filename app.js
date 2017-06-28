@@ -103,10 +103,7 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-
-
-
-
+ 
 
 /******************************************************************************************************************************************
 * LOGIN 
@@ -288,9 +285,19 @@ app.get('/detection/:type/delete_all/',ensureLoggedIn('/login'),detections.delet
 app.get('/pi/shutdown',ensureLoggedIn('/login'), pi.shutdown);
 app.get('/pi/restart',ensureLoggedIn('/login'), pi.restart);
 
-/// Update the app
+// Update the app
 app.get('/app/update',ensureLoggedIn('/login'), appli.load);
 app.post('/app/update',ensureLoggedIn('/login'), appli.update);
+
+// Restart
+app.get('/app/restart',ensureLoggedIn('/login'), appli.restart);
+app.get('/app/crash',ensureLoggedIn('/login'), appli.crash);
+
+// 404 (MUST BE THE LAST ONE !)
+//The 404 Route (ALWAYS Keep this as the last route)
+app.get('*', function(req, res){
+    cookie.get_config_cookie_and_render(req, res, {}, 'error');   
+}); 
 
 // Start APP
 app.listen(constants.main_port);
