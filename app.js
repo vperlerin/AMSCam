@@ -301,4 +301,4 @@ app.get('*', function(req, res){
 
 // Start APP
 app.listen(constants.main_port);
-console.log('Listening on port 3000 - the AMSCam App is running.'); 
+console.log('Listening on port ' + constants.main_port + ' - the AMSCam App is running.'); 

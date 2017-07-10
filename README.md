@@ -14,9 +14,11 @@ The AMSCam app allows you to interact with your AMS Cam & Raspberry Pi from a de
 ```  
   
 
+
+
 ## Installation
 
-### Clone this github repository
+### 1- Clone github repositories
 Clone this repository and fireball_camera directory.
 
 On your PI, go to /home/pi and:
@@ -62,9 +64,9 @@ $ sudo python ./setup/install.py
 
 To see the app in action, open your browser (Firefox or Chrome) on your computer (warning: your computer has to be on the same LAN than the PI). Point your browser to 
 ```
-http://[PI_IP]:3000
+http://[PI_IP]:80
 ```
-> (replace [PI_IP] by the local IP of your Raspberry PI - ex: http://192.168.0.11:3000/)
+> (replace [PI_IP] by the local IP of your Raspberry PI - ex: http://192.168.0.11:80/)
 
 ## Setup the autostart (optional)
 If not already done, you can setup the automatic start of the AMSCam app on your PI:
@@ -143,6 +145,10 @@ Then, reboot the VNC Viewer.
  
 ## Camera API Doc
 http://www.goodipcamera.com/download/6.SDK%20&%20CGI/SC6000_IPC_HTTP_API_CGI_V1.0.pdf 
+
+
+## Log
+* 2017/07/10 - Change port from 3000 to 80 (allow remote access)
 
 
 ## License
