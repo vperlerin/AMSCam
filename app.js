@@ -50,6 +50,7 @@ var pi              = require('./routes/pi');
 var pwd             = require('./routes/pwd');
 var appli           = require('./routes/app');
 var cam_ip          = require('./routes/cam_ip');
+var cam_claim       = require('./routes/cam_claim');
  
 // Logger
 app.use(logger('dev'));  
@@ -177,9 +178,13 @@ app.get('/login',
             } else if(typeof config.lan_ip === 'undefined') {
                   return res.render('login',{'fatal_error':'lan_ip is missing in the config file'});  
             }
-            // IF THE CAM IP isn't setup
+            
             else if(typeof config.cam_ip === 'undefined') {
-                return res.redirect("/cam/ip/");
+               // IF THE CAM IP isn't setup
+               return res.redirect("/cam/ip/");
+            }else if(typeof config.user_id === 'undefined') {
+                // IF THE CAM hasnt been claimed yet
+               return res.redirect("/cam/claim/");
             } else  if(typeof config.cam_pwd !== 'undefined' && config.cam_pwd !== 'admin')  {
                return res.render("login");
             } else {
@@ -238,6 +243,10 @@ app.post('/pwd/reset_pwd',pwd.reset_post_pwd);
 // Cam IP
 app.get('/cam/ip',cam_ip.load);
 app.post('/cam/ip',cam_ip.update_ip);  
+
+// Claim Cam
+app.get('/cam/claim',cam_claim.load);
+app.post('/cam/claim',cam_claim.update_config);  
 
 
 /******************************************************************************************************************************************
