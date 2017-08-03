@@ -144,7 +144,7 @@ Then, reboot the VNC Viewer.
  
  
 ## Camera API Doc
-http://www.goodipcamera.com/download/6.SDK%20&%20CGI/SC6000_IPC_HTTP_API_CGI_V1.0.pdf 
+See under /docs
 
 
 ## Log
