@@ -14,7 +14,7 @@ define("python_path", path.join('/'+__dirname + './../../fireball_camera/'));
 define("python_pi_path", path.join('/'+__dirname + '/../../fireball_camera/pi/'));
 define("config_file", path.join('/'+__dirname + '/../../fireball_camera/config.txt'));
 define("cam_log_file", "cam_log");
-define("main_port",80);
+define("main_port",8000);
 define("DETECTION_PER_PAGE",30);
 define("possible_parameters_files",['Night','Day','Calibration']);
 // Cookie as a 15 min period of life because it's the period for the cron job to eventually update the parameters of the cam (switch between Night and Day)

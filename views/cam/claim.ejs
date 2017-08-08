@@ -40,24 +40,21 @@
                 </div>
             <% }  %>
  
-            <div class="in">
+            <div class="in"> 
             
                 <div class="alert alert-info">
-                    <span class="fa fa-warning"></span> You need to claim your camera toward the American Meteor Society. 
+                    <span class="fa fa-warning"></span> You need to claim your camera toward the <strong>American Meteor Society</strong>. 
                 </div>
-
-                <% if(config.wlan_mac == 'undefined' || config.lan_mac == 'undefined') {%>
-                    <div class="alert alert-danger">
-                        The WLAN MAC and LAN MAC are missing in the config file. Something went wrong. Please, contact us.
+ 
+                <% if(config.wlan_mac && config.lan_mac ) {%>
+                    <div class="text-center">
+                        Go to your<br/><a href="http://www.amsmeteors.org/members/cam/claim?lan_mac=<%=config.lan_mac%>&wlan_mac=<%=config.wlan_mac%>&org=<%=url%>&from_app=1" class="btn btn-lg btn-primary"><span class="fa fa-hand-o-right"></span> AMS Camera Claim page</a><br/>on the American Meteor Society website (login required) 
                     </div>
                 <% } else { %>
-
-                    <strong>Please, follow these instructions:</strong>
-                    <ol>
-                        <li>Go to your <a href="http://www.amsmeteors.org/members/cam/claim&lan_mac=<%=config.lan_mac%>&wlan_mac=<%=config.wlan_mac%>&org=<%=url%>" class="btn btn-sm btn-primary"><span class="fa fa-hand-o-right"></span> AMS Camera Claim page</a> on the American Meteor Society website (login required)<br/></li>
-                        <li>Once your camera is claimed on the AMS Website, <strong>you will receive an email with further instructions</strong> (We will use the email associated to the AMS account).</li>
-                    </ol>
-
+                     <div class="alert alert-danger">
+                    The WLAN MAC and LAN MAC are missing in the config file. Something went wrong. Please, contact us.
+                    </div>
+                    
                  <% } %>
                    
             </div>

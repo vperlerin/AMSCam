@@ -10,8 +10,9 @@ function define(name, value) {
 }
 
 
-define("read_config", function read_config(callback) {
-    var pyshellUpload = new PythonShell('read_config.py', {
+// Read the API Info, update the config file and return it
+define("read_config_from_api", function read_config_from_api(callback) {
+    var get_device_info_and_config = new PythonShell('get_device_info_and_config.py', {
         mode: 'json',
         scriptPath: constants.python_path +'/config',
         argv: ['json']
@@ -19,7 +20,27 @@ define("read_config", function read_config(callback) {
     
     return async.parallel([
            function() {
-            pyshellUpload.on('message',  function (config) {  
+            get_device_info_and_config.on('message',  function (config) {  
+                console.log('CONFIG FROM read_config_from_api');
+                console.log(config);
+                callback(config);
+            });
+       }
+    ]);
+});
+
+
+// Read the config file and return it
+define("read_config", function read_config(callback) {
+    var readConfig = new PythonShell('read_config.py', {
+        mode: 'json',
+        scriptPath: constants.python_path +'/config',
+        argv: ['json']
+    });
+    
+    return async.parallel([
+           function() {
+            readConfig.on('message',  function (config) {  
                 callback(config);
             });
        }

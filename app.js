@@ -95,6 +95,7 @@ app.use(bodyParser.urlencoded({  extended: true }));
 
 // production error handler
 // no stacktraces leaked to user
+/*
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
@@ -102,6 +103,7 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
+*/
 
 module.exports = app;
  
@@ -163,8 +165,8 @@ app.get('/debug/xrp23q', function(req, res){
 app.get('/login',
   function(req, res){ 
        
-        // Read the config.txt to know if the admin pwd has already been changed
-        var pyshellReadConfig = new PythonShell('read_config.py', {
+        // Read the config from the API and update the config.txt to know if the admin pwd has already been changed
+        var pyshellReadConfig = new PythonShell('get_device_info_and_config.py', {
                 mode: 'json',
                 scriptPath: constants.python_path +'/config',
                 argv: ['json']
@@ -208,9 +210,6 @@ app.get('/login',
                
              }  
         });
-    
-    
-     
 });
 
 app.get('/login/WrongPassword',
@@ -245,8 +244,7 @@ app.get('/cam/ip',cam_ip.load);
 app.post('/cam/ip',cam_ip.update_ip);  
 
 // Claim Cam
-app.get('/cam/claim',cam_claim.load);
-app.post('/cam/claim',cam_claim.update_config);  
+app.get('/cam/claim',cam_claim.load); 
 
 
 /******************************************************************************************************************************************
